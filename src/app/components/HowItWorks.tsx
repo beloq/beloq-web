@@ -8,7 +8,7 @@ const tabs = [
   {
     id: "beloquer",
     label: "Beloquer",
-    subtitle: "Usuario final",
+    subtitle: "Usuario",
     image: "/images/ciclista.png",
     steps: [
       {
@@ -31,7 +31,7 @@ const tabs = [
   {
     id: "gestor",
     label: "Gestor",
-    subtitle: "Operador B2B/B2G",
+    subtitle: "Operador",
     image: "/images/app-mockup.png",
     steps: [
       {
@@ -99,21 +99,20 @@ export default function HowItWorks() {
 
         {/* Tabs */}
         <div className="flex justify-center mb-12">
-          <div className="inline-flex bg-white rounded-full p-1.5 shadow-md">
+          <div className="inline-flex bg-white rounded-2xl sm:rounded-full p-1.5 shadow-md gap-1">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 rounded-full text-sm font-bold transition-all ${
+                className={`px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-full text-sm font-bold transition-all flex flex-col items-center ${
                   activeTab === tab.id
                     ? "bg-beloq-yellow text-beloq-dark shadow-sm"
                     : "text-gray-500 hover:text-beloq-dark"
                 }`}
               >
-                <span className="hidden sm:inline">{tab.label}</span>
-                <span className="sm:hidden">{tab.label.slice(0, 3)}</span>
-                <span className="hidden md:inline text-xs font-normal ml-1 opacity-70">
-                  ({tab.subtitle})
+                <span>{tab.label}</span>
+                <span className="text-[10px] sm:text-xs font-normal opacity-60 leading-tight mt-0.5">
+                  {tab.subtitle}
                 </span>
               </button>
             ))}
