@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 
 const features = [
   { icon: "🗺️", label: "Mapa en tiempo real" },
@@ -90,37 +91,22 @@ export default function AppShowcase() {
           </div>
         </div>
 
-        {/* App Store badges */}
+        {/* Beta CTA */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="flex justify-center gap-4 mt-12"
+          className="flex justify-center mt-12"
         >
-          <a
-            href="#"
-            className="bg-beloq-dark text-white px-6 py-3 rounded-xl flex items-center gap-3 hover:bg-black transition-colors"
+          <Link
+            href="/beta"
+            className="bg-beloq-yellow text-beloq-dark font-bold px-10 py-4 rounded-full hover:bg-beloq-yellow-dark transition-colors text-base inline-flex items-center gap-2"
           >
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+            Prueba la app — Sé beloquer
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
-            <div className="text-left">
-              <div className="text-xs opacity-70">Próximamente en</div>
-              <div className="text-sm font-bold">App Store</div>
-            </div>
-          </a>
-          <a
-            href="#"
-            className="bg-beloq-dark text-white px-6 py-3 rounded-xl flex items-center gap-3 hover:bg-black transition-colors"
-          >
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M3.18 23.77c.55.31 1.22.28 1.74-.08l11.65-6.73-2.89-2.89L3.18 23.77zM.42 1.31C.15 1.64 0 2.08 0 2.6v18.8c0 .52.15.96.42 1.29l.1.1 10.5-10.5v-.25L.52 1.55l-.1-.1v-.14zM22.07 10.14L18.6 8.14l-3.18 3.18 3.18 3.18 3.47-2c.99-.57.99-1.79 0-2.36zM16.92 9.28L5.28 2.55c-.55-.32-1.22-.35-1.74-.08L14.04 13l2.88-3.72z" />
-            </svg>
-            <div className="text-left">
-              <div className="text-xs opacity-70">Próximamente en</div>
-              <div className="text-sm font-bold">Google Play</div>
-            </div>
-          </a>
+          </Link>
         </motion.div>
       </div>
     </section>
