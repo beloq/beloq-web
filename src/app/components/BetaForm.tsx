@@ -222,7 +222,7 @@ export default function BetaForm() {
         disabled={status === "sending"}
         className="w-full bg-beloq-yellow text-beloq-dark font-bold py-4 rounded-full hover:bg-beloq-yellow-dark transition-colors disabled:opacity-50 text-base"
       >
-        {status === "sending" ? "Registrando..." : "Quiero ser beloquer"}
+        {status === "sending" ? "Enviando..." : "Enviar"}
       </button>
 
       {/* Legal text */}
