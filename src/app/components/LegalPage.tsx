@@ -35,9 +35,9 @@ export default function LegalPage({ title, version, date, children }: LegalPageP
 
         <div className="mt-12 pt-8 border-t border-gray-100 text-sm text-gray-400">
           <p>
-            Este documento ha sido generado con asistencia de inteligencia
-            artificial y constituye un borrador inicial. Se recomienda revisión
-            por un profesional legal antes de su publicación definitiva.
+            Si quieres consultar versiones anteriores de este documento o tienes
+            cualquier duda sobre su contenido, escríbenos a{" "}
+            <a href="mailto:info@beloq.es" className="hover:text-beloq-dark transition-colors">info@beloq.es</a>.
           </p>
           <div className="mt-6 flex gap-4 flex-wrap">
             <Link href="/legal/aviso-legal" className="hover:text-beloq-dark transition-colors">Aviso Legal</Link>
