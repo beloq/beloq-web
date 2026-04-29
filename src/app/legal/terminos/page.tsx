@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function TerminosCondiciones() {
   return (
-    <LegalPage title="Términos y Condiciones de Uso" version="1.2" date="28 de abril de 2026">
+    <LegalPage title="Términos y Condiciones de Uso" version="1.3" date="29 de abril de 2026">
       <h2>1. Aceptación de los Términos</h2>
       <p>Estos Términos y Condiciones (en adelante, &quot;Términos&quot;) regulan el uso de la aplicación móvil beloq (disponible en iOS y Android) y de la plataforma web beloq.es (en adelante, conjuntamente, &quot;el Servicio&quot;).</p>
       <p>Al registrarte, acceder o utilizar el Servicio, aceptas estos Términos en su totalidad. Si no estás de acuerdo, no podrás utilizar beloq. El uso continuado del Servicio tras la publicación de cambios implica la aceptación de la versión actualizada.</p>
@@ -77,7 +77,9 @@ export default function TerminosCondiciones() {
       <p>Puedes solicitar un reembolso en los siguientes casos: módulo defectuoso que impide el desbloqueo, error del sistema (cobro duplicado o cálculo incorrecto de duración) o penalización aplicada por un fallo técnico del módulo. Para solicitarlo, contacta con info@beloq.es. El plazo de resolución es inferior a 7 días laborables, y beloq asume los costes de gestión del reembolso.</p>
 
       <h2>7. Penalizaciones</h2>
-      <p>Si dejas un módulo en estado inseguro durante más de 60 segundos (cerradura desbloqueada sin vehículo anclado), se aplicará una penalización según la tabla vigente del operador de la estación. Esta penalización se comunica de forma inmediata mediante notificación push y por email.</p>
+      <p>Si dejas un módulo en estado inseguro durante más de 60 segundos (cerradura desbloqueada sin vehículo anclado), se aplicará una penalización equivalente a <strong>0,45 €/hora</strong> —la misma tarifa que el uso normal del servicio—, calculada desde el momento en que termina el periodo de gracia de 60 segundos hasta el momento en que el módulo vuelve a estado seguro. No hay importe máximo por penalización individual. Esta penalización se comunica de forma inmediata mediante notificación push y por email.</p>
+      <p>Si otro usuario asegura el módulo en tu nombre dentro de los primeros 2 minutos desde el inicio de la penalización, ésta se anula automáticamente y no se te cobra nada.</p>
+      <p>beloq puede modificar esta tarifa con un mínimo de 30 días de aviso por email y notificación en la app, conforme a lo previsto en la sección 13.</p>
       <p>Si consideras que una penalización es injusta (por ejemplo, porque el módulo presentó un fallo técnico y no cerró correctamente), puedes disputarla enviando un email a info@beloq.es con la evidencia disponible. beloq revisará los registros técnicos del módulo y, si procede, anulará la penalización y realizará el reembolso correspondiente.</p>
 
       <h2>8. Responsabilidad por robo o daños al vehículo</h2>
