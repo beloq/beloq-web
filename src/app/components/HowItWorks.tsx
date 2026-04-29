@@ -3,8 +3,18 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 
-const tabs = [
+type Tab = {
+  id: string;
+  label: string;
+  subtitle: string;
+  image: string;
+  steps: { number: string; title: string; desc: string }[];
+  cta?: { label: string; href: string; helper: string };
+};
+
+const tabs: Tab[] = [
   {
     id: "beloquer",
     label: "Beloquer",
@@ -32,7 +42,7 @@ const tabs = [
     id: "gestor",
     label: "Gestor",
     subtitle: "Operador",
-    image: "/images/app-mockup.png",
+    image: "/images/console-mockup.png",
     steps: [
       {
         number: "01",
@@ -50,6 +60,11 @@ const tabs = [
         desc: "Revenue sharing: el 100% de lo que pagan los usuarios se descuenta de tu factura.",
       },
     ],
+    cta: {
+      label: "Ver Demo",
+      href: "/console",
+      helper: "Demo interactiva con datos en vivo. Sin registro.",
+    },
   },
   {
     id: "ciudad",
@@ -150,6 +165,32 @@ export default function HowItWorks() {
                   </div>
                 </motion.div>
               ))}
+
+              {active.cta && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.45 }}
+                  className="rounded-2xl bg-beloq-dark p-6 sm:p-7 shadow-lg"
+                >
+                  <p className="text-beloq-yellow text-xs font-bold uppercase tracking-wider">
+                    Pruébalo ahora
+                  </p>
+                  <p className="mt-2 text-white text-lg font-bold">
+                    Explora la consola con datos de demo en vivo
+                  </p>
+                  <p className="mt-1 text-white/70 text-sm">
+                    {active.cta.helper}
+                  </p>
+                  <Link
+                    href={active.cta.href}
+                    className="mt-5 inline-flex items-center gap-2 bg-beloq-yellow text-beloq-dark font-bold px-6 py-3 rounded-full hover:bg-beloq-yellow-dark transition-colors"
+                  >
+                    {active.cta.label}
+                    <span aria-hidden>→</span>
+                  </Link>
+                </motion.div>
+              )}
             </div>
 
             {/* Illustration */}
@@ -159,7 +200,7 @@ export default function HowItWorks() {
                 alt={active.label}
                 width={450}
                 height={450}
-                className="w-full max-w-sm"
+                className={`w-full ${active.cta ? "max-w-none" : "max-w-sm"}`}
               />
             </div>
           </motion.div>

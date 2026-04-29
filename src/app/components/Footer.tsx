@@ -7,7 +7,7 @@ const footerSections = [
     links: [
       { label: "Estación Beloq", href: "#que-es-beloq" },
       { label: "App Beloq", href: "#app" },
-      { label: "Consola Cloud", href: "#como-funciona" },
+      { label: "Consola Cloud", href: "/console" },
     ],
   },
   {
