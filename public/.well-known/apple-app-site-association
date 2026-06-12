@@ -1,4 +1,17 @@
 {
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["26BRS298F5.es.beloq.beloq-app"],
+        "components": [
+          {
+            "/": "/m/*",
+            "comment": "Desbloqueo de modulo via tag NFC (Universal Link)"
+          }
+        ]
+      }
+    ]
+  },
   "webcredentials": {
     "apps": ["26BRS298F5.es.beloq.beloq-app"]
   }

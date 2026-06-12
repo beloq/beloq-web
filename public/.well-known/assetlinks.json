@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "es.beloq.beloq_app",
+      "sha256_cert_fingerprints": [
+        "11:66:A7:10:61:85:6B:18:C8:97:8C:54:A2:00:25:97:80:7B:47:7E:DF:A3:4F:BB:BA:54:09:3E:48:56:7C:15"
+      ]
+    }
+  }
+]
