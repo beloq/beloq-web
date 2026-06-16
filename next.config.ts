@@ -15,6 +15,13 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // Alias de términos: el backend devuelve terms_url=/legal/terms, pero la
+      // página real es /legal/terminos. Aplica en todos los hosts (incl. m.).
+      {
+        source: "/legal/terms",
+        destination: "/legal/terminos",
+        permanent: true,
+      },
       // Apex → www, excepto /.well-known/* (Apple AASA no admite redirect).
       // Requiere que el "Domain Redirect" del apex esté desactivado en Vercel.
       {
