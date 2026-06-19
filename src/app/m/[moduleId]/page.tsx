@@ -36,7 +36,10 @@ export default async function ModulePage({
   const { moduleId } = await params;
   const sp = await searchParams;
 
-  const { u, c } = splitUidCounter(one(sp.u), one(sp.c));
+  // El tag NTAG213 emite el contador en 'ctr'; soportamos también 'c' (URL
+  // manual). Internamente y hacia el backend el contador viaja siempre como 'c'.
+  const rawC = one(sp.ctr) ?? one(sp.c);
+  const { u, c } = splitUidCounter(one(sp.u), rawC);
 
   return (
     <NfcFlow
