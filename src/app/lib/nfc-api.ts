@@ -13,6 +13,8 @@ import type {
   CreateSessionResult,
   ModuleInfo,
   OccupiedPayload,
+  ResumeBody,
+  ResumeResult,
 } from "./nfc-types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
@@ -84,10 +86,28 @@ async function request<T>(
   return { ok: false, status: res.status, data: null, errorText, occupied };
 }
 
-export function getModule(moduleId: string): Promise<ApiResult<ModuleInfo>> {
+export function getModule(
+  moduleId: string,
+  u?: string | null,
+  c?: string | null
+): Promise<ApiResult<ModuleInfo>> {
+  const qs = new URLSearchParams();
+  if (u) qs.set("u", u);
+  if (c) qs.set("c", c);
+  const query = qs.toString();
   return request<ModuleInfo>(
-    `/anonymous/module/${encodeURIComponent(moduleId)}`,
+    `/anonymous/module/${encodeURIComponent(moduleId)}${query ? `?${query}` : ""}`,
     { method: "GET" }
+  );
+}
+
+export function resumeModule(
+  moduleId: string,
+  body: ResumeBody
+): Promise<ApiResult<ResumeResult>> {
+  return request<ResumeResult>(
+    `/anonymous/module/${encodeURIComponent(moduleId)}/resume`,
+    { method: "POST", body: JSON.stringify(body) }
   );
 }
 

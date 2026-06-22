@@ -3,6 +3,17 @@
 
 export type ModuleStatus = "available" | "occupied" | "maintenance" | "offline";
 
+/** Estados de sesión del backend. */
+export type SessionStatus =
+  | "pending_payment"
+  | "hold_authorized_pending_unlock"
+  | "active"
+  | "completed_ok"
+  | "expired_captured"
+  | "expired_voided"
+  | "recovery_pending"
+  | "blocked_user_pending";
+
 /** Versión de términos sincronizada con /legal/terminos. El GET de módulo no la
  *  devuelve, así que se envía esta constante en POST /anonymous/sessions. */
 export const TERMS_VERSION = "1.3";
@@ -70,12 +81,37 @@ export interface CheckoutSessionResult {
   message?: string;
 }
 
-/** Payload de error 409-ocupado: el `message` del error NestJS es un objeto. */
+// --- POST /anonymous/module/:moduleId/resume ---
+export interface ResumeBody {
+  fingerprint: string;
+  u: string;
+  c: string;
+}
+
+export interface ResumeResult {
+  has_session: boolean;
+  session_id?: string;
+  status?: SessionStatus;
+  is_yours?: boolean;
+  requires_payment_reauth?: boolean;
+  stripe_client_secret?: string | null;
+  stripe_publishable_key?: string;
+  max_duration_seconds?: number;
+  expires_at?: string;
+  recovery_phone?: string;
+  recovery_instructions_url?: string;
+  message?: string;
+}
+
+/** Payload de error 409-ocupado/mantenimiento: el `message` del error NestJS
+ *  es un objeto. En mantenimiento incluye además recovery_phone/url. */
 export interface OccupiedPayload {
   module_id?: string;
   module_status?: ModuleStatus;
   message?: string;
   alternative_modules?: string[];
+  recovery_phone?: string;
+  recovery_instructions_url?: string;
 }
 
 /** Resultado normalizado de una llamada a la API. No lanza en 4xx esperados. */
@@ -106,4 +142,8 @@ export type MockState =
   | "openfailed"
   | "checkout"
   | "reauth"
-  | "completing";
+  | "completing"
+  | "active"
+  | "recovery"
+  | "maintenance"
+  | "resumepay";

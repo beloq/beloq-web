@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import type { ModuleInfo } from "../../lib/nfc-types";
+import Countdown from "./Countdown";
 import {
   Card,
   PrimaryButton,
@@ -11,6 +12,47 @@ import {
   StatusBadge,
   formatMoney,
 } from "./ui";
+
+function hasPhone(p?: string): p is string {
+  return !!p && p.trim().length > 0;
+}
+
+/** Bloque de contacto de soporte. Muestra el teléfono solo si no está vacío;
+ *  la URL de instrucciones siempre se muestra como fallback si existe. */
+function SupportContact({ phone, url }: { phone?: string; url?: string }) {
+  const showPhone = hasPhone(phone);
+  if (!showPhone && !url) return null;
+  return (
+    <div className="rounded-xl bg-beloq-gray p-4 text-center text-sm text-gray-600">
+      ¿Necesitas ayuda?{" "}
+      {showPhone && (
+        <>
+          Llama al{" "}
+          <a
+            href={`tel:${phone.replace(/\s/g, "")}`}
+            className="font-bold text-beloq-dark underline"
+          >
+            {phone}
+          </a>
+        </>
+      )}
+      {url && (
+        <>
+          {showPhone ? " o consulta " : "Consulta "}
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold text-beloq-dark underline"
+          >
+            las instrucciones
+          </a>
+        </>
+      )}
+      .
+    </div>
+  );
+}
 
 export function LoadingView() {
   return (
@@ -154,34 +196,132 @@ export function OpenedView({
         depósito.
       </p>
 
-      {(recoveryPhone || recoveryUrl) && (
-        <div className="rounded-xl bg-beloq-gray p-4 text-center text-sm text-gray-600">
-          ¿Algún problema?{" "}
-          {recoveryPhone && (
-            <>
-              Llama al{" "}
-              <a
-                href={`tel:${recoveryPhone.replace(/\s/g, "")}`}
-                className="font-bold text-beloq-dark underline"
-              >
-                {recoveryPhone}
-              </a>
-            </>
-          )}
-          {recoveryUrl && (
-            <>
-              {recoveryPhone ? " o consulta " : "Consulta "}
-              <a
-                href={recoveryUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-bold text-beloq-dark underline"
-              >
-                las instrucciones
-              </a>
-            </>
-          )}
-          .
+      <SupportContact phone={recoveryPhone} url={recoveryUrl} />
+    </Card>
+  );
+}
+
+export function ActiveSessionView({
+  expiresAt,
+  maxHours,
+  recoveryPhone,
+  recoveryUrl,
+  canPickup,
+  onPickup,
+  busy,
+}: {
+  expiresAt?: string;
+  maxHours?: number;
+  recoveryPhone?: string;
+  recoveryUrl?: string;
+  canPickup: boolean;
+  onPickup: () => void;
+  busy: boolean;
+}) {
+  return (
+    <Card>
+      <ResultIcon tone="success" />
+      <h1 className="mb-2 text-center text-2xl font-bold text-beloq-dark">
+        Tu vehículo está guardado
+      </h1>
+      {expiresAt ? (
+        <p className="mb-4 text-center text-gray-600">
+          Tiempo restante:{" "}
+          <strong className="text-beloq-dark text-lg">
+            <Countdown expiresAt={expiresAt} />
+          </strong>
+        </p>
+      ) : maxHours ? (
+        <p className="mb-4 text-center text-gray-600">
+          Tienes <strong className="text-beloq-dark">{maxHours} horas</strong>.
+        </p>
+      ) : null}
+
+      {canPickup ? (
+        <>
+          <p className="mb-6 text-center leading-relaxed text-gray-600">
+            Cuando quieras, recoge tu vehículo y libera tu depósito.
+          </p>
+          <PrimaryButton onClick={onPickup} disabled={busy}>
+            {busy ? <Spinner /> : "Recoger y liberar depósito"}
+          </PrimaryButton>
+        </>
+      ) : (
+        <p className="mb-6 text-center leading-relaxed text-gray-600">
+          Para recoger, acerca el móvil al tag del módulo otra vez.
+        </p>
+      )}
+
+      <div className="mt-4">
+        <SupportContact phone={recoveryPhone} url={recoveryUrl} />
+      </div>
+    </Card>
+  );
+}
+
+export function RecoveryView({
+  title,
+  message,
+  recoveryPhone,
+  recoveryUrl,
+}: {
+  title?: string;
+  message: string;
+  recoveryPhone?: string;
+  recoveryUrl?: string;
+}) {
+  return (
+    <Card>
+      <ResultIcon tone="info" />
+      <h1 className="mb-2 text-center text-xl font-bold text-beloq-dark">
+        {title || "Necesitamos ayudarte con tu sesión"}
+      </h1>
+      <p className="mb-6 text-center leading-relaxed text-gray-600">{message}</p>
+      <SupportContact phone={recoveryPhone} url={recoveryUrl} />
+    </Card>
+  );
+}
+
+export function MaintenanceView({
+  message,
+  recoveryPhone,
+  recoveryUrl,
+  alternatives,
+}: {
+  message: string;
+  recoveryPhone?: string;
+  recoveryUrl?: string;
+  alternatives: string[];
+}) {
+  return (
+    <Card>
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h1 className="text-xl font-bold text-beloq-dark">Módulo en revisión</h1>
+        <StatusBadge tone="neutral">Mantenimiento</StatusBadge>
+      </div>
+      <p className="mb-6 leading-relaxed text-gray-600">{message}</p>
+
+      <div className="mb-6">
+        <SupportContact phone={recoveryPhone} url={recoveryUrl} />
+      </div>
+
+      {alternatives.length > 0 && (
+        <div>
+          <p className="mb-2 text-sm font-bold text-beloq-dark">
+            ¿Solo buscas aparcar? Módulos libres cerca:
+          </p>
+          <ul className="flex flex-wrap gap-2">
+            {alternatives.map((id) => (
+              <li key={id}>
+                <Link
+                  href={`/m/${id}`}
+                  className="inline-block rounded-full bg-beloq-gray px-4 py-2 text-sm font-bold text-beloq-dark transition-colors hover:bg-beloq-yellow"
+                >
+                  {id}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </Card>

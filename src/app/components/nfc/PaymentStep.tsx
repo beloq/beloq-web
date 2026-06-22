@@ -44,37 +44,62 @@ function PaymentForm({
   const [error, setError] = useState<string | null>(null);
 
   async function handlePay() {
-    if (!stripe || !elements) return;
+    if (!stripe || !elements || busy) return;
     setBusy(true);
     setError(null);
 
-    const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      redirect: "if_required",
-      confirmParams: { return_url: returnUrl },
-    });
+    try {
+      const { error: confirmError, paymentIntent } =
+        await stripe.confirmPayment({
+          elements,
+          redirect: "if_required",
+          confirmParams: { return_url: returnUrl },
+        });
 
-    if (confirmError) {
+      if (confirmError) {
+        setError(
+          confirmError.message ||
+            "No se pudo procesar el pago. Revisa los datos e inténtalo de nuevo."
+        );
+        setBusy(false);
+        return;
+      }
+
+      if (paymentIntent) {
+        // Captura manual: el hold válido queda en 'requires_capture'.
+        // 'succeeded' por si algún método liquida directo. Cualquier otro
+        // estado (requires_payment_method, processing, requires_action…) NO
+        // se manda al backend: se trata como reintento.
+        if (
+          paymentIntent.status === "requires_capture" ||
+          paymentIntent.status === "succeeded"
+        ) {
+          const pmId =
+            typeof paymentIntent.payment_method === "string"
+              ? paymentIntent.payment_method
+              : undefined;
+          onConfirmed(paymentIntent.id, pmId);
+          // No reseteamos busy: el padre transiciona a 'confirming'.
+          return;
+        }
+
+        setError(
+          "El pago no se completó. Inténtalo de nuevo."
+        );
+        setBusy(false);
+        return;
+      }
+
+      // Sin paymentIntent ni error → redirect en curso (se resuelve al volver).
+      setBusy(false);
+    } catch {
+      // confirmPayment puede lanzar (Safari/Apple Pay/red): nunca dejar el
+      // botón colgado. Resetear y permitir reintento.
       setError(
-        confirmError.message ||
-          "No se pudo procesar el pago. Revisa los datos e inténtalo de nuevo."
+        "No se pudo procesar el pago. Comprueba tu conexión e inténtalo de nuevo."
       );
       setBusy(false);
-      return;
     }
-
-    if (paymentIntent) {
-      const pmId =
-        typeof paymentIntent.payment_method === "string"
-          ? paymentIntent.payment_method
-          : undefined;
-      onConfirmed(paymentIntent.id, pmId);
-      // No reseteamos busy: el padre transiciona a 'confirming'.
-      return;
-    }
-
-    // Sin paymentIntent ni error → caso de redirect (se resuelve al volver).
-    setBusy(false);
   }
 
   return (

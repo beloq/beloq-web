@@ -7,6 +7,7 @@ import {
   createSession,
   getModule,
   isApiConfigured,
+  resumeModule,
 } from "../../lib/nfc-api";
 import {
   isMockEnabled,
@@ -15,7 +16,11 @@ import {
   mockConfirmOpened,
   mockCreateSession,
   mockModule,
+  mockModuleMaintenance,
   mockModuleOccupied,
+  mockResumeActive,
+  mockResumePending,
+  mockResumeRecovery,
   resolveMockState,
 } from "../../lib/nfc-mock";
 import {
@@ -26,12 +31,15 @@ import {
 } from "../../lib/nfc-types";
 import PaymentStep from "./PaymentStep";
 import {
+  ActiveSessionView,
   AvailableView,
   CompletingView,
   ErrorView,
   LoadingView,
+  MaintenanceView,
   OpenFailedView,
   OpenedView,
+  RecoveryView,
   UnavailableView,
   WaitTapView,
 } from "./StatusViews";
@@ -39,8 +47,10 @@ import { formatMoney } from "./ui";
 
 type Phase =
   | "loading"
+  | "resuming"
   | "available"
   | "unavailable"
+  | "maintenance"
   | "creatingSession"
   | "payment"
   | "confirming"
@@ -50,6 +60,8 @@ type Phase =
   | "completing"
   | "reauth"
   | "waitTap"
+  | "activeRestored"
+  | "recoveryPending"
   | "error";
 
 interface SessionState {
@@ -66,7 +78,32 @@ interface OpenedInfo {
   recoveryUrl?: string;
 }
 
+interface ActiveInfo {
+  expiresAt?: string;
+  maxHours?: number;
+  recoveryPhone?: string;
+  recoveryUrl?: string;
+}
+
+interface RecoveryInfo {
+  title?: string;
+  message: string;
+  recoveryPhone?: string;
+  recoveryUrl?: string;
+}
+
+interface MaintenanceInfo {
+  message: string;
+  recoveryPhone?: string;
+  recoveryUrl?: string;
+  alternatives: string[];
+}
+
 const ENV_PK = process.env.NEXT_PUBLIC_STRIPE_PK ?? "";
+const RESUME_RETRY_MAX = 5;
+const RESUME_RETRY_DELAY_MS = 800;
+
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 export interface NfcFlowProps {
   moduleId: string;
@@ -155,6 +192,15 @@ export default function NfcFlow({
   const [moduleInfo, setModuleInfo] = useState<ModuleInfo | null>(null);
   const [session, setSession] = useState<SessionState | null>(null);
   const [opened, setOpened] = useState<OpenedInfo>({});
+  const [activeInfo, setActiveInfo] = useState<ActiveInfo>({});
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const [recoveryInfo, setRecoveryInfo] = useState<RecoveryInfo>({
+    message: "",
+  });
+  const [maintenanceInfo, setMaintenanceInfo] = useState<MaintenanceInfo>({
+    message: "",
+    alternatives: [],
+  });
   const [failedMessage, setFailedMessage] = useState<string | undefined>();
   const [retryMode, setRetryMode] = useState<"unlock" | "pickup">("unlock");
   const [unavailable, setUnavailable] = useState<{
@@ -167,6 +213,7 @@ export default function NfcFlow({
 
   const confirmedPiId = useRef<string | null>(null);
   const started = useRef(false);
+  const errorRetry = useRef<(() => void) | null>(null);
 
   const mockState = resolveMockState(mockParam);
   const mock = mockState !== null;
@@ -178,10 +225,16 @@ export default function NfcFlow({
         )}&c=${encodeURIComponent(c ?? "")}`
       : "";
 
+  function goError(message: string, retry?: () => void) {
+    setErrorMessage(message);
+    errorRetry.current = retry ?? null;
+    setPhase("error");
+  }
+
   // --- acciones ---
   async function loadModule() {
     setPhase("loading");
-    const r = await getModule(moduleId);
+    const r = await getModule(moduleId, u, c);
     if (r.ok && r.data) {
       if (r.data.module_status === "available") {
         setModuleInfo(r.data);
@@ -196,22 +249,155 @@ export default function NfcFlow({
       return;
     }
     if (r.status === 409) {
+      const occ = r.occupied;
+      if (occ?.module_status === "maintenance") {
+        setMaintenanceInfo({
+          message: occ.message || "Este módulo está en revisión.",
+          recoveryPhone: occ.recovery_phone,
+          recoveryUrl: occ.recovery_instructions_url,
+          alternatives: occ.alternative_modules ?? [],
+        });
+        setPhase("maintenance");
+        return;
+      }
       setUnavailable({
         message:
-          r.occupied?.message ||
+          occ?.message ||
           r.errorText ||
           "Este módulo está ocupado ahora mismo.",
-        alternatives: r.occupied?.alternative_modules ?? [],
+        alternatives: occ?.alternative_modules ?? [],
       });
       setPhase("unavailable");
       return;
     }
-    setErrorMessage(
+    goError(
       r.status === 0
         ? "No hay conexión. Comprueba tu red e inténtalo de nuevo."
-        : "No se pudo cargar el módulo. Inténtalo de nuevo."
+        : "No se pudo cargar el módulo. Inténtalo de nuevo.",
+      () => void loadModule()
     );
-    setPhase("error");
+  }
+
+  async function resumeFlow() {
+    setPhase("resuming");
+    if (!u || !c) {
+      void loadModule();
+      return;
+    }
+    const fp = await getFingerprint(mock);
+
+    for (let attempt = 0; attempt < RESUME_RETRY_MAX; attempt++) {
+      const r = await resumeModule(moduleId, { fingerprint: fp, u, c });
+
+      if (r.status === 403) {
+        goError("Este código no corresponde a este módulo.");
+        return;
+      }
+      if (!r.ok || !r.data) {
+        goError(
+          r.status === 0
+            ? "No hay conexión. Comprueba tu red e inténtalo de nuevo."
+            : "No se pudo recuperar tu sesión. Inténtalo de nuevo.",
+          () => void resumeFlow()
+        );
+        return;
+      }
+
+      const d = r.data;
+
+      if (!d.has_session) {
+        // No hay sesión recuperable: ahora sí, flujo normal.
+        void loadModule();
+        return;
+      }
+
+      // Huella no casa (otro dispositivo): no se puede re-autenticar de verdad
+      // sin la tarjeta original → soporte/recuperación (NO montar Stripe).
+      if (d.requires_payment_reauth) {
+        setRecoveryInfo({
+          title: "No podemos verificar tu sesión en este dispositivo",
+          message:
+            "Parece que abriste la sesión en otro móvil. Por seguridad no podemos re-autenticar el pago aquí. Contacta con soporte para recoger tu vehículo y liberar el depósito.",
+          recoveryPhone: d.recovery_phone,
+          recoveryUrl: d.recovery_instructions_url,
+        });
+        setPhase("recoveryPending");
+        return;
+      }
+
+      if (d.status === "recovery_pending") {
+        setRecoveryInfo({
+          title: "Incidencia con tu sesión",
+          message:
+            d.message ||
+            "Hubo una incidencia con tu vehículo dentro. Está protegido; contacta con soporte para que te lo abramos.",
+          recoveryPhone: d.recovery_phone,
+          recoveryUrl: d.recovery_instructions_url,
+        });
+        setPhase("recoveryPending");
+        return;
+      }
+
+      if (d.status === "active") {
+        if (d.session_id && d.expires_at) {
+          writeStored(moduleId, {
+            session_id: d.session_id,
+            expires_at: d.expires_at,
+          });
+        }
+        setActiveSessionId(d.session_id ?? null);
+        setActiveInfo({
+          expiresAt: d.expires_at,
+          maxHours: d.max_duration_seconds
+            ? Math.round(d.max_duration_seconds / 3600)
+            : undefined,
+          recoveryPhone: d.recovery_phone,
+          recoveryUrl: d.recovery_instructions_url,
+        });
+        setPhase("activeRestored");
+        return;
+      }
+
+      if (
+        d.status === "pending_payment" ||
+        d.status === "hold_authorized_pending_unlock"
+      ) {
+        // Ventana sub-segundo: el pago aún se está creando → reintenta resume,
+        // NUNCA crear sesión nueva (sería reabrir P1).
+        if (!d.stripe_client_secret) {
+          if (attempt < RESUME_RETRY_MAX - 1) {
+            await delay(RESUME_RETRY_DELAY_MS);
+            continue;
+          }
+          goError(
+            "Estamos preparando tu pago. Espera unos segundos y reinténtalo.",
+            () => void resumeFlow()
+          );
+          return;
+        }
+        if (d.session_id) {
+          writeStored(moduleId, {
+            session_id: d.session_id,
+            expires_at: d.expires_at ?? "",
+            pending: "confirm",
+          });
+        }
+        setSession({
+          id: d.session_id ?? "",
+          clientSecret: d.stripe_client_secret,
+          publishableKey: d.stripe_publishable_key || ENV_PK,
+          amountCents: 0,
+          currency: "EUR",
+        });
+        setPhase("payment");
+        return;
+      }
+
+      // Estados terminales u otros (completed_ok, expired_*, blocked_user_pending):
+      // sin acción de cliente → cargar el módulo (estado actual).
+      void loadModule();
+      return;
+    }
   }
 
   async function doConfirm(sessionId: string, piId: string) {
@@ -237,8 +423,9 @@ export default function NfcFlow({
       }
       return;
     }
-    setErrorMessage(r.errorText || "No se pudo confirmar el pago.");
-    setPhase("error");
+    goError(r.errorText || "No se pudo confirmar el pago.", () =>
+      void doConfirm(sessionId, piId)
+    );
   }
 
   async function doCheckout(sessionId: string, pmId?: string) {
@@ -278,11 +465,16 @@ export default function NfcFlow({
       return;
     }
     if (r.status === 429) {
-      setErrorMessage("Demasiados intentos. Espera unos segundos y reintenta.");
+      goError(
+        "Demasiados intentos. Espera unos segundos y reintenta.",
+        () => void doCheckout(sessionId)
+      );
     } else {
-      setErrorMessage(r.errorText || "No se pudo completar la recogida.");
+      goError(
+        r.errorText || "No se pudo completar la recogida.",
+        () => void doCheckout(sessionId)
+      );
     }
-    setPhase("error");
   }
 
   async function onUnlock() {
@@ -314,17 +506,22 @@ export default function NfcFlow({
       return;
     }
     if (r.status === 403) {
-      setErrorMessage("Este código no corresponde a este módulo.");
+      goError("Este código no corresponde a este módulo.", () => void loadModule());
     } else if (r.status === 409) {
-      setErrorMessage(
-        r.occupied?.message || "Acerca el móvil al tag otra vez."
+      goError(
+        r.occupied?.message || "Acerca el móvil al tag otra vez.",
+        () => void loadModule()
       );
     } else if (r.status === 429) {
-      setErrorMessage("Demasiados intentos. Espera unos segundos y reintenta.");
+      goError(
+        "Demasiados intentos. Espera unos segundos y reintenta.",
+        () => void loadModule()
+      );
     } else {
-      setErrorMessage(r.errorText || "No se pudo iniciar la sesión.");
+      goError(r.errorText || "No se pudo iniciar la sesión.", () =>
+        void loadModule()
+      );
     }
-    setPhase("error");
   }
 
   // --- mock ---
@@ -343,13 +540,29 @@ export default function NfcFlow({
         setPhase("unavailable");
         break;
       }
-      case "payment": {
-        const d = mockCreateSession().data!;
+      case "maintenance": {
+        const r = mockModuleMaintenance(moduleId);
+        setMaintenanceInfo({
+          message: r.occupied?.message ?? "En revisión",
+          recoveryPhone: r.occupied?.recovery_phone,
+          recoveryUrl: r.occupied?.recovery_instructions_url,
+          alternatives: r.occupied?.alternative_modules ?? [],
+        });
+        setPhase("maintenance");
+        break;
+      }
+      case "payment":
+      case "resumepay": {
+        const d =
+          mockState === "resumepay"
+            ? mockResumePending().data!
+            : mockCreateSession().data!;
         setSession({
-          id: d.session_id,
-          clientSecret: d.stripe_client_secret,
-          publishableKey: d.stripe_publishable_key,
-          amountCents: d.deposit_amount_cents,
+          id: d.session_id!,
+          clientSecret: d.stripe_client_secret!,
+          publishableKey: d.stripe_publishable_key!,
+          amountCents:
+            "deposit_amount_cents" in d ? d.deposit_amount_cents : 700,
           currency: "EUR",
         });
         setPhase("payment");
@@ -372,6 +585,31 @@ export default function NfcFlow({
         setRetryMode("unlock");
         setPhase("openFailed");
         break;
+      case "active": {
+        const d = mockResumeActive().data!;
+        setActiveSessionId(d.session_id ?? null);
+        setActiveInfo({
+          expiresAt: d.expires_at,
+          maxHours: d.max_duration_seconds
+            ? Math.round(d.max_duration_seconds / 3600)
+            : undefined,
+          recoveryPhone: d.recovery_phone,
+          recoveryUrl: d.recovery_instructions_url,
+        });
+        setPhase("activeRestored");
+        break;
+      }
+      case "recovery": {
+        const d = mockResumeRecovery().data!;
+        setRecoveryInfo({
+          title: "Incidencia con tu sesión",
+          message: d.message || "Contacta con soporte.",
+          recoveryPhone: d.recovery_phone,
+          recoveryUrl: d.recovery_instructions_url,
+        });
+        setPhase("recoveryPending");
+        break;
+      }
       case "reauth": {
         const d = mockCheckoutCompleting().data!;
         setSession({
@@ -404,10 +642,9 @@ export default function NfcFlow({
     }
 
     if (!isApiConfigured() && !isMockEnabled()) {
-      setErrorMessage(
+      goError(
         "Configuración pendiente: falta la URL del servicio. Vuelve a intentarlo más tarde."
       );
-      setPhase("error");
       return;
     }
 
@@ -422,11 +659,14 @@ export default function NfcFlow({
         }
         return;
       }
-      // Sesión perdida tras el redirect: informa y deja recargar.
-      setErrorMessage(
+      // Sesión perdida tras el redirect: recupérala vía /resume (no crear nueva).
+      if (u && c) {
+        void resumeFlow();
+        return;
+      }
+      goError(
         "Tu pago se procesó pero perdimos la referencia de la sesión. Acerca el móvil al tag otra vez."
       );
-      setPhase("error");
       return;
     }
 
@@ -441,7 +681,13 @@ export default function NfcFlow({
       return;
     }
 
-    // 3. Primer tap
+    // 3. Sin sesión local: intentar recuperar antes de crear (P1).
+    if (u && c) {
+      void resumeFlow();
+      return;
+    }
+
+    // 4. Primer tap manual sin contador: flujo normal.
     void loadModule();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -450,6 +696,7 @@ export default function NfcFlow({
   function renderPhase() {
     switch (phase) {
       case "loading":
+      case "resuming":
       case "creatingSession":
       case "confirming":
       case "checkout":
@@ -473,6 +720,16 @@ export default function NfcFlow({
           <UnavailableView
             message={unavailable.message}
             alternatives={unavailable.alternatives}
+          />
+        );
+
+      case "maintenance":
+        return (
+          <MaintenanceView
+            message={maintenanceInfo.message}
+            recoveryPhone={maintenanceInfo.recoveryPhone}
+            recoveryUrl={maintenanceInfo.recoveryUrl}
+            alternatives={maintenanceInfo.alternatives}
           />
         );
 
@@ -511,6 +768,35 @@ export default function NfcFlow({
           />
         );
 
+      case "activeRestored":
+        return (
+          <ActiveSessionView
+            expiresAt={activeInfo.expiresAt}
+            maxHours={activeInfo.maxHours}
+            recoveryPhone={activeInfo.recoveryPhone}
+            recoveryUrl={activeInfo.recoveryUrl}
+            canPickup={mock || (!!u && !!c)}
+            busy={false}
+            onPickup={() => {
+              if (mock) {
+                setPhase("completing");
+                return;
+              }
+              if (activeSessionId) void doCheckout(activeSessionId);
+            }}
+          />
+        );
+
+      case "recoveryPending":
+        return (
+          <RecoveryView
+            title={recoveryInfo.title}
+            message={recoveryInfo.message}
+            recoveryPhone={recoveryInfo.recoveryPhone}
+            recoveryUrl={recoveryInfo.recoveryUrl}
+          />
+        );
+
       case "openFailed":
         return (
           <OpenFailedView
@@ -541,9 +827,13 @@ export default function NfcFlow({
           <ErrorView
             message={errorMessage}
             onRetry={() => {
-              started.current = false;
               setErrorMessage("");
-              void loadModule();
+              if (errorRetry.current) {
+                errorRetry.current();
+              } else {
+                started.current = false;
+                void loadModule();
+              }
             }}
           />
         );
