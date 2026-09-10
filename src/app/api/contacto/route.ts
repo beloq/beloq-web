@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
     await transporter.sendMail({
       from: `"Beloq Web" <info@beloq.es>`,
-      to: process.env.CONTACT_EMAIL || "jesusgracia@edify.es",
+      to: process.env.CONTACT_EMAIL || "jesus@beloq.es",
       replyTo: email,
       subject: `[beloq.es] Contacto de ${nombre} (${tipo})`,
       html: `

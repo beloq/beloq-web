@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     // Send notification email
     await transporter.sendMail({
       from: `"Beloq Beta" <info@beloq.es>`,
-      to: process.env.CONTACT_EMAIL || "jesusgracia@edify.es",
+      to: process.env.CONTACT_EMAIL || "jesus@beloq.es",
       subject: `[Beta] Nuevo tester: ${email} (${platform})`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px;">
