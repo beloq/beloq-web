@@ -156,6 +156,22 @@ function MockPaymentPanel({
 export default function PaymentStep(props: PaymentStepProps) {
   const { mock, publishableKey, clientSecret, ...rest } = props;
 
+  // Guarda: nunca llamar a loadStripe("") — provoca IntegrationError y deja el
+  // botón inservible. Si falta la clave o el secret, error visible.
+  if (!mock && (!publishableKey || !clientSecret)) {
+    return (
+      <Card>
+        <h2 className="mb-1 text-lg font-bold text-beloq-dark">
+          Depósito reembolsable
+        </h2>
+        <p className="mt-2 text-sm text-red-500">
+          No se pudo cargar el formulario de pago. Vuelve a acercar el móvil al
+          tag del módulo para reintentar.
+        </p>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <h2 className="mb-1 text-lg font-bold text-beloq-dark">

@@ -99,7 +99,6 @@ interface MaintenanceInfo {
   alternatives: string[];
 }
 
-const ENV_PK = process.env.NEXT_PUBLIC_STRIPE_PK ?? "";
 const RESUME_RETRY_MAX = 5;
 const RESUME_RETRY_DELAY_MS = 800;
 
@@ -155,16 +154,48 @@ function clearStored(moduleId: string) {
   }
 }
 
-async function getFingerprint(mock: boolean): Promise<string> {
-  if (mock) return "fp_mock";
+const FP_STORAGE_KEY = "beloq:fp";
+let fpPromise: Promise<string> | null = null;
+
+async function computeFingerprint(): Promise<string> {
   try {
     const FP = (await import("@fingerprintjs/fingerprintjs")).default;
     const agent = await FP.load();
-    const res = await agent.get();
-    return res.visitorId;
+    return (await agent.get()).visitorId;
   } catch {
-    return "fp_unavailable";
+    try {
+      return crypto.randomUUID();
+    } catch {
+      return `fp_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    }
   }
+}
+
+/**
+ * Huella ESTABLE por perfil de navegador: se calcula una vez y se persiste en
+ * localStorage, así no cambia entre pestañas ni recargas del mismo navegador
+ * (evita reautorizaciones espurias). Incógnito u otro navegador → otra huella
+ * (reautorización, que ahora sí funciona con la clave del backend).
+ */
+async function getFingerprint(mock: boolean): Promise<string> {
+  if (mock) return "fp_mock";
+  try {
+    const stored = window.localStorage.getItem(FP_STORAGE_KEY);
+    if (stored) return stored;
+  } catch {
+    /* localStorage no disponible: calculamos en memoria */
+  }
+  if (!fpPromise) {
+    fpPromise = computeFingerprint().then((id) => {
+      try {
+        window.localStorage.setItem(FP_STORAGE_KEY, id);
+      } catch {
+        /* no-op */
+      }
+      return id;
+    });
+  }
+  return fpPromise;
 }
 
 function messageForStatus(status: ModuleStatus): string {
@@ -214,6 +245,7 @@ export default function NfcFlow({
   const confirmedPiId = useRef<string | null>(null);
   const started = useRef(false);
   const errorRetry = useRef<(() => void) | null>(null);
+  const reauthAttempts = useRef(0);
 
   const mockState = resolveMockState(mockParam);
   const mock = mockState !== null;
@@ -311,17 +343,31 @@ export default function NfcFlow({
         return;
       }
 
-      // Huella no casa (otro dispositivo): no se puede re-autenticar de verdad
-      // sin la tarjeta original → soporte/recuperación (NO montar Stripe).
+      // Reautorización: el backend pide volver a autorizar el depósito (huella
+      // distinta). La clave publicable SIEMPRE sale de esta respuesta de resume.
       if (d.requires_payment_reauth) {
-        setRecoveryInfo({
-          title: "No podemos verificar tu sesión en este dispositivo",
-          message:
-            "Parece que abriste la sesión en otro móvil. Por seguridad no podemos re-autenticar el pago aquí. Contacta con soporte para recoger tu vehículo y liberar el depósito.",
-          recoveryPhone: d.recovery_phone,
-          recoveryUrl: d.recovery_instructions_url,
+        if (!d.stripe_client_secret || !d.stripe_publishable_key) {
+          goError(
+            "No se pudo iniciar la reautorización del pago. Inténtalo de nuevo.",
+            () => void resumeFlow()
+          );
+          return;
+        }
+        if (d.session_id) {
+          writeStored(moduleId, {
+            session_id: d.session_id,
+            expires_at: d.expires_at ?? "",
+            pending: "checkout",
+          });
+        }
+        setSession({
+          id: d.session_id ?? "",
+          clientSecret: d.stripe_client_secret,
+          publishableKey: d.stripe_publishable_key,
+          amountCents: 0,
+          currency: "EUR",
         });
-        setPhase("recoveryPending");
+        setPhase("reauth");
         return;
       }
 
@@ -375,6 +421,13 @@ export default function NfcFlow({
           );
           return;
         }
+        if (!d.stripe_publishable_key) {
+          goError(
+            "No se pudo iniciar el pago (falta configuración). Inténtalo de nuevo.",
+            () => void resumeFlow()
+          );
+          return;
+        }
         if (d.session_id) {
           writeStored(moduleId, {
             session_id: d.session_id,
@@ -385,7 +438,7 @@ export default function NfcFlow({
         setSession({
           id: d.session_id ?? "",
           clientSecret: d.stripe_client_secret,
-          publishableKey: d.stripe_publishable_key || ENV_PK,
+          publishableKey: d.stripe_publishable_key,
           amountCents: 0,
           currency: "EUR",
         });
@@ -443,14 +496,34 @@ export default function NfcFlow({
     });
     if (r.ok && r.data) {
       if (r.data.requires_payment_reauth && r.data.stripe_client_secret) {
+        // Evita bucle reauth→checkout→reauth: como mucho una reautorización.
+        if (reauthAttempts.current >= 1) {
+          setRecoveryInfo({
+            title: "No pudimos verificar el pago",
+            message:
+              "No hemos podido reautorizar el depósito. Contacta con soporte para recoger tu vehículo y liberar el depósito.",
+            recoveryUrl: "/help/recovery",
+          });
+          setPhase("recoveryPending");
+          return;
+        }
+        if (!r.data.stripe_publishable_key) {
+          goError(
+            "No se pudo reautorizar el pago (falta configuración). Inténtalo de nuevo.",
+            () => void doCheckout(sessionId)
+          );
+          return;
+        }
+        reauthAttempts.current += 1;
         updateStoredPending(moduleId, "checkout");
-        setSession((prev) => ({
+        // La clave publicable sale SIEMPRE de esta respuesta de checkout.
+        setSession({
           id: sessionId,
-          clientSecret: r.data!.stripe_client_secret!,
-          publishableKey: prev?.publishableKey || ENV_PK,
-          amountCents: prev?.amountCents ?? moduleInfo?.deposit_amount_cents ?? 0,
-          currency: prev?.currency ?? moduleInfo?.currency ?? "EUR",
-        }));
+          clientSecret: r.data.stripe_client_secret,
+          publishableKey: r.data.stripe_publishable_key,
+          amountCents: moduleInfo?.deposit_amount_cents ?? 0,
+          currency: moduleInfo?.currency ?? "EUR",
+        });
         setPhase("reauth");
         return;
       }
@@ -464,17 +537,29 @@ export default function NfcFlow({
       setPhase("openFailed");
       return;
     }
+    // 409 = sesión no activa / caducada / replay del contador → TERMINAL.
+    // Nunca reintentar checkout en bucle: limpiar la sesión guardada y pedir
+    // un nuevo toque del tag.
+    if (r.status === 409) {
+      clearStored(moduleId);
+      goError(
+        r.errorText ||
+          "Tu sesión ha caducado. Acerca el móvil al tag para empezar de nuevo.",
+        () => void loadModule()
+      );
+      return;
+    }
     if (r.status === 429) {
       goError(
         "Demasiados intentos. Espera unos segundos y reintenta.",
         () => void doCheckout(sessionId)
       );
-    } else {
-      goError(
-        r.errorText || "No se pudo completar la recogida.",
-        () => void doCheckout(sessionId)
-      );
+      return;
     }
+    goError(
+      r.errorText || "No se pudo completar la recogida.",
+      () => void doCheckout(sessionId)
+    );
   }
 
   async function onUnlock() {
@@ -495,10 +580,17 @@ export default function NfcFlow({
         expires_at: r.data.expires_at,
         pending: "confirm",
       });
+      if (!r.data.stripe_client_secret || !r.data.stripe_publishable_key) {
+        goError(
+          "No se pudo iniciar el pago (falta configuración). Inténtalo de nuevo.",
+          () => void resumeFlow()
+        );
+        return;
+      }
       setSession({
         id: r.data.session_id,
         clientSecret: r.data.stripe_client_secret,
-        publishableKey: r.data.stripe_publishable_key || ENV_PK,
+        publishableKey: r.data.stripe_publishable_key,
         amountCents: r.data.deposit_amount_cents,
         currency: moduleInfo?.currency ?? "EUR",
       });

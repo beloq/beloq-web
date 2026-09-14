@@ -78,6 +78,7 @@ export interface CheckoutSessionResult {
   deposit_release_status?: "pending" | string;
   requires_payment_reauth?: boolean;
   stripe_client_secret?: string;
+  stripe_publishable_key?: string;
   message?: string;
 }
 
