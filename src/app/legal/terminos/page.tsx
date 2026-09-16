@@ -1,5 +1,6 @@
 import LegalPage from "../../components/LegalPage";
 import Link from "next/link";
+import PricingTable from "../../components/PricingTable";
 
 export const metadata = {
   title: "Términos y Condiciones - Beloq",
@@ -24,6 +25,8 @@ export default function TerminosCondiciones() {
       <p><strong>Plan Gratuito (Freemium):</strong> Incluye un número limitado de horas de uso diarias sin coste. Tras agotar las horas gratuitas, se aplica la tarifa vigente definida por el operador o institución que gestiona la estación. El usuario puede ganar horas adicionales gratuitas mediante la visualización de anuncios, la participación en encuestas o las promociones que active el operador.</p>
       <p><strong>Abonos mensuales de aparcamiento físico (Beloquer Flow y Beloquer Max):</strong> Son abonos físicos que incluyen más horas de uso diarias, capacidad de reserva anticipada de módulo, prioridad de acceso frente a usuarios gratuitos, y acceso a funcionalidades futuras como la recarga de vehículos eléctricos cuando esté disponible. <strong>No son suscripciones digitales</strong>: son abonos a un servicio físico de aparcamiento prestado fuera de la aplicación móvil mediante hardware físico (módulos electromecánicos IoT) instalado en ubicaciones físicas.</p>
       <p>Las condiciones concretas de cada abono, incluyendo el número de horas incluidas y las funcionalidades disponibles, se muestran siempre de forma actualizada en la app antes de contratar.</p>
+
+      <PricingTable />
 
       <h2>4. Registro y cuenta de usuario</h2>
 

@@ -332,10 +332,12 @@ export function OpenFailedView({
   message,
   onRetry,
   busy,
+  expiresAt,
 }: {
   message?: string;
   onRetry: () => void;
   busy: boolean;
+  expiresAt?: string;
 }) {
   return (
     <Card>
@@ -343,12 +345,51 @@ export function OpenFailedView({
       <h1 className="mb-2 text-center text-xl font-bold text-beloq-dark">
         El módulo no respondió
       </h1>
-      <p className="mb-6 text-center leading-relaxed text-gray-600">
+      <p className="mb-4 text-center leading-relaxed text-gray-600">
         {message || "No se te ha cobrado nada. Vuelve a intentarlo."}
       </p>
+      {expiresAt && (
+        <p className="mb-6 text-center text-sm text-gray-500">
+          Si no reintentas, el depósito se libera solo en{" "}
+          <strong className="text-beloq-dark">
+            <Countdown expiresAt={expiresAt} />
+          </strong>
+          .
+        </p>
+      )}
       <PrimaryButton onClick={onRetry} disabled={busy}>
         {busy ? <Spinner /> : "Reintentar"}
       </PrimaryButton>
+    </Card>
+  );
+}
+
+export function InUseByOtherView({
+  message,
+  until,
+}: {
+  message: string;
+  until?: string;
+}) {
+  return (
+    <Card>
+      <ResultIcon tone="info" />
+      <h1 className="mb-2 text-center text-xl font-bold text-beloq-dark">
+        Módulo en uso por otra persona
+      </h1>
+      <p className="mb-4 text-center leading-relaxed text-gray-600">{message}</p>
+      {until && (
+        <p className="mb-4 text-center text-sm text-gray-500">
+          Vuelve a intentarlo en{" "}
+          <strong className="text-beloq-dark">
+            <Countdown expiresAt={until} />
+          </strong>
+          .
+        </p>
+      )}
+      <p className="text-center text-sm text-gray-500">
+        Cuando quede libre, acerca el móvil al tag del módulo otra vez.
+      </p>
     </Card>
   );
 }

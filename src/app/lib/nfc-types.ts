@@ -12,7 +12,8 @@ export type SessionStatus =
   | "expired_captured"
   | "expired_voided"
   | "recovery_pending"
-  | "blocked_user_pending";
+  | "blocked_user_pending"
+  | "in_use_by_other";
 
 /** Versión de términos sincronizada con /legal/terminos. El GET de módulo no la
  *  devuelve, así que se envía esta constante en POST /anonymous/sessions. */
@@ -50,6 +51,9 @@ export interface CreateSessionResult {
 // --- POST /anonymous/sessions/:id/confirm ---
 export interface ConfirmSessionBody {
   stripe_payment_intent_id: string;
+  fingerprint: string;
+  stripe_payment_method_id?: string;
+  payment_method_last4?: string;
 }
 
 export interface ConfirmSessionResult {
@@ -61,6 +65,9 @@ export interface ConfirmSessionResult {
   recovery_phone?: string;
   recovery_instructions_url?: string;
   message?: string;
+  reason?: string;
+  retry_window_seconds?: number;
+  deposit?: string;
 }
 
 // --- POST /anonymous/sessions/:id/checkout ---
@@ -80,6 +87,8 @@ export interface CheckoutSessionResult {
   stripe_client_secret?: string;
   stripe_publishable_key?: string;
   message?: string;
+  reason?: string;
+  retry_window_seconds?: number;
 }
 
 // --- POST /anonymous/module/:moduleId/resume ---
@@ -94,6 +103,7 @@ export interface ResumeResult {
   session_id?: string;
   status?: SessionStatus;
   is_yours?: boolean;
+  busy_for_seconds?: number;
   requires_payment_reauth?: boolean;
   stripe_client_secret?: string | null;
   stripe_publishable_key?: string;
@@ -124,6 +134,8 @@ export interface ApiResult<T> {
   errorText?: string;
   /** Payload de ocupado, si el error 409 traía un objeto. */
   occupied?: OccupiedPayload;
+  /** reason que envía el backend en la respuesta de error, si viene. */
+  reason?: string;
 }
 
 /** localStorage por módulo: persiste la sesión entre taps.

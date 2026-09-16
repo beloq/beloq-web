@@ -29,24 +29,31 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
 function parseNestError(body: unknown): {
   errorText?: string;
   occupied?: OccupiedPayload;
+  reason?: string;
 } {
   if (!body || typeof body !== "object") {
     return { errorText: typeof body === "string" ? body : undefined };
   }
+  const topReason = (body as { reason?: unknown }).reason;
+  const reason = typeof topReason === "string" ? topReason : undefined;
   const msg = (body as { message?: unknown }).message;
   if (typeof msg === "string") {
-    return { errorText: msg };
+    return { errorText: msg, reason };
   }
   if (msg && typeof msg === "object") {
-    const obj = msg as OccupiedPayload;
+    const obj = msg as OccupiedPayload & { reason?: string };
     return {
       errorText: typeof obj.message === "string" ? obj.message : undefined,
       occupied: obj,
+      reason: reason ?? (typeof obj.reason === "string" ? obj.reason : undefined),
     };
   }
   // Sin `message` reconocible: intenta `error` o nada.
   const errField = (body as { error?: unknown }).error;
-  return { errorText: typeof errField === "string" ? errField : undefined };
+  return {
+    errorText: typeof errField === "string" ? errField : undefined,
+    reason,
+  };
 }
 
 async function request<T>(
@@ -82,8 +89,8 @@ async function request<T>(
     return { ok: true, status: res.status, data: body as T };
   }
 
-  const { errorText, occupied } = parseNestError(body);
-  return { ok: false, status: res.status, data: null, errorText, occupied };
+  const { errorText, occupied, reason } = parseNestError(body);
+  return { ok: false, status: res.status, data: null, errorText, occupied, reason };
 }
 
 export function getModule(

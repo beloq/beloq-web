@@ -72,6 +72,17 @@ export default function RecoveryPage() {
           </li>
         </ol>
 
+        <p className="mb-6 rounded-xl bg-beloq-yellow/15 p-4 text-sm text-gray-700">
+          <strong className="text-beloq-dark">
+            Usa el mismo navegador con el que pagaste.
+          </strong>{" "}
+          Tu sesión se guarda en el navegador que usaste al abrir el módulo. Si
+          pagaste desde el navegador de la cámara y luego vuelves con otro (por
+          ejemplo, Safari), verás &quot;en uso por otra persona&quot; durante
+          unos minutos, hasta que el sistema libere el depósito solo. Vuelve con
+          el mismo navegador para recoger al instante.
+        </p>
+
         <div className="rounded-xl bg-beloq-gray p-4 text-sm text-gray-600">
           <p className="font-bold text-beloq-dark">Soporte beloq</p>
           {phone ? (

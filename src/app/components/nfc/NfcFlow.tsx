@@ -35,6 +35,7 @@ import {
   AvailableView,
   CompletingView,
   ErrorView,
+  InUseByOtherView,
   LoadingView,
   MaintenanceView,
   OpenFailedView,
@@ -62,6 +63,7 @@ type Phase =
   | "waitTap"
   | "activeRestored"
   | "recoveryPending"
+  | "inUseByOther"
   | "error";
 
 interface SessionState {
@@ -233,6 +235,10 @@ export default function NfcFlow({
     alternatives: [],
   });
   const [failedMessage, setFailedMessage] = useState<string | undefined>();
+  const [openFailedUntil, setOpenFailedUntil] = useState<string | undefined>();
+  const [inUseInfo, setInUseInfo] = useState<{ message: string; until?: string }>(
+    { message: "" }
+  );
   const [retryMode, setRetryMode] = useState<"unlock" | "pickup">("unlock");
   const [unavailable, setUnavailable] = useState<{
     message: string;
@@ -243,6 +249,7 @@ export default function NfcFlow({
   const [busy, setBusy] = useState(false);
 
   const confirmedPiId = useRef<string | null>(null);
+  const confirmedPmId = useRef<string | undefined>(undefined);
   const started = useRef(false);
   const errorRetry = useRef<(() => void) | null>(null);
   const reauthAttempts = useRef(0);
@@ -371,6 +378,36 @@ export default function NfcFlow({
         return;
       }
 
+      // W11.3: la sesión es de OTRA persona (huella distinta en pending/hold) o
+      // hay una incidencia. NO montar Stripe, NO crear sesión nueva.
+      if (d.is_yours === false) {
+        if (d.status === "recovery_pending") {
+          setRecoveryInfo({
+            title: "Incidencia con la sesión",
+            message:
+              d.message ||
+              "Hay una incidencia con este módulo. Contacta con soporte.",
+            recoveryPhone: d.recovery_phone,
+            recoveryUrl: d.recovery_instructions_url,
+          });
+          setPhase("recoveryPending");
+          return;
+        }
+        setInUseInfo({
+          message:
+            d.message ||
+            "Este módulo está en uso por otra persona ahora mismo. No se te ha cobrado nada.",
+          until:
+            d.busy_for_seconds && d.busy_for_seconds > 0
+              ? new Date(
+                  Date.now() + d.busy_for_seconds * 1000
+                ).toISOString()
+              : undefined,
+        });
+        setPhase("inUseByOther");
+        return;
+      }
+
       if (d.status === "recovery_pending") {
         setRecoveryInfo({
           title: "Incidencia con tu sesión",
@@ -453,12 +490,15 @@ export default function NfcFlow({
     }
   }
 
-  async function doConfirm(sessionId: string, piId: string) {
+  async function doConfirm(sessionId: string, piId: string, pmId?: string) {
     confirmedPiId.current = piId;
+    confirmedPmId.current = pmId;
     setRetryMode("unlock");
     setPhase("confirming");
     const r = await confirmSession(sessionId, {
       stripe_payment_intent_id: piId,
+      fingerprint: await getFingerprint(mock),
+      ...(pmId ? { stripe_payment_method_id: pmId } : {}),
     });
     if (r.ok && r.data) {
       if (r.data.module_opened) {
@@ -471,13 +511,31 @@ export default function NfcFlow({
         });
         setPhase("opened");
       } else {
+        // module_no_answer: el módulo no contestó pero sigue conectado; hay una
+        // ventana para reintentar antes de que el depósito se libere solo.
         setFailedMessage(r.data.message);
+        setOpenFailedUntil(
+          r.data.retry_window_seconds
+            ? new Date(
+                Date.now() + r.data.retry_window_seconds * 1000
+              ).toISOString()
+            : undefined
+        );
         setPhase("openFailed");
       }
       return;
     }
+    // 403 (not_your_session) y 409 (module_offline, sesión caducada/terminada…)
+    // son TERMINALES para esta sesión: limpiar y mostrar el mensaje del backend.
+    if (r.status === 403 || r.status === 409) {
+      clearStored(moduleId);
+      goError(r.errorText || "No se pudo confirmar el pago.", () =>
+        void loadModule()
+      );
+      return;
+    }
     goError(r.errorText || "No se pudo confirmar el pago.", () =>
-      void doConfirm(sessionId, piId)
+      void doConfirm(sessionId, piId, pmId)
     );
   }
 
@@ -532,8 +590,16 @@ export default function NfcFlow({
         setPhase("completing");
         return;
       }
-      // timeout en checkout: módulo no abrió → reintento de recogida
+      // module_no_answer: el módulo no abrió → reintento de recogida (con
+      // ventana antes de que el depósito se libere solo, si el backend la manda).
       setFailedMessage(r.data.message);
+      setOpenFailedUntil(
+        r.data.retry_window_seconds
+          ? new Date(
+              Date.now() + r.data.retry_window_seconds * 1000
+            ).toISOString()
+          : undefined
+      );
       setPhase("openFailed");
       return;
     }
@@ -843,7 +909,7 @@ export default function NfcFlow({
               if (phase === "reauth") {
                 void doCheckout(session.id, pmId);
               } else {
-                void doConfirm(session.id, piId);
+                void doConfirm(session.id, piId, pmId);
               }
             }}
           />
@@ -889,10 +955,16 @@ export default function NfcFlow({
           />
         );
 
+      case "inUseByOther":
+        return (
+          <InUseByOtherView message={inUseInfo.message} until={inUseInfo.until} />
+        );
+
       case "openFailed":
         return (
           <OpenFailedView
             message={failedMessage}
+            expiresAt={openFailedUntil}
             busy={false}
             onRetry={() => {
               if (!session) {
@@ -902,7 +974,11 @@ export default function NfcFlow({
               if (retryMode === "pickup") {
                 void doCheckout(session.id);
               } else if (confirmedPiId.current) {
-                void doConfirm(session.id, confirmedPiId.current);
+                void doConfirm(
+                  session.id,
+                  confirmedPiId.current,
+                  confirmedPmId.current
+                );
               }
             }}
           />
