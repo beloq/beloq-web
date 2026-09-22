@@ -14,5 +14,19 @@
         "FE:CF:22:BB:EC:91:EB:EE:BA:E2:75:B7:0E:10:C6:E8:9A:B3:8D:54:03:D9:92:E5:D0:C9:DE:6D:F5:43:86:B4"
       ]
     }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "es.beloq.ops",
+      "sha256_cert_fingerprints": [
+        "11:66:A7:10:61:85:6B:18:C8:97:8C:54:A2:00:25:97:80:7B:47:7E:DF:A3:4F:BB:BA:54:09:3E:48:56:7C:15",
+        "FE:CF:22:BB:EC:91:EB:EE:BA:E2:75:B7:0E:10:C6:E8:9A:B3:8D:54:03:D9:92:E5:D0:C9:DE:6D:F5:43:86:B4"
+      ]
+    }
   }
 ]
