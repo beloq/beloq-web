@@ -23,6 +23,8 @@ const TEXTO_MAX = 1000;
 const NOMBRE_MAX = 60;
 const NOMBRE_OK = /^[\p{L}\p{M}' .-]+$/u; // lo mismo que admite el servidor
 const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** Sin caracteres de control salvo tabulador y saltos de línea (como el servidor). */
+const SIN_CONTROLES = /^[^\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]*$/;
 
 type Conversacion = { id: string; token: string };
 type Mensaje = {
@@ -37,6 +39,17 @@ type Respuesta<T> = { ok: true; data: T } | Fallo;
 
 const PERDIDA =
   "Esta conversación ya no está disponible. Si lo necesitas, escríbenos otra vez.";
+
+// Textos de los errores del servidor (BELOQ_INFO §2.4).
+const TEXTOS = {
+  invalido: "Revisa el mensaje: hay algo que no podemos guardar.",
+  cerrada: "Esta conversación está cerrada. Escríbenos otra vez si lo necesitas.",
+  llena: "Esta conversación está llena. Escríbenos en una nueva.",
+  seguidos: "Has escrito muchos mensajes seguidos. Espera a que te respondamos.",
+  espera: "Espera un momento y vuelve a intentarlo.",
+  red: "¡Ups! No hemos podido conectar. Revisa tu conexión e inténtalo de nuevo.",
+  otro: "Ha ocurrido un error. Por favor, inténtalo de nuevo.",
+};
 
 /** Caracteres como los cuenta el servidor (puntos de código, no UTF-16). */
 const caracteres = (s: string) => Array.from(s).length;
@@ -104,18 +117,50 @@ function parsear(crudo: string | null): Conversacion | null {
   }
 }
 
+/** Lo que deja el script en línea de /info (QUITAR_TOKEN_DE_LA_BARRA). */
+type ConEnlace = Window & { __beloqEnlaceChat?: string };
+
 /**
- * El correo de respuesta enlaza a «/info#chat&t=<token>&c=<id>»: devuelve la
- * conversación y quita el token de la barra de direcciones.
+ * El correo de respuesta enlaza a «/info#chat&t=<token>&c=<id>»: devuelve esa
+ * conversación. Lo normal es que el script en línea ya haya quitado el token
+ * de la barra; si no (p. ej. /info ya abierta y solo cambia el fragmento), se
+ * quita aquí.
  */
 function tomarDelEnlace(): Conversacion | null {
+  const w = window as ConEnlace;
+  let resto = w.__beloqEnlaceChat;
+  delete w.__beloqEnlaceChat;
   const { hash, pathname, search } = window.location;
-  if (!hash.startsWith("#chat&")) return null;
-  const params = new URLSearchParams(hash.slice("#chat&".length));
-  window.history.replaceState(window.history.state, "", `${pathname}${search}#chat`);
+  if (!resto && hash.startsWith("#chat&")) {
+    resto = hash.slice("#chat&".length);
+    window.history.replaceState(window.history.state, "", `${pathname}${search}#chat`);
+  }
+  if (!resto) return null;
+  const params = new URLSearchParams(resto);
   const token = params.get("t");
   const id = params.get("c");
   return token && id ? { id, token } : null;
+}
+
+// Enlace del correo de OTRA conversación mientras hay una guardada: se pregunta
+// antes de sustituirla, nunca en silencio (§2.4).
+let enlacePendiente: Conversacion | null = null;
+
+function llegaEnlace(c: Conversacion) {
+  const guardada = parsear(leerCrudo());
+  if (guardada && guardada.id !== c.id) {
+    enlacePendiente = c;
+    oyentes.forEach((f) => f());
+  } else {
+    guardar(c); // ninguna guardada, o la misma con un token más
+  }
+}
+
+function resolverEnlace(abrir: boolean) {
+  const c = enlacePendiente;
+  enlacePendiente = null;
+  if (abrir && c) guardar(c);
+  else oyentes.forEach((f) => f());
 }
 
 // ── Servidor ────────────────────────────────────────────────────────────────
@@ -153,20 +198,15 @@ async function llamar<T>(
   };
 }
 
-function textoDeFallo(f: Fallo, al: "abrir" | "escribir"): string {
-  // Los errores propios del chat ya traen un texto pensado para la persona;
-  // el resto (p. ej. el 429 genérico del limitador) viene en inglés.
-  if (f.code?.startsWith("SUPPORT_") && f.message) return f.message;
-  if (f.status === 0)
-    return "¡Ups! No hemos podido conectar. Revisa tu conexión e inténtalo de nuevo.";
-  if (f.status === 429) return "Has escrito muchos mensajes seguidos. Espera un momento.";
-  if (f.status === 409)
-    return "Esta conversación está cerrada. Escríbenos otra vez si lo necesitas.";
-  if (f.status === 400)
-    return al === "abrir"
-      ? "Revisa lo que has escrito: el mensaje (hasta 1000 caracteres), tu nombre (solo letras) y tu correo."
-      : "Tu mensaje no puede estar vacío ni pasar de 1000 caracteres.";
-  return "Ha ocurrido un error. Por favor, inténtalo de nuevo.";
+/** El texto de §2.4 para cada error (el `message` del servidor no se enseña). */
+function textoDeFallo(f: Fallo): string {
+  if (f.status === 0) return TEXTOS.red;
+  if (f.status === 400) return TEXTOS.invalido; // validación o SUPPORT_INVALID_TEXT
+  if (f.code === "SUPPORT_FULL") return TEXTOS.llena;
+  if (f.status === 409) return TEXTOS.cerrada;
+  if (f.code === "SUPPORT_TOO_MANY") return TEXTOS.seguidos;
+  if (f.status === 429) return TEXTOS.espera; // el limitador por IP
+  return TEXTOS.otro;
 }
 
 /** Une sin repetir (por id) y en orden de llegada al servidor. */
@@ -213,8 +253,8 @@ function Privacidad() {
   return (
     <p className="text-xs leading-relaxed text-gray-600">
       Para atenderte guardamos lo que escribas aquí y, si nos lo das, tu nombre y
-      tu correo, solo para responderte. Lo borramos a los 90 días. No escribas
-      datos de tu tarjeta ni contraseñas. Responsable: beloq ·{" "}
+      tu correo, solo para responderte. Lo borramos a los 90 días de tu último
+      mensaje. No escribas datos de tu tarjeta ni contraseñas. Responsable: beloq ·{" "}
       <a href="mailto:info@beloq.es" className="underline">
         info@beloq.es
       </a>{" "}
@@ -273,6 +313,7 @@ function NuevaConversacion({
     const m = email.trim();
     if (!t || caracteres(t) > TEXTO_MAX)
       return setAviso("Escribe tu mensaje (hasta 1000 caracteres).");
+    if (!SIN_CONTROLES.test(t)) return setAviso(TEXTOS.invalido);
     if (n && (caracteres(n) > NOMBRE_MAX || !NOMBRE_OK.test(n)))
       return setAviso(
         "Tu nombre solo puede llevar letras, espacios, apóstrofo, punto y guion (hasta 60).",
@@ -291,7 +332,7 @@ function NuevaConversacion({
       },
     });
     setEnviando(false);
-    if (!r.ok) return setAviso(textoDeFallo(r, "abrir"));
+    if (!r.ok) return setAviso(textoDeFallo(r));
     guardar({ id: r.data.id, token: r.data.token }); // pasa a la conversación
   }
 
@@ -461,6 +502,7 @@ function HiloConversacion({
     const t = texto.trim();
     if (!t || caracteres(t) > TEXTO_MAX)
       return setAviso("Tu mensaje no puede estar vacío ni pasar de 1000 caracteres.");
+    if (!SIN_CONTROLES.test(t)) return setAviso(TEXTOS.invalido);
 
     setEnviando(true);
     setAviso(null);
@@ -484,7 +526,7 @@ function HiloConversacion({
       return;
     }
     if (r.code === "SUPPORT_FULL") setLlena(true);
-    setAviso(textoDeFallo(r, "escribir"));
+    setAviso(textoDeFallo(r));
   }
 
   const ultimo = mensajes[mensajes.length - 1];
@@ -582,16 +624,21 @@ export default function InfoChat({ apiBase }: { apiBase: string }) {
     () => undefined,
   );
   const conv = useMemo(() => (crudo === undefined ? undefined : parsear(crudo)), [crudo]);
+  const pendiente = useSyncExternalStore(
+    suscribir,
+    () => enlacePendiente,
+    () => null,
+  );
   const [aviso, setAviso] = useState<string | null>(null);
   const seccion = useRef<HTMLElement>(null);
 
-  // Llegada desde el enlace del correo: se guarda esa conversación. También si
-  // /info ya estaba abierta y el enlace solo cambia el fragmento (sin recarga).
+  // Llegada desde el enlace del correo. También si /info ya estaba abierta y el
+  // enlace solo cambia el fragmento (sin recarga).
   useEffect(() => {
     const procesar = () => {
       const delEnlace = tomarDelEnlace();
       if (!delEnlace) return;
-      guardar(delEnlace);
+      llegaEnlace(delEnlace);
       seccion.current?.scrollIntoView();
     };
     procesar();
@@ -601,6 +648,12 @@ export default function InfoChat({ apiBase }: { apiBase: string }) {
 
   const perder = useCallback((motivo: string | null) => {
     olvidar();
+    if (enlacePendiente) {
+      // Ya no hay otra conversación que proteger: se abre la del correo.
+      resolverEnlace(true);
+      setAviso(null);
+      return;
+    }
     setAviso(motivo);
   }, []);
 
@@ -617,6 +670,34 @@ export default function InfoChat({ apiBase }: { apiBase: string }) {
           </a>
           .
         </p>
+
+        {pendiente && conv && (
+          <div
+            role="alertdialog"
+            aria-labelledby="chat-pendiente"
+            className="mt-6 space-y-4 rounded-[0_24px_0_24px] bg-beloq-yellow p-4"
+          >
+            <p id="chat-pendiente" className="font-bold text-beloq-dark">
+              Tienes otra conversación abierta: ¿abrir la del correo?
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={() => resolverEnlace(true)}
+                className="inline-flex items-center justify-center rounded-[0_24px_0_24px] bg-beloq-dark px-6 py-3 text-sm font-bold uppercase tracking-wide text-white transition-colors duration-200 hover:bg-[#1A1A1A]"
+              >
+                Abrir la del correo
+              </button>
+              <button
+                type="button"
+                onClick={() => resolverEnlace(false)}
+                className="inline-flex items-center justify-center rounded-[0_24px_0_24px] bg-white px-6 py-3 text-sm font-bold uppercase tracking-wide text-beloq-dark transition-colors duration-200 hover:underline"
+              >
+                Seguir con la actual
+              </button>
+            </div>
+          </div>
+        )}
 
         {!apiBase ? (
           <p className="mt-6 text-gray-700">El chat no está disponible ahora mismo.</p>

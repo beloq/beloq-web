@@ -4,7 +4,13 @@ import InfoChat from "../components/info/InfoChat";
 import InfoComo from "../components/info/InfoComo";
 import InfoEstado from "../components/info/InfoEstado";
 import InfoPreguntas from "../components/info/InfoPreguntas";
-import { API_BASE, getPricing, getStations, getStatus } from "../lib/info";
+import {
+  API_BASE,
+  QUITAR_TOKEN_DE_LA_BARRA,
+  getPricing,
+  getStations,
+  getStatus,
+} from "../lib/info";
 
 // El estado y las estaciones cambian: se regenera como mucho cada 30 s, igual
 // que la caché del servidor (BELOQ_INFO §2.2-2.3). Precios, cada 5 min.
@@ -34,6 +40,8 @@ export default async function InfoPage() {
 
   return (
     <>
+      {/* El token del enlace del correo fuera de la barra, antes que nada (§2.4). */}
+      <script dangerouslySetInnerHTML={{ __html: QUITAR_TOKEN_DE_LA_BARRA }} />
       <section className="bg-beloq-yellow pt-20 pb-8 sm:pt-28 sm:pb-12">
         <div className="mx-auto max-w-3xl px-4">
           <h1 className="text-4xl font-bold text-beloq-dark sm:text-5xl">

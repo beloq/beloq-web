@@ -16,6 +16,17 @@ export const STATUS_PAGE_URL = "https://status.beloq.es";
 /** Cloud Run directo, nunca el CDN de Firebase (BELOQ_INFO §2). */
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
 
+/**
+ * Script en línea de /info: el enlace del correo de soporte trae el token en
+ * el fragmento (#chat&t=…&c=…). Se quita de la barra mientras se lee el HTML,
+ * antes que cualquier otro script (BELOQ_INFO §2.4), y se deja en
+ * window.__beloqEnlaceChat para el chat.
+ */
+export const QUITAR_TOKEN_DE_LA_BARRA =
+  '(function(){try{var h=location.hash;if(h.indexOf("#chat&")!==0)return;' +
+  "window.__beloqEnlaceChat=h.slice(6);" +
+  'history.replaceState(history.state,"",location.pathname+location.search+"#chat")}catch(e){}})();';
+
 export interface PublicPricing {
   currency: string;
   vat_included: boolean;

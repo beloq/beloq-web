@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 };
 
 /**
- * Destino del QR de los vinilos de las estaciones (BELOQ_INFO §1): un solo QR
- * para los dos sistemas. Android → Google Play, iPhone/iPad → App Store y el
- * ordenador → /info#apps. Mientras las tiendas no estén abiertas al público,
- * enseña «Muy pronto» (interruptor APPS_PUBLICADAS en lib/info.ts).
+ * Enlace único a las tiendas (BELOQ_INFO §1: redes, correos, un QR): si cambia
+ * un enlace de tienda, se cambia aquí. Android → Google Play, iPhone/iPad →
+ * App Store y el ordenador → /info#apps. Mientras las tiendas no estén
+ * abiertas al público, enseña «Muy pronto» (APPS_PUBLICADAS en lib/info.ts).
  */
 export default async function AppPage() {
   if (APPS_PUBLICADAS) {
