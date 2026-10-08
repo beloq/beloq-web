@@ -5,25 +5,25 @@ const footerSections = [
   {
     title: "Soluciones",
     links: [
-      { label: "Estación Beloq", href: "#que-es-beloq" },
-      { label: "App Beloq", href: "#app" },
+      { label: "Estación Beloq", href: "/#que-es-beloq" },
+      { label: "App Beloq", href: "/#app" },
       { label: "Consola Cloud", href: "/console" },
     ],
   },
   {
     title: "Sectores",
     links: [
-      { label: "Ayuntamientos", href: "#sectores" },
-      { label: "Universidades", href: "#sectores" },
-      { label: "Retail", href: "#sectores" },
-      { label: "Oficinas", href: "#sectores" },
-      { label: "Transporte Público", href: "#sectores" },
+      { label: "Ayuntamientos", href: "/#sectores" },
+      { label: "Universidades", href: "/#sectores" },
+      { label: "Retail", href: "/#sectores" },
+      { label: "Oficinas", href: "/#sectores" },
+      { label: "Transporte Público", href: "/#sectores" },
     ],
   },
   {
     title: "Empresa",
     links: [
-      { label: "Sobre Beloq", href: "#que-es-beloq" },
+      { label: "Sobre Beloq", href: "/#que-es-beloq" },
       { label: "Contacto", href: "/contacto" },
     ],
   },

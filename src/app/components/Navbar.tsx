@@ -3,18 +3,23 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const navLinks = [
-  { href: "#que-es-beloq", label: "Qué es Beloq" },
-  { href: "#como-funciona", label: "Cómo funciona" },
-  { href: "#sectores", label: "Sectores" },
-  { href: "#impacto", label: "Impacto" },
-  { href: "#app", label: "App" },
+  { href: "/#que-es-beloq", label: "Qué es Beloq" },
+  { href: "/#como-funciona", label: "Cómo funciona" },
+  { href: "/#sectores", label: "Sectores" },
+  { href: "/#impacto", label: "Impacto" },
+  { href: "/#app", label: "App" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  // Transparente (blanca) solo sobre la foto de la portada; en el resto de
+  // páginas el fondo es claro y la cabecera va sólida desde arriba.
+  const pathname = usePathname();
+  const solid = scrolled || pathname !== "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -25,7 +30,7 @@ export default function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
+        solid
           ? "bg-white/95 backdrop-blur-sm shadow-md py-2"
           : "bg-transparent py-4"
       }`}
@@ -33,7 +38,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         <Link href="/" className="flex-shrink-0">
           <Image
-            src={scrolled ? "/images/logo-black.png" : "/images/logo-white.png"}
+            src={solid ? "/images/logo-black.png" : "/images/logo-white.png"}
             alt="Beloq"
             width={120}
             height={40}
@@ -49,7 +54,7 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               className={`text-sm font-medium transition-colors hover:text-beloq-yellow ${
-                scrolled ? "text-beloq-dark" : "text-white"
+                solid ? "text-beloq-dark" : "text-white"
               }`}
             >
               {link.label}
@@ -71,17 +76,17 @@ export default function Navbar() {
         >
           <span
             className={`block w-6 h-0.5 transition-transform ${
-              scrolled ? "bg-beloq-dark" : "bg-white"
+              solid ? "bg-beloq-dark" : "bg-white"
             } ${menuOpen ? "rotate-45 translate-y-2" : ""}`}
           />
           <span
             className={`block w-6 h-0.5 transition-opacity ${
-              scrolled ? "bg-beloq-dark" : "bg-white"
+              solid ? "bg-beloq-dark" : "bg-white"
             } ${menuOpen ? "opacity-0" : ""}`}
           />
           <span
             className={`block w-6 h-0.5 transition-transform ${
-              scrolled ? "bg-beloq-dark" : "bg-white"
+              solid ? "bg-beloq-dark" : "bg-white"
             } ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`}
           />
         </button>
