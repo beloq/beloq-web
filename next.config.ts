@@ -39,6 +39,10 @@ const nextConfig: NextConfig = {
       // (data.js, assets/..., fonts/...) resuelvan independientemente del slash.
       { source: "/console", destination: "/console/index.html" },
       { source: "/console/", destination: "/console/index.html" },
+      // Visor 3D del módulo y la estación (HTML autónomo exportado de Claude
+      // Design, ~5,5 MB). La portada lo abre en un iframe al pulsar «Ver en 3D».
+      { source: "/3d", destination: "/3d/index.html" },
+      { source: "/3d/", destination: "/3d/index.html" },
     ];
   },
 };

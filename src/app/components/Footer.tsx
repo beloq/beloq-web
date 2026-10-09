@@ -5,8 +5,8 @@ const footerSections = [
   {
     title: "Soluciones",
     links: [
-      { label: "Estación Beloq", href: "/#que-es-beloq" },
-      { label: "App Beloq", href: "/#app" },
+      { label: "Estación beloq", href: "/#que-es-beloq" },
+      { label: "App beloq", href: "/#app" },
       { label: "Consola Cloud", href: "/console" },
     ],
   },
@@ -23,7 +23,8 @@ const footerSections = [
   {
     title: "Empresa",
     links: [
-      { label: "Sobre Beloq", href: "/#que-es-beloq" },
+      { label: "Sobre beloq", href: "/#que-es-beloq" },
+      { label: "Ayuda", href: "/info" },
       { label: "Contacto", href: "/contacto" },
     ],
   },
@@ -47,7 +48,7 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Image
               src="/images/logo-white.png"
-              alt="Beloq"
+              alt="beloq"
               width={120}
               height={40}
               className="h-8 w-auto mb-4"
@@ -55,6 +56,12 @@ export default function Footer() {
             <p className="text-sm text-gray-400 mt-2">
               Movilidad urbana segura e inteligente
             </p>
+            <a
+              href="mailto:info@beloq.es"
+              className="mt-2 inline-block text-sm text-gray-400 hover:text-beloq-yellow transition-colors"
+            >
+              info@beloq.es
+            </a>
             {/* Social */}
             <div className="flex gap-4 mt-6">
               <a

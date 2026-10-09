@@ -3,7 +3,20 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-export default function HeroSection() {
+export default function HeroSection({
+  horasGratis,
+}: {
+  /** Horas gratis al día del plan Beloquer (de /pricing/public); null si no hay dato. */
+  horasGratis: number | null;
+}) {
+  const stats = [
+    { value: "Valencia", label: "Ciudad operativa" },
+    { value: "IoT 4G", label: "Conectividad autónoma" },
+    ...(horasGratis != null
+      ? [{ value: `${horasGratis} h/día`, label: "Gratis para usuarios" }]
+      : []),
+  ];
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background image */}
@@ -43,11 +56,7 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="mt-10 flex flex-wrap justify-center gap-8 sm:gap-12"
         >
-          {[
-            { value: "Valencia", label: "Ciudad operativa" },
-            { value: "IoT 4G", label: "Conectividad autónoma" },
-            { value: "3h/día", label: "Gratis para usuarios" },
-          ].map((stat) => (
+          {stats.map((stat) => (
             <div key={stat.label} className="text-center">
               <div className="text-2xl sm:text-3xl font-bold text-beloq-yellow">
                 {stat.value}
@@ -68,7 +77,7 @@ export default function HeroSection() {
             href="#que-es-beloq"
             className="border-2 border-white text-white font-bold px-8 py-3 rounded-full hover:bg-white hover:text-beloq-dark transition-all text-sm sm:text-base"
           >
-            Descubre Beloq
+            Descubre beloq
           </a>
           <Link
             href="/contacto"

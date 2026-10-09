@@ -10,31 +10,37 @@ type Tab = {
   label: string;
   subtitle: string;
   image: string;
+  /** Clases extra de la imagen (p. ej. una ilustración con fondo blanco va en tarjeta). */
+  imageClassName?: string;
   steps: { number: string; title: string; desc: string }[];
   cta?: { label: string; href: string; helper: string };
 };
 
-const tabs: Tab[] = [
+// Las horas gratis vienen de /pricing/public; sin dato, el paso no da cifra.
+const crearTabs = (horasGratis: number | null): Tab[] => [
   {
     id: "beloquer",
     label: "Beloquer",
     subtitle: "Usuario",
-    image: "/images/ciclista.png",
+    image: "/images/beloquer-3h-gratis.png",
+    imageClassName: "rounded-[0_24px_0_24px] shadow-[0_4px_10px_rgba(0,0,0,0.05)]",
     steps: [
       {
         number: "01",
-        title: "Descarga la app gratis",
-        desc: "Disponible en iOS y Android. Regístrate en segundos.",
+        title: "Descarga la app",
+        desc: "Muy pronto en Google Play y App Store.",
       },
       {
         number: "02",
-        title: "Escanea el QR",
-        desc: "Encuentra tu estación en el mapa y escanea el código QR del módulo.",
+        title: "Ábrelo con el NFC en el módulo y tu huella",
+        desc: "Acerca el móvil al NFC del módulo y confírmalo con tu huella o tu cara, como cuando desbloqueas el móvil.",
       },
       {
         number: "03",
         title: "Aparca seguro",
-        desc: "3 horas al día gratis. Tu bici o patinete protegido con electro-cierre IoT.",
+        desc:
+          "Baja la barra hasta oír el clic y el doble pitido: ya está anclado." +
+          (horasGratis != null ? ` Cada día tienes ${horasGratis} h gratis.` : ""),
       },
     ],
   },
@@ -91,7 +97,12 @@ const tabs: Tab[] = [
   },
 ];
 
-export default function HowItWorks() {
+export default function HowItWorks({
+  horasGratis,
+}: {
+  horasGratis: number | null;
+}) {
+  const tabs = crearTabs(horasGratis);
   const [activeTab, setActiveTab] = useState("beloquer");
   const active = tabs.find((t) => t.id === activeTab)!;
 
@@ -200,7 +211,7 @@ export default function HowItWorks() {
                 alt={active.label}
                 width={450}
                 height={450}
-                className={`w-full ${active.cta ? "max-w-none" : "max-w-sm"}`}
+                className={`w-full ${active.cta ? "max-w-none" : "max-w-sm"} ${active.imageClassName ?? ""}`}
               />
             </div>
           </motion.div>

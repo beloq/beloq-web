@@ -1,43 +1,45 @@
 "use client";
 
 import { motion } from "framer-motion";
+import {
+  Building2,
+  GraduationCap,
+  Landmark,
+  ShoppingCart,
+  Tent,
+  TrainFront,
+} from "lucide-react";
 
 const sectors = [
   {
-    icon: "🏛️",
+    icon: Landmark,
     title: "Ayuntamientos",
     desc: "Una plataforma para toda tu red de movilidad ciclista. Revenue sharing que reduce gasto público.",
-    color: "from-amber-400 to-yellow-500",
   },
   {
-    icon: "🎓",
+    icon: GraduationCap,
     title: "Universidades",
     desc: "El campus al que quieren pedalear. Amenidad competitiva para atraer estudiantes.",
-    color: "from-blue-400 to-blue-600",
   },
   {
-    icon: "🛒",
+    icon: ShoppingCart,
     title: "Centros Comerciales",
     desc: "Atrae al cliente que pedalea. Aparcamiento seguro como valor diferencial.",
-    color: "from-green-400 to-emerald-500",
   },
   {
-    icon: "🏢",
+    icon: Building2,
     title: "Oficinas",
     desc: "Movilidad sostenible como beneficio laboral. Bienestar + sostenibilidad.",
-    color: "from-purple-400 to-violet-500",
   },
   {
-    icon: "🚇",
+    icon: TrainFront,
     title: "Transporte Público",
     desc: "Resuelve el problema de la primera y última milla con aparcamiento seguro.",
-    color: "from-red-400 to-rose-500",
   },
   {
-    icon: "🎪",
+    icon: Tent,
     title: "Eventos y Festivales",
     desc: "Aparcamiento temporal inteligente. Instalación rápida, sin obra, desmontable.",
-    color: "from-orange-400 to-amber-500",
   },
 ];
 
@@ -58,7 +60,7 @@ export default function SectorsGrid() {
             Diseñado para el mundo real
           </h2>
           <p className="mt-4 text-gray-500 max-w-2xl mx-auto text-lg">
-            Beloq se adapta a cualquier entorno urbano. Hardware resistente,
+            beloq se adapta a cualquier entorno urbano. Hardware resistente,
             software flexible, modelo de negocio que beneficia a todos.
           </p>
         </motion.div>
@@ -71,18 +73,17 @@ export default function SectorsGrid() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="group relative bg-white border border-gray-100 rounded-2xl p-8 hover:shadow-xl hover:border-beloq-yellow transition-all duration-300 cursor-pointer"
+              className="relative bg-white border border-gray-100 rounded-2xl p-8 hover:shadow-xl hover:border-beloq-yellow transition-all duration-300"
             >
-              <div className="text-4xl mb-4">{sector.icon}</div>
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-[0_12px_0_12px] bg-beloq-yellow text-beloq-dark">
+                <sector.icon aria-hidden className="h-6 w-6" strokeWidth={2} />
+              </div>
               <h3 className="text-xl font-bold text-beloq-dark mb-2">
                 {sector.title}
               </h3>
               <p className="text-gray-500 text-sm leading-relaxed">
                 {sector.desc}
               </p>
-              <div className="mt-4 text-beloq-yellow-dark font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                Saber más →
-              </div>
             </motion.div>
           ))}
         </div>

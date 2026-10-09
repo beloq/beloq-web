@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
-  { href: "/#que-es-beloq", label: "Qué es Beloq" },
+  { href: "/#que-es-beloq", label: "Qué es beloq" },
   { href: "/#como-funciona", label: "Cómo funciona" },
   { href: "/#sectores", label: "Sectores" },
   { href: "/#impacto", label: "Impacto" },
@@ -31,7 +31,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         solid
-          ? "bg-white/95 backdrop-blur-sm shadow-md py-2"
+          ? "bg-white shadow-md py-2"
           : "bg-transparent py-4"
       }`}
     >
@@ -39,7 +39,7 @@ export default function Navbar() {
         <Link href="/" className="flex-shrink-0">
           <Image
             src={solid ? "/images/logo-black.png" : "/images/logo-white.png"}
-            alt="Beloq"
+            alt="beloq"
             width={120}
             height={40}
             className="h-8 w-auto"
@@ -60,6 +60,14 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
+          <Link
+            href="/info"
+            className={`text-sm font-medium transition-colors hover:text-beloq-yellow ${
+              solid ? "text-beloq-dark" : "text-white"
+            }`}
+          >
+            Ayuda
+          </Link>
           <Link
             href="/contacto"
             className="bg-beloq-yellow text-beloq-dark font-bold text-sm px-6 py-2.5 rounded-full hover:bg-beloq-yellow-dark transition-colors"
@@ -106,6 +114,13 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
+            <Link
+              href="/info"
+              onClick={() => setMenuOpen(false)}
+              className="text-beloq-dark font-medium py-2"
+            >
+              Ayuda
+            </Link>
             <Link
               href="/contacto"
               onClick={() => setMenuOpen(false)}

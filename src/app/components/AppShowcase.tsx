@@ -1,24 +1,41 @@
 "use client";
 
 import { motion } from "framer-motion";
+import {
+  CalendarCheck,
+  History,
+  Map,
+  Ticket,
+  Timer,
+  Users,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const features = [
-  { icon: "🗺️", label: "Mapa en tiempo real" },
-  { icon: "⏱️", label: "3 horas gratis al día" },
-  { icon: "📅", label: "Reserva anticipada" },
-  { icon: "📊", label: "Historial completo" },
-  { icon: "⭐", label: "Programa VIP" },
-  { icon: "👥", label: "Invita amigxs" },
-];
+export default function AppShowcase({
+  horasGratis,
+}: {
+  /** Horas gratis al día del plan Beloquer (de /pricing/public); null si no hay dato. */
+  horasGratis: number | null;
+}) {
+  // «Abonos», nunca «VIP» (como la app).
+  const features = [
+    { icon: Map, label: "Mapa en tiempo real" },
+    {
+      icon: Timer,
+      label:
+        horasGratis != null
+          ? `${horasGratis} h gratis al día`
+          : "Horas gratis cada día",
+    },
+    { icon: CalendarCheck, label: "Reserva anticipada" },
+    { icon: History, label: "Historial completo" },
+    { icon: Ticket, label: "Abonos Beloquer Flow y Max" },
+    { icon: Users, label: "Invita amigxs" },
+  ];
 
-export default function AppShowcase() {
   return (
-    <section
-      id="app"
-      className="py-20 sm:py-28 bg-gradient-to-br from-beloq-yellow/20 via-beloq-yellow/10 to-white overflow-hidden"
-    >
+    <section id="app" className="py-20 sm:py-28 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -30,11 +47,14 @@ export default function AppShowcase() {
             Todo en tu bolsillo
           </span>
           <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-beloq-dark">
-            La app de Beloq
+            La app de beloq
           </h2>
           <p className="mt-4 text-gray-500 max-w-2xl mx-auto text-lg">
             Encuentra estaciones, reserva tu plaza, gestiona tu historial y
-            mucho más. Gratuita para siempre.
+            mucho más.{" "}
+            {horasGratis != null
+              ? `La app es gratis y cada día tienes ${horasGratis} h gratis para aparcar.`
+              : "La app es gratis."}
           </p>
         </motion.div>
 
@@ -50,7 +70,9 @@ export default function AppShowcase() {
                 transition={{ delay: i * 0.1 }}
                 className="flex items-center gap-4 bg-white rounded-xl p-4 shadow-sm"
               >
-                <span className="text-2xl">{f.icon}</span>
+                <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[0_12px_0_12px] bg-beloq-yellow text-beloq-dark">
+                  <f.icon aria-hidden className="h-5 w-5" strokeWidth={2} />
+                </span>
                 <span className="font-bold text-beloq-dark">{f.label}</span>
               </motion.div>
             ))}
@@ -66,7 +88,7 @@ export default function AppShowcase() {
           >
             <Image
               src="/images/app-mockup.png"
-              alt="App Beloq - Interfaz de la aplicación móvil"
+              alt="App de beloq: interfaz de la aplicación móvil"
               width={400}
               height={400}
               className="w-full max-w-xs drop-shadow-2xl"
@@ -84,7 +106,9 @@ export default function AppShowcase() {
                 transition={{ delay: i * 0.1 }}
                 className="flex items-center gap-4 bg-white rounded-xl p-4 shadow-sm"
               >
-                <span className="text-2xl">{f.icon}</span>
+                <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[0_12px_0_12px] bg-beloq-yellow text-beloq-dark">
+                  <f.icon aria-hidden className="h-5 w-5" strokeWidth={2} />
+                </span>
                 <span className="font-bold text-beloq-dark">{f.label}</span>
               </motion.div>
             ))}

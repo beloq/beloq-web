@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useState } from "react";
+import VideoEnBucle from "../VideoEnBucle";
 
 type Vehiculo = "bici" | "patinete";
 
@@ -24,63 +25,6 @@ const PASOS = [
       "Desbloquéalo con tu huella, saca tu vehículo y vuelve a bajar la barra hasta oír el clic.",
   },
 ];
-
-const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
-
-function subscribeReducedMotion(onChange: () => void) {
-  const mq = window.matchMedia(REDUCED_MOTION);
-  mq.addEventListener("change", onChange);
-  return () => mq.removeEventListener("change", onChange);
-}
-
-function usePrefersReducedMotion(): boolean {
-  return useSyncExternalStore(
-    subscribeReducedMotion,
-    () => window.matchMedia(REDUCED_MOTION).matches,
-    () => false,
-  );
-}
-
-/**
- * Un vídeo de la app, sin sonido y en bucle. No descarga nada hasta que entra
- * en pantalla (preload none + portada), y se para al salir: quien llega por el
- * QR suele estar con datos móviles. Con «reducir movimiento», no arranca solo.
- */
-function Clip({ src, poster, label }: { src: string; poster: string; label: string }) {
-  const ref = useRef<HTMLVideoElement>(null);
-  const reduce = usePrefersReducedMotion();
-
-  useEffect(() => {
-    const video = ref.current;
-    if (!video || reduce) return;
-    video.muted = true; // iOS solo reproduce solo lo que está silenciado
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) video.play().catch(() => {});
-        else video.pause();
-      },
-      { threshold: 0.4 },
-    );
-    io.observe(video);
-    return () => io.disconnect();
-  }, [reduce]);
-
-  return (
-    <video
-      ref={ref}
-      src={src}
-      poster={poster}
-      muted
-      loop
-      playsInline
-      preload="none"
-      controls={reduce}
-      disablePictureInPicture
-      aria-label={label}
-      className="aspect-[1080/2340] w-full rounded-[0_24px_0_24px] bg-beloq-dark object-cover"
-    />
-  );
-}
 
 /** BELOQ_INFO §3.2. Respaldo con los vídeos de la app hasta tener la animación. */
 export default function InfoComo() {
@@ -117,7 +61,7 @@ export default function InfoComo() {
         <div className="mt-6 grid grid-cols-2 gap-4 sm:gap-8">
           {PASOS.map((p) => (
             <figure key={p.id} className="mx-auto w-full max-w-[260px]">
-              <Clip
+              <VideoEnBucle
                 key={`${p.id}_${vehiculo}`}
                 src={`/info/${p.id}_${vehiculo}.mp4`}
                 poster={`/info/${p.id}_${vehiculo}.webp`}

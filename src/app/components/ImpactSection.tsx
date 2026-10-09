@@ -13,10 +13,6 @@ const stats = [
 export default function ImpactSection() {
   return (
     <section id="impacto" className="py-20 sm:py-28 bg-beloq-dark relative overflow-hidden">
-      {/* Decorative yellow shape */}
-      <div className="absolute -top-20 -right-20 w-80 h-80 bg-beloq-yellow/5 rounded-full blur-3xl" />
-      <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-beloq-yellow/5 rounded-full blur-3xl" />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -25,11 +21,10 @@ export default function ImpactSection() {
           className="text-center mb-16"
         >
           <span className="text-sm font-bold text-beloq-yellow uppercase tracking-wider">
-            Resultados reales
+            Estimación
           </span>
           <h2 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-            Impacto medible,{" "}
-            <span className="text-beloq-yellow">resultados reales</span>
+            Impacto <span className="text-beloq-yellow">estimado</span>
           </h2>
         </motion.div>
 
@@ -52,8 +47,7 @@ export default function ImpactSection() {
           transition={{ delay: 0.5 }}
           className="text-center text-gray-500 text-xs mt-12"
         >
-          * Datos estimados basados en despliegue operativo en Valencia.
-          Actualizados periódicamente.
+          * Estimaciones, no resultados medidos.
         </motion.p>
       </div>
     </section>

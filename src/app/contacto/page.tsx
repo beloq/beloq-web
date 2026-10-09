@@ -37,7 +37,7 @@ export default function ContactoPage() {
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="text-2xl mb-2">📧</div>
             <h3 className="font-bold text-beloq-dark text-sm">Email</h3>
-            <p className="text-gray-500 text-sm mt-1">contacto@beloq.es</p>
+            <p className="text-gray-500 text-sm mt-1">info@beloq.es</p>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="text-2xl mb-2">📍</div>

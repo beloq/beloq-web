@@ -3,17 +3,17 @@ import "./globals.css";
 import SiteChrome from "./components/SiteChrome";
 
 export const metadata: Metadata = {
-  title: "Beloq - Aparcamiento inteligente para bicis y patinetes",
+  title: "beloq · aparcamiento inteligente para bicis y patinetes",
   description:
     "Estaciones inteligentes de aparcamiento seguro para bicicletas y patinetes eléctricos. Electro-cierre IoT, telemetría en tiempo real, app gratuita. Operativo en Valencia.",
   keywords:
     "beloq, aparcamiento bicicletas, aparcamiento patinetes, smart city, movilidad urbana, Valencia, IoT",
   openGraph: {
-    title: "Beloq - Aparcamiento inteligente para bicis y patinetes",
+    title: "beloq · aparcamiento inteligente para bicis y patinetes",
     description:
       "Estaciones inteligentes de aparcamiento seguro para bicicletas y patinetes eléctricos.",
     url: "https://beloq.es",
-    siteName: "Beloq",
+    siteName: "beloq",
     locale: "es_ES",
     type: "website",
   },

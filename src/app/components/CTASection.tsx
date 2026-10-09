@@ -19,14 +19,14 @@ export default function CTASection() {
               Explora nuestras soluciones
             </h3>
             <p className="text-gray-500 mb-6">
-              Descubre cómo Beloq puede transformar la movilidad en tu ciudad,
+              Descubre cómo beloq puede transformar la movilidad en tu ciudad,
               campus o empresa.
             </p>
             <a
               href="#que-es-beloq"
               className="inline-block border-2 border-beloq-dark text-beloq-dark font-bold px-8 py-3 rounded-full hover:bg-beloq-dark hover:text-white transition-all"
             >
-              Descubrir Beloq
+              Descubrir beloq
             </a>
           </motion.div>
 
