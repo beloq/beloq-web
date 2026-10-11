@@ -6,10 +6,15 @@ import Footer from "./Footer";
 
 /**
  * Decide si una ruta debe mostrarse SIN el chrome de marketing (Navbar/Footer).
- * Las pantallas transaccionales del flujo NFC (/m) y la ayuda (/help) van limpias.
+ * Las pantallas transaccionales del flujo NFC (/m), la ayuda (/help) y el visor
+ * 3D a pantalla entera (/3d) van limpias.
  */
 function isBareRoute(pathname: string): boolean {
-  return pathname.startsWith("/m/") || pathname.startsWith("/help");
+  return (
+    pathname.startsWith("/m/") ||
+    pathname.startsWith("/help") ||
+    pathname === "/3d"
+  );
 }
 
 /**

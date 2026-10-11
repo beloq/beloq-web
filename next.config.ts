@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // El visor 3D vivió unos días en /3d/index.html y /3d/estacion.html; ahora
+      // /3d es una página propia (src/app/3d) y el visor está en /3d/visor/.
+      { source: "/3d/index.html", destination: "/3d", permanent: false },
+      { source: "/3d/estacion.html", destination: "/3d", permanent: false },
       // Alias de términos: el backend devuelve terms_url=/legal/terms, pero la
       // página real es /legal/terminos. Aplica en todos los hosts (incl. m.).
       {
@@ -39,10 +43,6 @@ const nextConfig: NextConfig = {
       // (data.js, assets/..., fonts/...) resuelvan independientemente del slash.
       { source: "/console", destination: "/console/index.html" },
       { source: "/console/", destination: "/console/index.html" },
-      // Visor 3D del módulo y la estación (HTML autónomo exportado de Claude
-      // Design, ~5,5 MB). La portada lo abre en un iframe al pulsar «Ver en 3D».
-      { source: "/3d", destination: "/3d/index.html" },
-      { source: "/3d/", destination: "/3d/index.html" },
     ];
   },
 };

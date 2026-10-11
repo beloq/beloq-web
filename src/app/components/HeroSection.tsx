@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Rotate3d } from "lucide-react";
 import Link from "next/link";
 
 export default function HeroSection({
@@ -80,10 +81,11 @@ export default function HeroSection({
             Descubre beloq
           </a>
           <Link
-            href="/contacto"
-            className="bg-beloq-yellow text-beloq-dark font-bold px-8 py-3 rounded-full hover:bg-beloq-yellow-dark transition-colors text-sm sm:text-base"
+            href="/3d"
+            className="inline-flex items-center gap-2 bg-beloq-yellow text-beloq-dark font-bold px-8 py-3 rounded-full hover:bg-beloq-yellow-dark transition-colors text-sm sm:text-base"
           >
-            Solicita Demo
+            <Rotate3d aria-hidden className="h-5 w-5" />
+            Ver en 3D interactivo
           </Link>
         </motion.div>
       </div>

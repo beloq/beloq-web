@@ -1,6 +1,7 @@
 "use client";
 
 import { Rotate3d } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import VideoEnBucle from "./VideoEnBucle";
 
@@ -12,28 +13,12 @@ const VEHICULOS: { id: Vehiculo; label: string }[] = [
 ];
 
 /**
- * «¿Qué es beloq?»: la animación de anclaje (los mismos vídeos que /info) y,
- * al pulsar «Ver en 3D», el visor interactivo (public/3d/, ~5,5 MB). El visor
- * no se descarga con la portada, y en el móvil no se queda con el gesto de
- * desplazar la página.
+ * «¿Qué es beloq?»: la animación de anclaje (los mismos vídeos que /info) y el
+ * enlace al visor 3D. El 3D se ve siempre en su propia página, a pantalla
+ * entera (/3d), nunca incrustado en pequeño.
  */
 export default function Visor3D() {
-  const [abierto, setAbierto] = useState(false);
   const [vehiculo, setVehiculo] = useState<Vehiculo>("bici");
-
-  if (abierto) {
-    return (
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[0_24px_0_24px] bg-beloq-gray shadow-[0_4px_10px_rgba(0,0,0,0.05)]">
-        <iframe
-          src="/3d/index.html"
-          title="beloq en 3D"
-          allow="fullscreen"
-          allowFullScreen
-          className="absolute inset-0 h-full w-full border-0"
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="flex w-full flex-col items-center gap-5">
@@ -65,14 +50,13 @@ export default function Visor3D() {
           label={`Anclar ${vehiculo === "bici" ? "una bici" : "un patinete"} en un beloq`}
         />
       </div>
-      <button
-        type="button"
-        onClick={() => setAbierto(true)}
+      <Link
+        href="/3d"
         className="inline-flex items-center gap-2 rounded-[0_24px_0_24px] bg-beloq-dark px-8 py-4 text-sm font-bold uppercase tracking-wide text-white transition-colors duration-200 hover:bg-[#1A1A1A]"
       >
         <Rotate3d aria-hidden className="h-5 w-5" />
         Ver en 3D
-      </button>
+      </Link>
     </div>
   );
 }
