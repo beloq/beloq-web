@@ -35,6 +35,7 @@ const footerSections = [
       { label: "Privacidad", href: "/legal/privacidad" },
       { label: "Términos", href: "/legal/terminos" },
       { label: "Cookies", href: "/legal/cookies" },
+      { label: "Borrar tu cuenta", href: "/legal/borrar-cuenta" },
     ],
   },
 ];
