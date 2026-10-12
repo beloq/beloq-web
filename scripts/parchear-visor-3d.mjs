@@ -26,6 +26,8 @@
 //     holgura a los lados) y deja 72 px arriba y abajo para los controles. Antes
 //     reservaba 150 px a cada lado y 95 arriba y abajo: en un móvil en vertical
 //     la estación quedaba en la mitad del ancho.
+//  7. La cámara no puede entrar en el módulo, la barra ni la estación (no se
+//     enseña el interior) y no se desplaza: scripts/visor-3d-limites-camara.js.
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -44,14 +46,20 @@ const ARCHIVOS = [
   { de: "estacion.html", a: "estacion.html" },
 ];
 
-// Selectores que acciona la página /3d: tienen que existir.
+// Lo que usan la página /3d y el límite de cámara: tiene que existir.
 const SELECTORES = [
   'data-tv="bici"',
   'data-tv="patinete"',
   'id="tDock"',
   'id="tUndock"',
   'id="tb"',
+  "this._scene = scene",
+  "this._camera = camera",
+  "this._controls = controls",
 ];
+
+const LIMITES_CAMARA = readFileSync(join(raiz, "scripts", "visor-3d-limites-camara.js"), "utf8");
+if (LIMITES_CAMARA.includes("</script")) throw new Error("visor-3d-limites-camara.js no puede contener </script");
 
 const MARCA = "<!-- parcheado por scripts/parchear-visor-3d.mjs -->";
 
@@ -131,7 +139,7 @@ for (const { de, a } of ARCHIVOS) {
   html = cambiar(
     html,
     "</head>",
-    `${MARCA}\n<style>#tt,#tv,#tb{display:none!important}</style>\n</head>`,
+    `${MARCA}\n<style>#tt,#tv,#tb{display:none!important}</style>\n<script>\n${LIMITES_CAMARA}</script>\n</head>`,
     `${de} · </head>`,
   );
 
