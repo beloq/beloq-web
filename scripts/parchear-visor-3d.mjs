@@ -28,10 +28,14 @@
 //     la estación quedaba en la mitad del ancho.
 //  7. La cámara no puede entrar en el módulo, la barra ni la estación (no se
 //     enseña el interior) y no se desplaza: scripts/visor-3d-limites-camara.js.
+//  8. Saca del fichero las piezas interiores del cuerpo del módulo (el
+//     electrocierre y su fijación): no se descargan, ni siquiera para quien
+//     busque el modelo dentro del HTML. Lista en PIEZAS_INTERIORES.
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { gunzipSync, gzipSync } from "node:zlib";
 
 const raiz = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const origen = process.argv[2];
@@ -62,6 +66,62 @@ const LIMITES_CAMARA = readFileSync(join(raiz, "scripts", "visor-3d-limites-cama
 if (LIMITES_CAMARA.includes("</script")) throw new Error("visor-3d-limites-camara.js no puede contener </script");
 
 const MARCA = "<!-- parcheado por scripts/parchear-visor-3d.mjs -->";
+
+// Piezas interiores del cuerpo del módulo: el electrocierre y su fijación.
+// Elegidas por Jesús el 12-oct-2026 con la herramienta de identificación
+// (cada pieza marcada y ocultada en el visor). Los nombres son los del CAD
+// («Importado_XX») dentro del bloque assets/cuerpo_t*.bin; la barra tiene
+// otras piezas con nombres parecidos y no se toca.
+const PIEZAS_INTERIORES = [
+  "01", "02", "03", "05", "06", "07", "09", "11", "13", "15", "29",
+  "30", "31", "36", "37", "40", "41", "46", "47", "56", "57", "60",
+].map((n) => `Importado_${n}`);
+
+/**
+ * El modelo va en <script id="bin:assets/…">: base64 de un gzip con
+ * [u32 longitud][cabecera JSON {name, nv, nt}[]] y, por pieza, nv×3 float32
+ * (vértices) y nt×3 uint32 (triángulos). Devuelve el HTML sin las piezas dadas.
+ */
+function quitarPiezas(html, id, quitar, nombre) {
+  const marca = `id="bin:${id}"`;
+  const a = html.indexOf(marca);
+  if (a < 0 || html.indexOf(marca, a + 1) >= 0) throw new Error(`${nombre}: se esperaba un bloque ${id}`);
+  const s = html.indexOf(">", a) + 1, e = html.indexOf("</script>", s);
+  const buf = gunzipSync(Buffer.from(html.slice(s, e).trim(), "base64"));
+  const hl = buf.readUInt32LE(0);
+  const cab = JSON.parse(buf.subarray(4, 4 + hl).toString("utf8"));
+  const faltan = quitar.filter((n) => !cab.some((p) => p.name === n));
+  if (faltan.length) throw new Error(`${nombre}: no están en ${id}: ${faltan.join(", ")}`);
+
+  let off = 4 + hl;
+  const quedan = [], trozos = [];
+  for (const p of cab) {
+    const len = p.nv * 12 + p.nt * 12;
+    if (!quitar.includes(p.name)) {
+      quedan.push(p);
+      trozos.push(buf.subarray(off, off + len));
+    }
+    off += len;
+  }
+  if (off !== buf.length) throw new Error(`${nombre}: ${id} no tiene el formato esperado`);
+
+  // Cabecera nueva, rellena con espacios para que los datos sigan alineados a 4.
+  let json = JSON.stringify(quedan);
+  while ((4 + Buffer.byteLength(json)) % 4) json += " ";
+  const lon = Buffer.alloc(4);
+  lon.writeUInt32LE(Buffer.byteLength(json));
+  const nuevo = Buffer.concat([lon, Buffer.from(json), ...trozos]);
+  const b64 = gzipSync(nuevo, { level: 9 }).toString("base64");
+
+  // Comprobación: se vuelve a leer y no queda ninguna.
+  const re = gunzipSync(Buffer.from(b64, "base64"));
+  const nombres = JSON.parse(re.subarray(4, 4 + re.readUInt32LE(0)).toString()).map((p) => p.name);
+  if (nombres.some((n) => quitar.includes(n)) || nombres.length !== cab.length - quitar.length) {
+    throw new Error(`${nombre}: la comprobación de ${id} ha fallado`);
+  }
+  console.log(`  ${id}: ${cab.length} → ${nombres.length} piezas`);
+  return html.slice(0, s) + b64 + html.slice(e);
+}
 
 /** Sustituye `de` por `a` exactamente una vez (o ninguna si `opcional`). */
 function cambiar(html, de, a, nombre, { opcional = false } = {}) {
@@ -142,6 +202,10 @@ for (const { de, a } of ARCHIVOS) {
     `${MARCA}\n<style>#tt,#tv,#tb{display:none!important}</style>\n<script>\n${LIMITES_CAMARA}</script>\n</head>`,
     `${de} · </head>`,
   );
+
+  const bloquesCuerpo = [...html.matchAll(/id="bin:(assets\/cuerpo_t[0-9]+\.bin)"/g)].map((m) => m[1]);
+  if (bloquesCuerpo.length !== 1) throw new Error(`${de}: se esperaba un bloque del cuerpo y hay ${bloquesCuerpo.length}`);
+  html = quitarPiezas(html, bloquesCuerpo[0], PIEZAS_INTERIORES, de);
 
   if (html.includes("cdn.jsdelivr.net/npm/")) throw new Error(`${de}: sigue cargando código de jsdelivr`);
   writeFileSync(join(destino, a), html);
