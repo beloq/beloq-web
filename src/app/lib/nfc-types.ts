@@ -17,7 +17,7 @@ export type SessionStatus =
 
 /** Versión de términos sincronizada con /legal/terminos. El GET de módulo no la
  *  devuelve, así que se envía esta constante en POST /anonymous/sessions. */
-export const TERMS_VERSION = "1.3";
+export const TERMS_VERSION = "1.4";
 
 // --- GET /anonymous/module/:moduleId ---
 export interface ModuleInfo {

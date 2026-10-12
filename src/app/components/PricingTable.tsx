@@ -47,15 +47,21 @@ async function getPricing(): Promise<PricingResponse | null> {
  * no responde (o no hay API_BASE en build), muestra un texto de reserva sin
  * cifras cableadas. Cacheado por ISR (revalidate 300 s).
  */
-export default async function PricingTable() {
+export default async function PricingTable({
+  titulo = "h2",
+}: {
+  /** Nivel del título «Tarifas vigentes» según dónde va dentro del texto. */
+  titulo?: "h2" | "h3";
+} = {}) {
+  const Titulo = titulo;
   const data = await getPricing();
 
   if (!data) {
     return (
       <>
-        <h2>Tarifas vigentes</h2>
+        <Titulo>Tarifas vigentes</Titulo>
         <p>
-          Las tarifas vigentes (depósito, tarifa por hora y abonos) se muestran
+          Las tarifas vigentes (fianza, tarifa por hora y abonos) se muestran
           siempre de forma actualizada en la app antes de contratar.
         </p>
       </>
@@ -68,12 +74,17 @@ export default async function PricingTable() {
 
   return (
     <>
-      <h2>Tarifas vigentes</h2>
+      <Titulo>Tarifas vigentes</Titulo>
       <p>
-        Depósito reembolsable:{" "}
-        <strong>{euros(data.deposit.amount_cents, data.currency)}</strong> — se
-        retiene al abrir y se devuelve íntegro al terminar. Tarifa de uso, una
-        vez agotadas las horas incluidas: <strong>{perHour} €/hora</strong>.{" "}
+        Fianza para usar beloq sin la app:{" "}
+        <strong>{euros(data.deposit.amount_cents, data.currency)}</strong>. Se
+        retiene en tu tarjeta al abrir y se libera al terminar. Se cobra si no
+        anclas el vehículo en 5 minutos, si dejas la barra abierta al retirarlo
+        o si pasan 3 horas sin recogerlo (§5.6).
+      </p>
+      <p>
+        Tarifa de uso, una vez agotadas las horas incluidas:{" "}
+        <strong>{perHour} €/hora</strong>.{" "}
         {data.vat_included ? "IVA incluido." : "IVA no incluido."}
       </p>
       <table>
@@ -105,8 +116,8 @@ export default async function PricingTable() {
         </tbody>
       </table>
       <p>
-        Beloquer Flow y Beloquer Max son abonos mensuales de aparcamiento
-        físico, de pago único y sin renovación automática.
+        Beloquer Flow y Beloquer Max son abonos de aparcamiento físico de 30
+        días, de pago único y sin renovación automática.
       </p>
     </>
   );
