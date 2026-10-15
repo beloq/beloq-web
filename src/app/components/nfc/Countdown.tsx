@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 function remainingMs(expiresAt: string): number {
   const t = new Date(expiresAt).getTime();
@@ -17,20 +17,29 @@ function format(ms: number): string {
   return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
 }
 
+function cadaSegundo(onChange: () => void) {
+  const id = window.setInterval(onChange, 1000);
+  return () => window.clearInterval(id);
+}
+
+/** El texto de la cuenta atrás, o null si ya se ha agotado. */
+function restante(expiresAt: string): string | null {
+  const ms = remainingMs(expiresAt);
+  return ms > 0 ? format(ms) : null;
+}
+
 /** Cuenta atrás hasta expires_at. Se actualiza cada segundo en cliente. */
 export default function Countdown({ expiresAt }: { expiresAt: string }) {
-  const [ms, setMs] = useState<number | null>(null);
+  // undefined en el servidor y al hidratar: placeholder estable (evita mismatch SSR).
+  const texto = useSyncExternalStore<string | null | undefined>(
+    cadaSegundo,
+    () => restante(expiresAt),
+    () => undefined,
+  );
 
-  useEffect(() => {
-    setMs(remainingMs(expiresAt));
-    const id = setInterval(() => setMs(remainingMs(expiresAt)), 1000);
-    return () => clearInterval(id);
-  }, [expiresAt]);
-
-  // Antes de hidratar mostramos un placeholder estable (evita mismatch SSR).
-  if (ms === null) return <span className="tabular-nums">--:--</span>;
-  if (ms <= 0)
+  if (texto === undefined) return <span className="tabular-nums">--:--</span>;
+  if (texto === null)
     return <span className="tabular-nums text-red-600">tiempo agotado</span>;
 
-  return <span className="tabular-nums">{format(ms)}</span>;
+  return <span className="tabular-nums">{texto}</span>;
 }

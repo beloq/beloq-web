@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Estáticos servidos tal cual; no pasan por Next. La demo de Console
+    // (public/console/*.jsx) usa componentes globales cargados en el navegador.
+    "public/**",
   ]),
 ]);
 
