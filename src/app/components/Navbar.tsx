@@ -20,6 +20,7 @@ export default function Navbar() {
   // páginas el fondo es claro y la cabecera va sólida desde arriba.
   const pathname = usePathname();
   const solid = scrolled || pathname !== "/";
+  const enInformes = pathname.startsWith("/informes-movilidad");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -47,8 +48,8 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8">
+        {/* Desktop nav (desde lg: con «Informes de movilidad» no cabe a 768 px) */}
+        <div className="hidden lg:flex items-center gap-6 xl:gap-8">
           {navLinks.map((link) => (
             <a
               key={link.href}
@@ -60,6 +61,19 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
+          <Link
+            href="/informes-movilidad"
+            aria-current={enInformes ? "page" : undefined}
+            className={`text-sm transition-colors hover:text-beloq-yellow ${
+              solid ? "text-beloq-dark" : "text-white"
+            } ${
+              enInformes
+                ? "font-bold underline decoration-beloq-yellow decoration-2 underline-offset-8"
+                : "font-medium"
+            }`}
+          >
+            Informes de movilidad
+          </Link>
           <Link
             href="/info"
             className={`text-sm font-medium transition-colors hover:text-beloq-yellow ${
@@ -79,7 +93,7 @@ export default function Navbar() {
         {/* Mobile hamburger */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden flex flex-col gap-1.5 p-2"
+          className="lg:hidden flex flex-col gap-1.5 p-2"
           aria-label="Menú"
         >
           <span
@@ -102,7 +116,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-white shadow-lg border-t">
+        <div className="lg:hidden bg-white shadow-lg border-t">
           <div className="px-4 py-4 flex flex-col gap-4">
             {navLinks.map((link) => (
               <a
@@ -114,6 +128,14 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
+            <Link
+              href="/informes-movilidad"
+              onClick={() => setMenuOpen(false)}
+              aria-current={enInformes ? "page" : undefined}
+              className={`text-beloq-dark py-2 ${enInformes ? "font-bold" : "font-medium"}`}
+            >
+              Informes de movilidad
+            </Link>
             <Link
               href="/info"
               onClick={() => setMenuOpen(false)}

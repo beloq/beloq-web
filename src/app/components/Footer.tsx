@@ -8,6 +8,7 @@ const footerSections = [
       { label: "Estación beloq", href: "/#que-es-beloq" },
       { label: "App beloq", href: "/#app" },
       { label: "Consola Cloud", href: "/console" },
+      { label: "Informes de movilidad", href: "/informes-movilidad" },
     ],
   },
   {
