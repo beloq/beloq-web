@@ -6,6 +6,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type ChangeEvent,
   type FormEvent,
   type ReactNode,
@@ -93,6 +94,22 @@ function MensajeError({ campo, mensaje }: { campo: CampoSolicitud; mensaje?: str
   );
 }
 
+const sinSuscripcion = () => () => {};
+
+/**
+ * false en el HTML del servidor y hasta que React hidrata; true después.
+ * Mientras sea false el formulario está desactivado: sin JavaScript (o si la
+ * hidratación falla) no se puede rellenar ni enviar, y los datos nunca acaban
+ * en la URL por un envío nativo.
+ */
+function useListo() {
+  return useSyncExternalStore(
+    sinSuscripcion,
+    () => true,
+    () => false
+  );
+}
+
 export default function FormularioSolicitud({
   inicial,
   origen,
@@ -100,6 +117,7 @@ export default function FormularioSolicitud({
   inicial: Partial<Solicitud>;
   origen: OrigenId | null;
 }) {
+  const listo = useListo();
   const [datos, setDatos] = useState<Solicitud>(() => ({ ...SOLICITUD_VACIA, ...inicial }));
   const [errores, setErrores] = useState<ErroresSolicitud>({});
   const [estado, setEstado] = useState<Estado>("editando");
@@ -258,338 +276,355 @@ export default function FormularioSolicitud({
   const enviando = estado === "enviando";
 
   return (
+    // method/action solo como red de seguridad: con el formulario desactivado
+    // hasta la hidratación no debería haber envío nativo, y si lo hubiera, la API
+    // responde a un POST de formulario con una redirección sin datos en la URL.
     <form
       ref={formRef}
       onSubmit={enviar}
+      method="post"
+      action="/api/informes-movilidad"
       noValidate
-      aria-busy={enviando}
+      aria-busy={enviando || !listo}
       className="rounded-[0_24px_0_24px] bg-white p-6 sm:p-10"
     >
-      {nErrores > 0 && (
-        <div role="alert" className="mb-8 rounded-[0_12px_0_12px] border-2 border-red-700 p-4">
-          <p className="font-bold text-red-700">
-            {nErrores === 1 ? "Revisa un campo:" : `Revisa ${nErrores} campos:`}
-          </p>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
-            {ORDEN_CAMPOS.filter((c) => errores[c]).map((c) => (
-              <li key={c}>
-                <a href={`#sol-${c === "tipo" ? "tipo-grupo" : c}`} className="text-red-700 underline">
-                  {ETIQUETAS[c]}: {errores[c]}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+      {!listo && (
+        <p className="mb-8 rounded-[0_12px_0_12px] border-2 border-beloq-dark p-4 text-sm leading-relaxed text-beloq-dark">
+          <strong>El formulario se activa al terminar de cargar la página.</strong> Si
+          no se activa (por ejemplo, porque JavaScript está desactivado), escríbenos a{" "}
+          <a href="mailto:info@beloq.es" className="font-bold underline underline-offset-4">
+            info@beloq.es
+          </a>{" "}
+          con tu nombre, tu organización y lo que necesitas.
+        </p>
       )}
+      <fieldset disabled={!listo} className="m-0 min-w-0 border-0 p-0">
+        {nErrores > 0 && (
+          <div role="alert" className="mb-8 rounded-[0_12px_0_12px] border-2 border-red-700 p-4">
+            <p className="font-bold text-red-700">
+              {nErrores === 1 ? "Revisa un campo:" : `Revisa ${nErrores} campos:`}
+            </p>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+              {ORDEN_CAMPOS.filter((c) => errores[c]).map((c) => (
+                <li key={c}>
+                  <a href={`#sol-${c === "tipo" ? "tipo-grupo" : c}`} className="text-red-700 underline">
+                    {ETIQUETAS[c]}: {errores[c]}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-      <fieldset className="space-y-6">
-        <legend className="text-lg font-bold text-beloq-dark">Tus datos</legend>
-        <div className="grid gap-6 sm:grid-cols-2">
-          <div>
-            <Etiqueta campo="nombre" obligatorio />
-            <input
-              id="sol-nombre"
-              name="nombre"
-              type="text"
-              autoComplete="name"
-              maxLength={MAX_LONGITUD.nombre}
-              value={datos.nombre}
-              onChange={cambiar("nombre")}
-              aria-required
-              aria-invalid={!!errores.nombre}
-              aria-describedby={describedBy("nombre")}
-              className={CLASE_CAMPO}
-            />
-            <MensajeError campo="nombre" mensaje={errores.nombre} />
-          </div>
-          <div>
-            <Etiqueta campo="organizacion" obligatorio />
-            <input
-              id="sol-organizacion"
-              name="organizacion"
-              type="text"
-              autoComplete="organization"
-              maxLength={MAX_LONGITUD.organizacion}
-              value={datos.organizacion}
-              onChange={cambiar("organizacion")}
-              aria-required
-              aria-invalid={!!errores.organizacion}
-              aria-describedby={describedBy("organizacion")}
-              className={CLASE_CAMPO}
-            />
-            <MensajeError campo="organizacion" mensaje={errores.organizacion} />
-          </div>
-          <div>
-            <Etiqueta campo="email" obligatorio />
-            <input
-              id="sol-email"
-              name="email"
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              maxLength={MAX_LONGITUD.email}
-              value={datos.email}
-              onChange={cambiar("email")}
-              aria-required
-              aria-invalid={!!errores.email}
-              aria-describedby={describedBy("email")}
-              className={CLASE_CAMPO}
-            />
-            <MensajeError campo="email" mensaje={errores.email} />
-          </div>
-          <div>
-            <Etiqueta campo="telefono" />
-            <input
-              id="sol-telefono"
-              name="telefono"
-              type="tel"
-              autoComplete="tel"
-              maxLength={MAX_LONGITUD.telefono}
-              value={datos.telefono}
-              onChange={cambiar("telefono")}
-              aria-invalid={!!errores.telefono}
-              aria-describedby={describedBy("telefono")}
-              className={CLASE_CAMPO}
-            />
-            <MensajeError campo="telefono" mensaje={errores.telefono} />
-          </div>
-        </div>
-      </fieldset>
-
-      <fieldset
-        id="sol-tipo-grupo"
-        className="mt-10"
-        aria-describedby={errores.tipo ? "sol-tipo-error" : undefined}
-      >
-        <legend className="text-lg font-bold text-beloq-dark">
-          Tipo de organización{" "}
-          <span className="text-sm font-normal text-gray-600">(obligatorio)</span>
-        </legend>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          {TIPOS_ORGANIZACION.map((t) => (
-            <label
-              key={t.id}
-              className="flex cursor-pointer items-center gap-3 rounded-[0_12px_0_12px] border border-gray-300 px-4 py-3 text-beloq-dark transition-colors hover:border-beloq-dark has-[input:checked]:border-beloq-dark has-[input:checked]:bg-beloq-yellow has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-beloq-dark"
-            >
-              <input
-                type="radio"
-                name="tipo"
-                value={t.id}
-                checked={datos.tipo === t.id}
-                onChange={cambiar("tipo")}
-                className="h-4 w-4 accent-beloq-dark"
-              />
-              <span className="text-sm font-bold">{t.label}</span>
-            </label>
-          ))}
-        </div>
-        <MensajeError campo="tipo" mensaje={errores.tipo} />
-      </fieldset>
-
-      {datos.tipo === "empresa" && (
-        <fieldset className="mt-8 rounded-[0_24px_0_24px] bg-beloq-gray p-5 sm:p-6">
-          <legend className="sr-only">Datos del centro de trabajo</legend>
-          <p className="font-bold text-beloq-dark">Si quieres, cuéntanos algo más del centro</p>
-          <p className="mt-1 text-sm text-gray-600">
-            Basta con cifras generales. No necesitamos datos de personas concretas ni
-            archivos de nómina.
-          </p>
-          <div className="mt-5 grid gap-6 sm:grid-cols-[1fr_2fr]">
+        <fieldset className="space-y-6">
+          <legend className="text-lg font-bold text-beloq-dark">Tus datos</legend>
+          <div className="grid gap-6 sm:grid-cols-2">
             <div>
-              <Etiqueta campo="centros" />
+              <Etiqueta campo="nombre" obligatorio />
               <input
-                id="sol-centros"
-                name="centros"
+                id="sol-nombre"
+                name="nombre"
                 type="text"
-                inputMode="numeric"
-                maxLength={MAX_LONGITUD.centros}
-                value={datos.centros}
-                onChange={cambiar("centros")}
-                aria-invalid={!!errores.centros}
-                aria-describedby={describedBy("centros")}
+                autoComplete="name"
+                maxLength={MAX_LONGITUD.nombre}
+                value={datos.nombre}
+                onChange={cambiar("nombre")}
+                aria-required
+                aria-invalid={!!errores.nombre}
+                aria-describedby={describedBy("nombre")}
                 className={CLASE_CAMPO}
               />
-              <MensajeError campo="centros" mensaje={errores.centros} />
+              <MensajeError campo="nombre" mensaje={errores.nombre} />
             </div>
             <div>
-              <Etiqueta campo="turnos" />
-              <textarea
-                id="sol-turnos"
-                name="turnos"
-                rows={3}
-                maxLength={MAX_LONGITUD.turnos}
-                value={datos.turnos}
-                onChange={cambiar("turnos")}
-                placeholder="Por ejemplo: turnos de 6:00 a 14:00 y de 14:00 a 22:00, de lunes a sábado"
-                aria-invalid={!!errores.turnos}
-                aria-describedby={describedBy("turnos")}
-                className={`${CLASE_CAMPO} resize-y`}
+              <Etiqueta campo="organizacion" obligatorio />
+              <input
+                id="sol-organizacion"
+                name="organizacion"
+                type="text"
+                autoComplete="organization"
+                maxLength={MAX_LONGITUD.organizacion}
+                value={datos.organizacion}
+                onChange={cambiar("organizacion")}
+                aria-required
+                aria-invalid={!!errores.organizacion}
+                aria-describedby={describedBy("organizacion")}
+                className={CLASE_CAMPO}
               />
-              <MensajeError campo="turnos" mensaje={errores.turnos} />
+              <MensajeError campo="organizacion" mensaje={errores.organizacion} />
+            </div>
+            <div>
+              <Etiqueta campo="email" obligatorio />
+              <input
+                id="sol-email"
+                name="email"
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                maxLength={MAX_LONGITUD.email}
+                value={datos.email}
+                onChange={cambiar("email")}
+                aria-required
+                aria-invalid={!!errores.email}
+                aria-describedby={describedBy("email")}
+                className={CLASE_CAMPO}
+              />
+              <MensajeError campo="email" mensaje={errores.email} />
+            </div>
+            <div>
+              <Etiqueta campo="telefono" />
+              <input
+                id="sol-telefono"
+                name="telefono"
+                type="tel"
+                autoComplete="tel"
+                maxLength={MAX_LONGITUD.telefono}
+                value={datos.telefono}
+                onChange={cambiar("telefono")}
+                aria-invalid={!!errores.telefono}
+                aria-describedby={describedBy("telefono")}
+                className={CLASE_CAMPO}
+              />
+              <MensajeError campo="telefono" mensaje={errores.telefono} />
             </div>
           </div>
         </fieldset>
-      )}
 
-      <fieldset className="mt-10 space-y-6">
-        <legend className="text-lg font-bold text-beloq-dark">Tu encargo</legend>
-        <div className="grid gap-6 sm:grid-cols-2">
-          <div>
-            <Etiqueta campo="ubicacion" />
-            <input
-              id="sol-ubicacion"
-              name="ubicacion"
-              type="text"
-              maxLength={MAX_LONGITUD.ubicacion}
-              value={datos.ubicacion}
-              onChange={cambiar("ubicacion")}
-              placeholder="Por ejemplo: València, Paterna…"
-              aria-invalid={!!errores.ubicacion}
-              aria-describedby={describedBy("ubicacion")}
-              className={CLASE_CAMPO}
-            />
-            <MensajeError campo="ubicacion" mensaje={errores.ubicacion} />
-          </div>
-          <div>
-            <Etiqueta campo="servicio" />
-            <select
-              id="sol-servicio"
-              name="servicio"
-              value={datos.servicio}
-              onChange={cambiar("servicio")}
-              aria-invalid={!!errores.servicio}
-              aria-describedby={describedBy("servicio")}
-              className={CLASE_CAMPO}
-            >
-              <option value="">Aún no lo sé</option>
-              {SERVICIOS.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.titulo}
-                </option>
-              ))}
-            </select>
-            <MensajeError campo="servicio" mensaje={errores.servicio} />
-          </div>
-        </div>
-
-        <fieldset>
-          <legend className="text-sm font-bold text-beloq-dark">
-            {ETIQUETAS.modalidad}{" "}
-            <span className="font-normal text-gray-600">(opcional)</span>
+        <fieldset
+          id="sol-tipo-grupo"
+          className="mt-10"
+          aria-describedby={errores.tipo ? "sol-tipo-error" : undefined}
+        >
+          <legend className="text-lg font-bold text-beloq-dark">
+            Tipo de organización{" "}
+            <span className="text-sm font-normal text-gray-600">(obligatorio)</span>
           </legend>
-          <div className="mt-2 flex flex-wrap gap-3">
-            {MODALIDADES.map((m) => (
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {TIPOS_ORGANIZACION.map((t) => (
               <label
-                key={m.id}
-                className="flex cursor-pointer items-center gap-2 rounded-[0_12px_0_12px] border border-gray-300 px-4 py-2.5 text-sm font-bold text-beloq-dark transition-colors hover:border-beloq-dark has-[input:checked]:border-beloq-dark has-[input:checked]:bg-beloq-yellow has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-beloq-dark"
+                key={t.id}
+                className="flex cursor-pointer items-center gap-3 rounded-[0_12px_0_12px] border border-gray-300 px-4 py-3 text-beloq-dark transition-colors hover:border-beloq-dark has-[input:checked]:border-beloq-dark has-[input:checked]:bg-beloq-yellow has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-beloq-dark"
               >
                 <input
                   type="radio"
-                  name="modalidad"
-                  value={m.id}
-                  checked={datos.modalidad === m.id}
-                  onChange={cambiar("modalidad")}
+                  name="tipo"
+                  value={t.id}
+                  checked={datos.tipo === t.id}
+                  onChange={cambiar("tipo")}
                   className="h-4 w-4 accent-beloq-dark"
                 />
-                {m.label}
+                <span className="text-sm font-bold">{t.label}</span>
               </label>
             ))}
           </div>
-          <MensajeError campo="modalidad" mensaje={errores.modalidad} />
+          <MensajeError campo="tipo" mensaje={errores.tipo} />
         </fieldset>
 
-        <div>
-          <Etiqueta campo="necesidad" />
-          <Ayuda campo="necesidad">
-            La decisión que tienes por delante, la zona o el centro y cualquier dato que
-            ya tengas.
-          </Ayuda>
-          <textarea
-            id="sol-necesidad"
-            name="necesidad"
-            rows={6}
-            maxLength={MAX_LONGITUD.necesidad}
-            value={datos.necesidad}
-            onChange={cambiar("necesidad")}
-            aria-invalid={!!errores.necesidad}
-            aria-describedby={describedBy("necesidad", true)}
-            className={`${CLASE_CAMPO} resize-y`}
-          />
-          <MensajeError campo="necesidad" mensaje={errores.necesidad} />
+        {datos.tipo === "empresa" && (
+          <fieldset className="mt-8 rounded-[0_24px_0_24px] bg-beloq-gray p-5 sm:p-6">
+            <legend className="sr-only">Datos del centro de trabajo</legend>
+            <p className="font-bold text-beloq-dark">Si quieres, cuéntanos algo más del centro</p>
+            <p className="mt-1 text-sm text-gray-600">
+              Basta con cifras generales. No necesitamos datos de personas concretas ni
+              archivos de nómina.
+            </p>
+            <div className="mt-5 grid gap-6 sm:grid-cols-[1fr_2fr]">
+              <div>
+                <Etiqueta campo="centros" />
+                <input
+                  id="sol-centros"
+                  name="centros"
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={MAX_LONGITUD.centros}
+                  value={datos.centros}
+                  onChange={cambiar("centros")}
+                  aria-invalid={!!errores.centros}
+                  aria-describedby={describedBy("centros")}
+                  className={CLASE_CAMPO}
+                />
+                <MensajeError campo="centros" mensaje={errores.centros} />
+              </div>
+              <div>
+                <Etiqueta campo="turnos" />
+                <textarea
+                  id="sol-turnos"
+                  name="turnos"
+                  rows={3}
+                  maxLength={MAX_LONGITUD.turnos}
+                  value={datos.turnos}
+                  onChange={cambiar("turnos")}
+                  placeholder="Por ejemplo: turnos de 6:00 a 14:00 y de 14:00 a 22:00, de lunes a sábado"
+                  aria-invalid={!!errores.turnos}
+                  aria-describedby={describedBy("turnos")}
+                  className={`${CLASE_CAMPO} resize-y`}
+                />
+                <MensajeError campo="turnos" mensaje={errores.turnos} />
+              </div>
+            </div>
+          </fieldset>
+        )}
+
+        <fieldset className="mt-10 space-y-6">
+          <legend className="text-lg font-bold text-beloq-dark">Tu encargo</legend>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div>
+              <Etiqueta campo="ubicacion" />
+              <input
+                id="sol-ubicacion"
+                name="ubicacion"
+                type="text"
+                maxLength={MAX_LONGITUD.ubicacion}
+                value={datos.ubicacion}
+                onChange={cambiar("ubicacion")}
+                placeholder="Por ejemplo: València, Paterna…"
+                aria-invalid={!!errores.ubicacion}
+                aria-describedby={describedBy("ubicacion")}
+                className={CLASE_CAMPO}
+              />
+              <MensajeError campo="ubicacion" mensaje={errores.ubicacion} />
+            </div>
+            <div>
+              <Etiqueta campo="servicio" />
+              <select
+                id="sol-servicio"
+                name="servicio"
+                value={datos.servicio}
+                onChange={cambiar("servicio")}
+                aria-invalid={!!errores.servicio}
+                aria-describedby={describedBy("servicio")}
+                className={CLASE_CAMPO}
+              >
+                <option value="">Aún no lo sé</option>
+                {SERVICIOS.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.titulo}
+                  </option>
+                ))}
+              </select>
+              <MensajeError campo="servicio" mensaje={errores.servicio} />
+            </div>
+          </div>
+
+          <fieldset>
+            <legend className="text-sm font-bold text-beloq-dark">
+              {ETIQUETAS.modalidad}{" "}
+              <span className="font-normal text-gray-600">(opcional)</span>
+            </legend>
+            <div className="mt-2 flex flex-wrap gap-3">
+              {MODALIDADES.map((m) => (
+                <label
+                  key={m.id}
+                  className="flex cursor-pointer items-center gap-2 rounded-[0_12px_0_12px] border border-gray-300 px-4 py-2.5 text-sm font-bold text-beloq-dark transition-colors hover:border-beloq-dark has-[input:checked]:border-beloq-dark has-[input:checked]:bg-beloq-yellow has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-beloq-dark"
+                >
+                  <input
+                    type="radio"
+                    name="modalidad"
+                    value={m.id}
+                    checked={datos.modalidad === m.id}
+                    onChange={cambiar("modalidad")}
+                    className="h-4 w-4 accent-beloq-dark"
+                  />
+                  {m.label}
+                </label>
+              ))}
+            </div>
+            <MensajeError campo="modalidad" mensaje={errores.modalidad} />
+          </fieldset>
+
+          <div>
+            <Etiqueta campo="necesidad" />
+            <Ayuda campo="necesidad">
+              La decisión que tienes por delante, la zona o el centro y cualquier dato que
+              ya tengas.
+            </Ayuda>
+            <textarea
+              id="sol-necesidad"
+              name="necesidad"
+              rows={6}
+              maxLength={MAX_LONGITUD.necesidad}
+              value={datos.necesidad}
+              onChange={cambiar("necesidad")}
+              aria-invalid={!!errores.necesidad}
+              aria-describedby={describedBy("necesidad", true)}
+              className={`${CLASE_CAMPO} resize-y`}
+            />
+            <MensajeError campo="necesidad" mensaje={errores.necesidad} />
+          </div>
+
+          <div className="sm:max-w-md">
+            <Etiqueta campo="fecha" />
+            <input
+              id="sol-fecha"
+              name="fecha"
+              type="text"
+              maxLength={MAX_LONGITUD.fecha}
+              value={datos.fecha}
+              onChange={cambiar("fecha")}
+              placeholder="Por ejemplo: marzo de 2027"
+              aria-invalid={!!errores.fecha}
+              aria-describedby={describedBy("fecha")}
+              className={CLASE_CAMPO}
+            />
+            <MensajeError campo="fecha" mensaje={errores.fecha} />
+          </div>
+        </fieldset>
+
+        {/* Campo trampa: invisible para personas; los robots suelen rellenarlo. */}
+        <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+          <label htmlFor="sol-sitio-web">No rellenes este campo</label>
+          <input id="sol-sitio-web" name="sitio_web" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
         </div>
 
-        <div className="sm:max-w-md">
-          <Etiqueta campo="fecha" />
-          <input
-            id="sol-fecha"
-            name="fecha"
-            type="text"
-            maxLength={MAX_LONGITUD.fecha}
-            value={datos.fecha}
-            onChange={cambiar("fecha")}
-            placeholder="Por ejemplo: marzo de 2027"
-            aria-invalid={!!errores.fecha}
-            aria-describedby={describedBy("fecha")}
-            className={CLASE_CAMPO}
-          />
-          <MensajeError campo="fecha" mensaje={errores.fecha} />
+        {fallo && (
+          <div
+            ref={falloRef}
+            tabIndex={-1}
+            role="alert"
+            className="mt-8 flex gap-3 rounded-[0_12px_0_12px] border-2 border-red-700 p-4 text-sm text-red-700 focus:outline-none"
+          >
+            <CircleAlert aria-hidden className="mt-0.5 h-5 w-5 shrink-0" />
+            <p className="font-bold">{fallo}</p>
+          </div>
+        )}
+
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+          <button
+            type="submit"
+            disabled={enviando}
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-beloq-dark px-8 py-3.5 font-bold text-white transition-colors hover:bg-black disabled:cursor-wait disabled:opacity-70"
+          >
+            {enviando ? (
+              <>
+                <LoaderCircle aria-hidden className="h-5 w-5 animate-spin" />
+                Enviando…
+              </>
+            ) : (
+              <>
+                <Send aria-hidden className="h-5 w-5" />
+                Enviar solicitud
+              </>
+            )}
+          </button>
+          <p className="text-sm text-gray-600" aria-live="polite">
+            {enviando ? "Enviando la solicitud, no cierres la página." : ""}
+          </p>
         </div>
-      </fieldset>
 
-      {/* Campo trampa: invisible para personas; los robots suelen rellenarlo. */}
-      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
-        <label htmlFor="sol-sitio-web">No rellenes este campo</label>
-        <input id="sol-sitio-web" name="sitio_web" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
-      </div>
-
-      {fallo && (
-        <div
-          ref={falloRef}
-          tabIndex={-1}
-          role="alert"
-          className="mt-8 flex gap-3 rounded-[0_12px_0_12px] border-2 border-red-700 p-4 text-sm text-red-700 focus:outline-none"
-        >
-          <CircleAlert aria-hidden className="mt-0.5 h-5 w-5 shrink-0" />
-          <p className="font-bold">{fallo}</p>
-        </div>
-      )}
-
-      <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-        <button
-          type="submit"
-          disabled={enviando}
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-beloq-dark px-8 py-3.5 font-bold text-white transition-colors hover:bg-black disabled:cursor-wait disabled:opacity-70"
-        >
-          {enviando ? (
-            <>
-              <LoaderCircle aria-hidden className="h-5 w-5 animate-spin" />
-              Enviando…
-            </>
-          ) : (
-            <>
-              <Send aria-hidden className="h-5 w-5" />
-              Enviar solicitud
-            </>
-          )}
-        </button>
-        <p className="text-sm text-gray-600" aria-live="polite">
-          {enviando ? "Enviando la solicitud, no cierres la página." : ""}
+        <p className="mt-8 border-t border-gray-200 pt-6 text-sm leading-relaxed text-gray-600">
+          Responsable: Beloq Movilidad SL. Usaremos estos datos para responder a tu
+          solicitud y, si procede, preparar una propuesta. Puedes acceder a ellos,
+          rectificarlos o pedir que los borremos escribiendo a{" "}
+          <a href="mailto:dpo@beloq.es" className="font-bold text-beloq-dark underline underline-offset-4">
+            dpo@beloq.es
+          </a>
+          . Más información en la{" "}
+          <Link href="/legal/privacidad" className="font-bold text-beloq-dark underline underline-offset-4">
+            política de privacidad
+          </Link>
+          .
         </p>
-      </div>
-
-      <p className="mt-8 border-t border-gray-200 pt-6 text-sm leading-relaxed text-gray-600">
-        Responsable: Beloq Movilidad SL. Usaremos estos datos para responder a tu
-        solicitud y, si procede, preparar una propuesta. Puedes acceder a ellos,
-        rectificarlos o pedir que los borremos escribiendo a{" "}
-        <a href="mailto:dpo@beloq.es" className="font-bold text-beloq-dark underline underline-offset-4">
-          dpo@beloq.es
-        </a>
-        . Más información en la{" "}
-        <Link href="/legal/privacidad" className="font-bold text-beloq-dark underline underline-offset-4">
-          política de privacidad
-        </Link>
-        .
-      </p>
+      </fieldset>
     </form>
   );
 }

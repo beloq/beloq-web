@@ -127,6 +127,14 @@ export default function EmpresasPage() {
               trabajadoras.
             </p>
             <p>
+              El plazo general para disponer del plan vence el{" "}
+              <strong className="text-beloq-dark">5 de diciembre de 2026</strong>, doce
+              meses después de la entrada en vigor de la ley; debe comprobarse la
+              normativa territorial aplicable. Lo que vence es la obligación de tener
+              el plan: sus medidas se implantan después y se siguen con un primer
+              informe a los dos años de su aprobación.
+            </p>
+            <p>
               Nuestro trabajo cubre la parte de datos de ese plan: el diagnóstico de
               partida y el seguimiento de indicadores. El resto del plan corresponde a
               la organización.

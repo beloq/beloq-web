@@ -4,6 +4,8 @@ import { Identidad } from "../components/informes/ui";
 import { IDENTIDAD, SITE, jsonLd } from "../lib/informes";
 
 export const metadata: Metadata = {
+  // URLs absolutas de og:image y twitter:image (opengraph-image.tsx).
+  metadataBase: new URL(SITE),
   title: {
     template: "%s · Informes de movilidad · beloq",
     default: "Informes de movilidad · beloq",

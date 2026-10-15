@@ -418,14 +418,20 @@ export function Tabla({
   titulo,
   columnas,
   filas,
+  anchoMinimo = 640,
 }: {
   titulo: string;
   columnas: string[];
   filas: ReactNode[][];
+  /** Ancho mínimo en px antes de desplazarse en horizontal. */
+  anchoMinimo?: number;
 }) {
   return (
     <div className="overflow-x-auto rounded-[0_24px_0_24px] border border-gray-200 bg-white">
-      <table className="w-full min-w-[640px] border-collapse text-left text-sm">
+      <table
+        style={{ minWidth: anchoMinimo }}
+        className="w-full border-collapse text-left text-sm"
+      >
         <caption className="sr-only">{titulo}</caption>
         <thead>
           <tr className="bg-beloq-dark text-white">

@@ -18,7 +18,13 @@ import {
   Tarjeta,
   TarjetaIcono,
 } from "../../components/informes/ui";
-import { BASE, metadatos, solicitarHref } from "../../lib/informes";
+import type { ReactNode } from "react";
+import {
+  BASE,
+  REVISION_FUENTES,
+  metadatos,
+  solicitarHref,
+} from "../../lib/informes";
 
 export const metadata = metadatos({
   titulo: "Metodología: fuentes, comprobaciones y cómo leer los datos",
@@ -72,6 +78,265 @@ const FAMILIAS = [
   },
 ];
 
+/** Enlace a la ficha oficial de una fuente (sale de la web). */
+function Ficha({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="font-bold text-beloq-dark underline decoration-beloq-yellow decoration-2 underline-offset-2"
+    >
+      {children}
+    </a>
+  );
+}
+
+const VLCI = "https://opendata.vlci.valencia.es/dataset";
+const HISTORICO_PROPIO =
+  "Pública. El histórico propio de beloq, si lo hay, se confirma en la propuesta.";
+
+// Cada fila sale de la ficha publicada por el organismo, revisada en
+// REVISION_FUENTES. Solo datos públicos: nada del estado interno de las capturas.
+const FUENTES_CONCRETAS: { fuente: ReactNode; filas: string[] }[] = [
+  {
+    fuente: (
+      <>
+        <Ficha href={`${VLCI}/google-transit-lines-stops-bus-schedules`}>
+          Horarios de autobús EMT (GTFS)
+        </Ficha>
+        
+        <span className="mt-1 block font-normal text-gray-600">Ajuntament de València · CC BY 4.0</span>
+      </>
+    ),
+    filas: [
+      "Líneas, paradas y horarios programados.",
+      "Red de la EMT de València.",
+      "La versión publicada, con sus fechas de vigencia.",
+      "Sin frecuencia declarada en la ficha; cada versión indica su vigencia.",
+      "Pública. Se usa la versión vigente en el periodo del encargo.",
+    ],
+  },
+  {
+    fuente: (
+      <>
+        <Ficha href="https://www.metrovalencia.es/google_transit_feed/google_transit.zip">
+          Horarios de Metrovalencia (GTFS)
+        </Ficha>
+        
+        <span className="mt-1 block font-normal text-gray-600">FGV, Generalitat Valenciana</span>
+      </>
+    ),
+    filas: [
+      "Líneas, estaciones y horarios programados de metro y tranvía.",
+      "Red de Metrovalencia.",
+      "La versión publicada, con sus fechas de vigencia.",
+      "Sin frecuencia declarada; cada versión indica su vigencia.",
+      "Pública. Se usa la versión vigente en el periodo del encargo.",
+    ],
+  },
+  {
+    fuente: (
+      <>
+        <Ficha href="https://data.renfe.com/dataset/horarios-cercanias">
+          Horarios de Cercanías (GTFS)
+        </Ficha>
+        
+        <span className="mt-1 block font-normal text-gray-600">Renfe · CC BY 4.0</span>
+      </>
+    ),
+    filas: [
+      "Horarios programados de Cercanías y Rodalies.",
+      "Toda España; se filtra el núcleo de València.",
+      "La versión publicada, con sus fechas de vigencia.",
+      "Sin frecuencia declarada; el fichero consultado estaba actualizado el mismo día de la revisión.",
+      "Pública. Se usa la versión vigente en el periodo del encargo.",
+    ],
+  },
+  {
+    fuente: (
+      <>
+        <Ficha href={`${VLCI}/valenbisi-disponibilitat-valenbisi-dsiponibilidad`}>
+          Disponibilidad de Valenbisi
+        </Ficha>
+        
+        <span className="mt-1 block font-normal text-gray-600">Ajuntament de València · CC BY 4.0</span>
+      </>
+    ),
+    filas: [
+      "Bicicletas y anclajes libres por estación, con su ubicación y capacidad. No son viajes.",
+      "Estaciones Valenbisi de València.",
+      "Solo el estado actual: la ficha no publica histórico.",
+      "Cada 10 minutos, según la ficha.",
+      HISTORICO_PROPIO,
+    ],
+  },
+  {
+    fuente: (
+      <>
+        <Ficha
+          href={`${VLCI}/punts-mesura-bicis-espires-electromagnetiques-puntos-medida-bicis-espiras-electr`}
+        >
+          Contadores de bicicletas (espiras)
+        </Ficha>
+        
+        <span className="mt-1 block font-normal text-gray-600">Ajuntament de València · CC BY 4.0</span>
+      </>
+    ),
+    filas: [
+      "Intensidad de bicicletas por punto de medida. Cuenta pasos, no personas distintas.",
+      "Puntos de medida de la ciudad.",
+      "Estado actual.",
+      "Sin frecuencia declarada. La ficha avisa de errores de procesamiento temporales.",
+      "Condicionada a que la fuente resuelva la incidencia; se valida en cada encargo.",
+    ],
+  },
+  {
+    fuente: (
+      <>
+        <Ficha href={`${VLCI}/estat-transit-temps-real-estado-trafico-tiempo-real`}>
+          Estado del tráfico en tiempo real
+        </Ficha>
+        
+        <span className="mt-1 block font-normal text-gray-600">Ajuntament de València · CC BY 4.0</span>
+      </>
+    ),
+    filas: [
+      "Estado por tramo: fluido, denso, congestionado, cortado o sin datos.",
+      "Tramos de la red viaria de la ciudad.",
+      "Solo el estado actual.",
+      "Cada 3 minutos, según la ficha.",
+      HISTORICO_PROPIO,
+    ],
+  },
+  {
+    fuente: (
+      <>
+        <Ficha href={`${VLCI}/parkings`}>Aparcamientos públicos</Ficha>
+        
+        <span className="mt-1 block font-normal text-gray-600">Ajuntament de València · CC BY 4.0</span>
+      </>
+    ),
+    filas: [
+      "Plazas totales y libres de aparcamientos públicos, con la fecha de su última actualización.",
+      "Aparcamientos públicos de la ciudad.",
+      "Solo el estado actual.",
+      "Sin frecuencia declarada; cada registro lleva su propia fecha, que hay que revisar.",
+      HISTORICO_PROPIO,
+    ],
+  },
+  {
+    fuente: (
+      <>
+        <Ficha href={`${VLCI}/ocupacio-via-publica-ocupacion-via-publica`}>
+          Ocupación de la vía pública
+        </Ficha>
+        
+        <span className="mt-1 block font-normal text-gray-600">Ajuntament de València · CC BY 4.0</span>
+      </>
+    ),
+    filas: [
+      "Ocupaciones por obras, festejos o incidencias.",
+      "Término municipal.",
+      "Las ocupaciones publicadas en el momento de la consulta.",
+      "Sin frecuencia declarada.",
+      HISTORICO_PROPIO,
+    ],
+  },
+  {
+    fuente: (
+      <>
+        <Ficha href={`${VLCI}/aparcaments-bicicletes-aparcamientos-bicicletas`}>
+          Aparcabicis
+        </Ficha>
+        {", "}
+        <Ficha href={`${VLCI}/itinerarios-ciclistas-itineraris-ciclistes`}>
+          itinerarios ciclistas
+        </Ficha>
+        {" y "}
+        <Ficha href={`${VLCI}/barris-barrios`}>barrios</Ficha>
+        
+        <span className="mt-1 block font-normal text-gray-600">Ajuntament de València · CC BY 4.0</span>
+      </>
+    ),
+    filas: [
+      "Inventario y geometría: aparcabicis con su número de plazas, carriles bici y límites de barrios.",
+      "Término municipal.",
+      "El inventario publicado en el momento de la descarga.",
+      "Sin frecuencia declarada.",
+      "Pública. Se descarga para el encargo y se anota la fecha.",
+    ],
+  },
+  {
+    fuente: (
+      <>
+        <Ficha href="https://dadesobertes.gva.es/dataset/tra-int-cr-2026">
+          Usuarios de ciclorrutas
+        </Ficha>
+        
+        <span className="mt-1 block font-normal text-gray-600">Generalitat Valenciana · CC BY</span>
+      </>
+    ),
+    filas: [
+      "Usuarios diarios totales (peatones, patinetes y bicicletas) y ciclistas en las ciclorrutas.",
+      "Red autonómica de ciclorrutas.",
+      "Ficheros anuales; hay conjuntos publicados para 2024, 2025 y 2026.",
+      "Sin frecuencia declarada; el de 2026 se actualizó por última vez el 18/09/2026.",
+      "Pública. Se descarga para el encargo.",
+    ],
+  },
+  {
+    fuente: (
+      <>
+        <Ficha href="https://nap.dgt.es/dataset/incidencias-dgt-datex2-v3-7">
+          Incidencias de tráfico (DATEX II)
+        </Ficha>
+        
+        <span className="mt-1 block font-normal text-gray-600">DGT · Punto de Acceso Nacional</span>
+      </>
+    ),
+    filas: [
+      "Incidencias en carreteras: obras, cortes, accidentes, retenciones.",
+      "Red estatal de carreteras, salvo País Vasco y Cataluña; se filtra la zona del encargo.",
+      "Solo las situaciones vigentes.",
+      "Cada minuto, según la ficha.",
+      HISTORICO_PROPIO,
+    ],
+  },
+  {
+    fuente: (
+      <>
+        Datos del cliente
+        
+        <span className="mt-1 block font-normal text-gray-600">La organización que encarga</span>
+      </>
+    ),
+    filas: [
+      "Ubicación, horarios, población agregada, aparcamiento y actuaciones previstas.",
+      "El centro o la zona del encargo.",
+      "El que se acuerde.",
+      "La que se acuerde.",
+      "La aporta el cliente, siempre agregada.",
+    ],
+  },
+  {
+    fuente: (
+      <>
+        Telemetría de estaciones beloq
+        
+        <span className="mt-1 block font-normal text-gray-600">beloq</span>
+      </>
+    ),
+    filas: [
+      "Ocupación, duración de las estancias y rotación del aparcamiento seguro, agregadas.",
+      "Solo donde hay estaciones beloq instaladas.",
+      "Desde la puesta en marcha de cada estación.",
+      "Continua mientras la estación está en servicio.",
+      "Solo si hay estaciones beloq en el ámbito del encargo.",
+    ],
+  },
+];
+
 export default function MetodologiaPage() {
   return (
     <>
@@ -87,6 +352,7 @@ export default function MetodologiaPage() {
         }
         indice={[
           { href: "#fuentes", label: "Fuentes" },
+          { href: "#fuentes-concretas", label: "Fuentes concretas" },
           { href: "#combinacion", label: "Cómo se combinan" },
           { href: "#revision", label: "Revisión de datos" },
           { href: "#indicadores", label: "Indicadores" },
@@ -132,6 +398,47 @@ export default function MetodologiaPage() {
             </li>
           ))}
         </ul>
+      </Seccion>
+
+      <Seccion
+        id="fuentes-concretas"
+        titulo="Fuentes concretas, cobertura y disponibilidad"
+        intro={
+          <>
+            <p>
+              Las fuentes públicas que usamos en València y su entorno, con el enlace
+              a su ficha oficial. Lo que dice cada fila sale de esa ficha, revisada
+              el <time dateTime={REVISION_FUENTES.iso}>{REVISION_FUENTES.texto}</time>.
+              Las fuentes cambian: en cada propuesta se vuelve a comprobar su estado.
+            </p>
+            <p>
+              «Periodo disponible» es lo que publica la propia fuente. Cuando solo
+              publica el estado actual, el histórico depende de una recopilación
+              propia, y su periodo se confirma en la propuesta.
+            </p>
+          </>
+        }
+      >
+        <Tabla
+          titulo="Fuentes concretas, cobertura y disponibilidad"
+          anchoMinimo={1040}
+          columnas={[
+            "Fuente y publicador",
+            "Qué aporta",
+            "Territorio",
+            "Periodo disponible",
+            "Actualización de la fuente",
+            "Disponibilidad para el encargo",
+            "Revisión",
+          ]}
+          filas={FUENTES_CONCRETAS.map((x) => [
+            x.fuente,
+            ...x.filas,
+            <time key="revision" dateTime={REVISION_FUENTES.iso}>
+              {REVISION_FUENTES.texto}
+            </time>,
+          ])}
+        />
       </Seccion>
 
       <Seccion
@@ -227,12 +534,28 @@ export default function MetodologiaPage() {
           columnas={["Campo", "Qué recoge"]}
           filas={[
             ["Definición", "Qué mide, en una frase que se entienda sin conocer la fuente."],
-            ["Cálculo", "Fórmula, filtros y agregación (por zona, franja y tipo de día)."],
+            ["Ámbito", "Puntos, estaciones o zonas que entran en el cálculo y los que quedan fuera."],
+            [
+              "Cálculo",
+              "Fórmula, filtros, agregación (por zona, franja y tipo de día) y denominador que utiliza.",
+            ],
             ["Unidad", "Salidas, minutos, plazas, porcentaje del tiempo…"],
             ["Fuente y versión", "De dónde salen los datos y qué versión o fechas se usan."],
             ["Periodo", "Fechas que cubre y días excluidos."],
+            [
+              "Cobertura válida",
+              "Tiempo o registros válidos respecto de los esperados, con el criterio propio de cada fuente y los motivos de exclusión. Un valor que la fuente repite sin actualizarlo no cuenta como observación nueva.",
+            ],
+            [
+              "Actualidad",
+              "Fecha del dato según la fuente y fecha en que se capturó o descargó, por separado.",
+            ],
             ["Tipo de resultado", "Observación, estimación o escenario (ver más abajo)."],
             ["Limitaciones", "Lo que el indicador no dice y los huecos conocidos."],
+            [
+              "Validación y actualización",
+              "Cuándo se comprobó el cálculo con la referencia independiente y cuándo se actualizó el indicador por última vez.",
+            ],
           ]}
         />
         <div className="mt-8 max-w-3xl space-y-3 leading-relaxed text-gray-600">

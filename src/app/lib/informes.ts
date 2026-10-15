@@ -254,6 +254,14 @@ export const REVISION_NORMATIVA = {
   texto: "15 de octubre de 2026",
 } as const;
 
+/** Imagen para compartir (la genera opengraph-image.tsx de la sección). */
+export const IMAGEN_SOCIAL = {
+  url: `${BASE}/opengraph-image`,
+  width: 1200,
+  height: 630,
+  alt: "beloq · Informes de movilidad: diagnóstico, análisis y seguimiento de movilidad con datos",
+} as const;
+
 /**
  * Metadatos de una página de la sección: título propio (el layout añade
  * «· Informes de movilidad · beloq»), descripción, canónica y Open Graph.
@@ -278,9 +286,24 @@ export function metadatos(p: {
       siteName: "beloq",
       locale: "es_ES",
       type: "website",
+      // Explícita: un openGraph propio en la página sustituye al del segmento
+      // y dejaría las páginas hijas sin la imagen de opengraph-image.tsx.
+      images: [IMAGEN_SOCIAL],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: completo,
+      description: p.descripcion,
+      images: [IMAGEN_SOCIAL],
     },
   };
 }
+
+/** Fecha en que se revisaron las fichas de las fuentes de la metodología. */
+export const REVISION_FUENTES = {
+  iso: "2026-10-15",
+  texto: "15/10/2026",
+} as const;
 
 /** JSON-LD seguro dentro de <script> (recomendación de la guía de Next). */
 export function jsonLd(data: unknown): string {

@@ -55,7 +55,7 @@ const TRABAJOS = [
     icono: Bike,
     titulo: "Movilidad ciclista y conexiones con transporte público",
     texto:
-      "Red ciclista, aparcabicis y disponibilidad de bicicleta compartida junto a estaciones de metro, tren y paradas principales: dónde la bici completa el viaje en transporte público y dónde no.",
+      "Analizamos dónde la bicicleta puede facilitar la conexión con el transporte público, qué disponibilidad de bicicletas y aparcamiento existe y qué barreras aparecen en el acceso.",
   },
   {
     icono: SquareParking,
@@ -67,7 +67,7 @@ const TRABAJOS = [
     icono: Construction,
     titulo: "Análisis de obras, cortes y eventos",
     texto:
-      "Comparamos el entorno de una obra, un corte de calle o un evento con periodos equivalentes y con una zona de referencia, para separar su efecto de lo que habría pasado igualmente.",
+      "Comparamos el entorno de una obra, un corte de calle o un evento con periodos equivalentes y, cuando es posible, con una zona de referencia, para estimar los cambios asociados a la actuación y explicar qué parte puede atribuirse a ella con los datos disponibles.",
   },
   {
     icono: ClipboardList,

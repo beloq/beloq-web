@@ -45,6 +45,7 @@ export default async function SolicitarPage({
   };
   const origen = esOrigen(origenQ) ? origenQ : null;
   const premarcado = Object.keys(inicial).length > 0;
+  const sinJavascript = uno(q.aviso) === "sin-javascript";
 
   return (
     <>
@@ -58,6 +59,16 @@ export default async function SolicitarPage({
               información preparamos una propuesta con alcance, entregables,
               calendario y presupuesto.
             </p>
+            {sinJavascript && (
+              <p className="mt-4 rounded-[0_12px_0_12px] border-2 border-beloq-dark bg-white p-4 text-base">
+                <strong>Tu solicitud no se ha enviado.</strong> El formulario necesita
+                JavaScript. Escríbenos a{" "}
+                <a href="mailto:info@beloq.es" className="font-bold underline underline-offset-4">
+                  info@beloq.es
+                </a>{" "}
+                con tu nombre, tu organización y lo que necesitas.
+              </p>
+            )}
             {premarcado && (
               <p className="mt-3 text-base">
                 Hemos marcado algunas opciones según la página de la que vienes

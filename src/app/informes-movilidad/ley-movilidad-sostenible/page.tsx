@@ -73,12 +73,30 @@ const articuloLd = {
   citation: FUENTES.map((f) => f.url),
 };
 
-/** Referencia a un artículo, visible y discreta. */
-function Art({ children }: { children: ReactNode }) {
-  return (
-    <span className="whitespace-nowrap text-sm font-bold text-beloq-dark">
+// Anclas de los artículos en los textos consolidados del BOE.
+const BOE_LEY = "https://www.boe.es/buscar/act.php?id=BOE-A-2025-24545";
+const BOE_RDL = "https://www.boe.es/buscar/act.php?id=BOE-A-2026-6544";
+const ART = {
+  a24: `${BOE_LEY}#a2-6`,
+  a25: `${BOE_LEY}#a2-7`,
+  a26: `${BOE_LEY}#a2-8`,
+  rdl63: `${BOE_RDL}#a6-5`,
+};
+
+/** Referencia a un artículo, visible y discreta; con enlace al BOE si lo hay. */
+function Art({ children, href }: { children: ReactNode; href?: string }) {
+  const clase = "whitespace-nowrap text-sm font-bold text-beloq-dark";
+  return href ? (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`${clase} underline decoration-beloq-yellow decoration-2 underline-offset-2`}
+    >
       ({children})
-    </span>
+    </a>
+  ) : (
+    <span className={clase}>({children})</span>
   );
 }
 
@@ -148,10 +166,10 @@ export default function LeyMovilidadPage() {
               más de 50.000 habitantes y a los territorios insulares, y a los de más
               de 20.000 cuando superan los valores límite de contaminantes{" "}
               <Art>art. 14.3 Ley 7/2021</Art>. La Ley 9/2025 añade que los municipios
-              de entre 20.000 y 50.000 habitantes deben dotarse de un plan
+              de más de 20.000 y menos de 50.000 habitantes deben dotarse de un plan
               simplificado en el plazo de un año desde su entrada en vigor, revisable
               al menos cada seis años salvo que la normativa autonómica fije otra
-              periodicidad <Art>art. 24.1</Art>.
+              periodicidad <Art href={ART.a24}>art. 24.1</Art>.
             </p>
             <p>
               El <strong className="text-beloq-dark">plan de movilidad sostenible al trabajo (PMST)</strong>{" "}
@@ -182,14 +200,26 @@ export default function LeyMovilidadPage() {
             ],
             [
               "Quién está obligado",
-              "Municipios de más de 50.000 habitantes (Ley 7/2021) y de entre 20.000 y 50.000, con plan simplificado (art. 24.1).",
+              "Municipios de más de 50.000 habitantes (Ley 7/2021) y, con plan simplificado, los de más de 20.000 y menos de 50.000 habitantes (art. 24.1).",
               "Centros con más de 200 personas trabajadoras o 100 por turno (art. 26.1).",
-              "Los que cumplan los criterios que fijen conjuntamente los ministerios de Transportes y de Trabajo (art. 25.1).",
+              "Los que identifique la administración competente en transporte y movilidad conforme a los criterios aplicables. Los criterios que fijen los ministerios de Transportes y de Trabajo son supletorios respecto de la regulación territorial (art. 25.1).",
             ],
             [
               "Plazo",
-              "Los de más de 50.000 habitantes, antes de 2023 (Ley 7/2021). Los de 20.000 a 50.000, un año desde la entrada en vigor de la Ley 9/2025.",
-              "Doce meses desde la entrada en vigor de la Ley 9/2025 (5 de diciembre de 2025).",
+              "Más de 50.000 habitantes: antes de 2023 (Ley 7/2021). Más de 20.000 y menos de 50.000: un año desde la entrada en vigor de la Ley 9/2025, con vencimiento general el 5 de diciembre de 2026 (art. 24.1).",
+              <>
+                <strong className="text-beloq-dark">5 de diciembre de 2026</strong>: plazo
+                general de doce meses desde la entrada en vigor de la Ley 9/2025,
+                conforme al{" "}
+                <a href={ART.a26} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+                  artículo 26.1
+                </a>{" "}
+                modificado por el{" "}
+                <a href={ART.rdl63} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+                  Real Decreto-ley 7/2026
+                </a>
+                . Debe comprobarse la normativa territorial aplicable.
+              </>,
               "Dieciocho meses desde la publicación de esos criterios (art. 25.2).",
             ],
             [
@@ -202,9 +232,11 @@ export default function LeyMovilidadPage() {
         />
         <p className="mt-6 max-w-3xl leading-relaxed text-gray-600">
           El plazo de los PMST era inicialmente de veinticuatro meses; el Real
-          Decreto-ley 7/2026 lo redujo a doce <Art>art. 63 RDL 7/2026</Art>. El PMST
-          debe tener en cuenta, cuando exista, el plan de movilidad de la entidad
-          local donde está el centro <Art>art. 26.3</Art>.
+          Decreto-ley 7/2026 lo redujo a doce <Art href={ART.rdl63}>art. 63 RDL 7/2026</Art>.
+          La ley entró en vigor el 5 de diciembre de 2025, de modo que el plazo general
+          vence el 5 de diciembre de 2026. El PMST debe tener en cuenta, cuando exista,
+          el plan de movilidad de la entidad local donde está el centro{" "}
+          <Art href={ART.a26}>art. 26.3</Art>.
         </p>
       </Seccion>
 
@@ -231,32 +263,32 @@ export default function LeyMovilidadPage() {
               <>
                 <strong className="text-beloq-dark">Umbral.</strong> Más de 200
                 personas trabajadoras o 100 por turno cuyo centro de trabajo habitual
-                sea ese centro <Art>art. 26.1</Art>.
+                sea ese centro <Art href={ART.a26}>art. 26.1</Art>.
               </>,
               <>
                 <strong className="text-beloq-dark">Quién está obligado.</strong> Las
                 empresas y las entidades del sector público definidas en el artículo 2
                 de la Ley 40/2015; la administración competente puede extenderlo a
-                otras entidades públicas <Art>art. 26.1</Art>.
+                otras entidades públicas <Art href={ART.a26}>art. 26.1</Art>.
               </>,
               <>
                 <strong className="text-beloq-dark">Centros de alta ocupación.</strong>{" "}
                 Los de más de 1.000 personas trabajadoras en municipios o áreas
                 metropolitanas de más de 500.000 habitantes deben incluir además,
                 entre otras, medidas para reducir la movilidad en las horas punta o
-                durante la jornada <Art>art. 26.5</Art>.
+                durante la jornada <Art href={ART.a26}>art. 26.5</Art>.
               </>,
               <>
                 <strong className="text-beloq-dark">Varios centros en un mismo lugar.</strong>{" "}
                 Se promoverán mecanismos de coordinación entre ellos para compartir
-                información y soluciones <Art>art. 26.6</Art>.
+                información y soluciones <Art href={ART.a26}>art. 26.6</Art>.
               </>,
               <>
                 <strong className="text-beloq-dark">Normas autonómicas y municipales.</strong>{" "}
                 Lo que dice el artículo 26 se aplica de forma supletoria a lo que
                 establezcan la administración competente en movilidad o la ordenación
                 urbanística, según la legislación de cada comunidad autónoma{" "}
-                <Art>art. 26.9</Art>.
+                <Art href={ART.a26}>art. 26.9</Art>.
               </>,
             ]}
           />
@@ -327,8 +359,8 @@ export default function LeyMovilidadPage() {
         <p className="mt-6 max-w-3xl leading-relaxed text-gray-600">
           La ley permite además que el plan contemple la compensación de la huella de
           carbono de la movilidad sobre la que no se haya podido actuar{" "}
-          <Art>art. 26.3</Art>, y prevé que un reglamento pueda establecer la figura
-          del gestor de movilidad <Art>art. 26.4</Art>. El Estatuto de los
+          <Art href={ART.a26}>art. 26.3</Art>, y prevé que un reglamento pueda establecer la figura
+          del gestor de movilidad <Art href={ART.a26}>art. 26.4</Art>. El Estatuto de los
           Trabajadores incluye el deber de negociar en los convenios colectivos
           medidas para promover estos planes <Art>art. 85.1 ET</Art>, aplicable a
           las comisiones negociadoras constituidas desde la entrada en vigor de la
@@ -464,7 +496,7 @@ export default function LeyMovilidadPage() {
           los criterios de grandes centros de actividad y lo que dispone el artículo
           26 sobre los PMST se aplican de forma supletoria respecto a lo que
           establezcan la administración competente o la ordenación urbanística, según
-          la legislación de cada comunidad <Art>arts. 25.1 y 26.9</Art>.
+          la legislación de cada comunidad <Art href={ART.a26}>arts. 25.1 y 26.9</Art>.
         </p>
       </Seccion>
 

@@ -60,6 +60,19 @@ function error(status: number, codigo: string, extra: object = {}) {
 }
 
 export async function POST(request: Request) {
+  // Envío nativo del formulario (sin JavaScript): no se procesa ni se guarda.
+  // Se vuelve al formulario con un aviso y sin ningún dato en la URL.
+  const tipoContenido = request.headers.get("content-type") ?? "";
+  if (
+    tipoContenido.includes("application/x-www-form-urlencoded") ||
+    tipoContenido.includes("multipart/form-data")
+  ) {
+    return NextResponse.redirect(
+      new URL("/informes-movilidad/solicitar?aviso=sin-javascript", request.url),
+      303
+    );
+  }
+
   let cuerpo: Record<string, unknown>;
   try {
     const json: unknown = await request.json();
