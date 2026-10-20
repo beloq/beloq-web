@@ -1,4 +1,7 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import type { Metadata, Viewport } from "next";
+import PanelFeria from "../components/PanelFeria";
 import Pantalla3D from "../components/Pantalla3D";
 
 export const metadata: Metadata = {
@@ -17,6 +20,11 @@ export const viewport: Viewport = {
   themeColor: "#F5F5F5",
 };
 
+// Modo feria: el logo va dentro de la página (data URI), sin otra descarga.
+const LOGO = `data:image/png;base64,${readFileSync(
+  join(process.cwd(), "public", "images", "logo-black.png"),
+).toString("base64")}`;
+
 export default function Pagina3D() {
-  return <Pantalla3D />;
+  return <Pantalla3D logoFeria={LOGO} panelFeria={<PanelFeria />} />;
 }

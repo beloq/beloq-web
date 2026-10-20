@@ -2,7 +2,7 @@
 
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 
 // beloq.es/3d: el visor de Claude Design (public/3d/visor/, preparado con
 // scripts/parchear-visor-3d.mjs) a pantalla entera, con solo lo esencial.
@@ -12,7 +12,9 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 //
 // Modo feria (beloq.es/3d?feria, para la tableta del stand en modo quiosco):
 // sin el botón Volver, para que nadie salga a la web, y con la demo del visor
-// (anclar y desanclar en bucle) cuando pasan 60 s sin que nadie toque.
+// (anclar y desanclar en bucle) cuando pasan 60 s sin que nadie toque. Lleva el
+// logo arriba a la izquierda y, a la derecha, la columna del evento
+// (PanelFeria); el 3D ocupa el resto, así que nada lo tapa.
 
 type Escena = "modulo" | "estacion";
 type Vehiculo = "bici" | "patinete";
@@ -80,7 +82,19 @@ function clasesBoton(activo: boolean) {
   }`;
 }
 
-export default function Pantalla3D() {
+/** Ancho de la columna del modo feria (y hueco que deja el 3D). */
+const PANEL_FERIA = "w-[380px]";
+const SIN_PANEL_FERIA = "right-[380px]";
+
+export default function Pantalla3D({
+  logoFeria,
+  panelFeria,
+}: {
+  /** Logo del modo feria como data URI. */
+  logoFeria?: string;
+  /** Columna del modo feria (eventos y QR). */
+  panelFeria?: ReactNode;
+}) {
   const router = useRouter();
   const marco = useRef<HTMLIFrameElement>(null);
   /** Vehículo ya pedido al visor y aún sin confirmar (para no repetir la orden). */
@@ -179,81 +193,97 @@ export default function Pantalla3D() {
       onPointerDownCapture={alTocar}
       className="fixed inset-0 h-[100dvh] w-full overflow-hidden overscroll-none bg-beloq-gray select-none"
     >
-      <iframe
-        key={escena}
-        ref={marco}
-        src={`/3d/visor/${escena}.html`}
-        title={escena === "modulo" ? "Módulo beloq en 3D" : "Estación beloq en 3D"}
-        allow="fullscreen"
-        onLoad={alCargar}
-        className="absolute inset-0 h-full w-full border-0"
-      />
+      <div className={`absolute inset-y-0 left-0 ${feria && panelFeria ? SIN_PANEL_FERIA : "right-0"}`}>
+        <iframe
+          key={escena}
+          ref={marco}
+          src={`/3d/visor/${escena}.html`}
+          title={escena === "modulo" ? "Módulo beloq en 3D" : "Estación beloq en 3D"}
+          allow="fullscreen"
+          onLoad={alCargar}
+          className="absolute inset-0 h-full w-full border-0"
+        />
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-3 pt-[max(12px,env(safe-area-inset-top))] pr-[max(12px,env(safe-area-inset-right))] pl-[max(12px,env(safe-area-inset-left))]">
-        {feria ? (
-          <span aria-hidden className="h-11 w-11 shrink-0" />
-        ) : (
-          <button
-            type="button"
-            onClick={volver}
-            aria-label="Volver"
-            className="pointer-events-auto flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-beloq-dark bg-white text-beloq-dark shadow-[0_2px_8px_rgba(0,0,0,0.10)] transition-colors duration-200 hover:bg-beloq-yellow"
-          >
-            <ArrowLeft aria-hidden className="h-5 w-5" strokeWidth={2.25} />
-          </button>
-        )}
-        <div role="group" aria-label="Vista" className={GRUPO}>
-          {ESCENAS.map((e) => (
+        <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-3 pt-[max(12px,env(safe-area-inset-top))] pr-[max(12px,env(safe-area-inset-right))] pl-[max(12px,env(safe-area-inset-left))]">
+          {feria ? (
+            logoFeria ? (
+              // eslint-disable-next-line @next/next/no-img-element -- data URI incrustado, sin optimizar
+              <img src={logoFeria} alt="beloq" className="h-10 w-auto shrink-0" />
+            ) : (
+              <span aria-hidden className="h-11 w-11 shrink-0" />
+            )
+          ) : (
             <button
-              key={e.id}
               type="button"
-              aria-pressed={escena === e.id}
-              onClick={() => cambiarEscena(e.id)}
-              className={clasesBoton(escena === e.id)}
+              onClick={volver}
+              aria-label="Volver"
+              className="pointer-events-auto flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-beloq-dark bg-white text-beloq-dark shadow-[0_2px_8px_rgba(0,0,0,0.10)] transition-colors duration-200 hover:bg-beloq-yellow"
             >
-              {e.label}
+              <ArrowLeft aria-hidden className="h-5 w-5" strokeWidth={2.25} />
             </button>
-          ))}
+          )}
+          <div role="group" aria-label="Vista" className={GRUPO}>
+            {ESCENAS.map((e) => (
+              <button
+                key={e.id}
+                type="button"
+                aria-pressed={escena === e.id}
+                onClick={() => cambiarEscena(e.id)}
+                className={clasesBoton(escena === e.id)}
+              >
+                {e.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-wrap items-center justify-center gap-2 px-3 pb-[max(12px,env(safe-area-inset-bottom))]">
+          <div role="group" aria-label="Vehículo" className={GRUPO}>
+            {VEHICULOS.map((v) => {
+              const activo = (visor.vehiculo ?? vehiculo) === v.id;
+              return (
+                <button
+                  key={v.id}
+                  type="button"
+                  aria-pressed={activo}
+                  disabled={!visor.listo}
+                  onClick={() => elegirVehiculo(v.id)}
+                  className={clasesBoton(activo)}
+                >
+                  {v.label}
+                </button>
+              );
+            })}
+          </div>
+          <div role="group" aria-label="Anclaje" className={GRUPO}>
+            <button
+              type="button"
+              disabled={!visor.anclar}
+              onClick={() => pulsar("#tDock")}
+              className={clasesBoton(false)}
+            >
+              Anclar
+            </button>
+            <button
+              type="button"
+              disabled={!visor.desanclar}
+              onClick={() => pulsar("#tUndock")}
+              className={clasesBoton(false)}
+            >
+              Desanclar
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-wrap items-center justify-center gap-2 px-3 pb-[max(12px,env(safe-area-inset-bottom))]">
-        <div role="group" aria-label="Vehículo" className={GRUPO}>
-          {VEHICULOS.map((v) => {
-            const activo = (visor.vehiculo ?? vehiculo) === v.id;
-            return (
-              <button
-                key={v.id}
-                type="button"
-                aria-pressed={activo}
-                disabled={!visor.listo}
-                onClick={() => elegirVehiculo(v.id)}
-                className={clasesBoton(activo)}
-              >
-                {v.label}
-              </button>
-            );
-          })}
-        </div>
-        <div role="group" aria-label="Anclaje" className={GRUPO}>
-          <button
-            type="button"
-            disabled={!visor.anclar}
-            onClick={() => pulsar("#tDock")}
-            className={clasesBoton(false)}
-          >
-            Anclar
-          </button>
-          <button
-            type="button"
-            disabled={!visor.desanclar}
-            onClick={() => pulsar("#tUndock")}
-            className={clasesBoton(false)}
-          >
-            Desanclar
-          </button>
-        </div>
-      </div>
+      {feria && panelFeria ? (
+        <aside
+          aria-label="beloq en el VDS"
+          className={`absolute inset-y-0 right-0 ${PANEL_FERIA} overflow-y-auto bg-white shadow-[-2px_0_12px_rgba(0,0,0,0.06)]`}
+        >
+          {panelFeria}
+        </aside>
+      ) : null}
     </div>
   );
 }
