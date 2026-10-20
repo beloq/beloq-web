@@ -49,25 +49,39 @@ export function ApoyosFeria() {
   );
 }
 
-const DIAS = [
+// Un color por evento: la hora en una etiqueta y la línea de la izquierda.
+// Los oscuros llevan texto blanco con contraste AA; el amarillo, texto oscuro.
+const COLORES = {
+  amarillo: { linea: "border-beloq-yellow", hora: "bg-beloq-yellow text-beloq-dark" },
+  azul: { linea: "border-[#3358D4]", hora: "bg-[#3358D4] text-white" },
+  rojo: { linea: "border-[#D93036]", hora: "bg-[#D93036] text-white" },
+  verde: { linea: "border-[#218358]", hora: "bg-[#218358] text-white" },
+};
+
+const DIAS: {
+  dia: string;
+  eventos: { hora: string; texto: string; color: keyof typeof COLORES }[];
+}[] = [
   {
     dia: "Miércoles 21 de octubre",
     eventos: [
       {
         hora: "11:30 a 13:00",
         texto: "Final Santander X Spain Awards · Box Santander · pitch de beloq",
+        color: "amarillo",
       },
-      { hora: "15:08", texto: "Innovation Stage · pitch de beloq" },
+      { hora: "15:08", texto: "Innovation Stage · pitch de beloq", color: "azul" },
       {
         hora: "15:40 a 16:00",
         texto:
           "Santander Stage · mesa redonda “From Pilot to Contract: The Truth About Testing with Cities”, con Paula Llobet (Ajuntament de València), Mark-Emil Talivere (Business Tallinn) y Margot Roose",
+        color: "rojo",
       },
     ],
   },
   {
     dia: "Jueves 22 de octubre",
-    eventos: [{ hora: "11:00", texto: "Radio VDS (Plaza Radio) · entrevista a beloq" }],
+    eventos: [{ hora: "11:00", texto: "Radio VDS (Plaza Radio) · entrevista a beloq", color: "verde" }],
   },
 ];
 
@@ -80,7 +94,7 @@ export default async function PanelFeria() {
   });
 
   return (
-    <div className="flex min-h-full flex-col gap-4 px-6 py-5 text-beloq-dark">
+    <div className="flex min-h-full flex-col gap-3 px-6 py-5 text-beloq-dark">
       <h2 className="text-xl font-bold">Encuéntranos en el VDS</h2>
 
       {DIAS.map((d) => (
@@ -90,8 +104,12 @@ export default async function PanelFeria() {
           </h3>
           <ul className="space-y-2.5">
             {d.eventos.map((e) => (
-              <li key={e.hora} className="border-l-4 border-beloq-yellow pl-3">
-                <p className="text-base font-bold">{e.hora}</p>
+              <li key={e.hora} className={`border-l-4 pl-3 ${COLORES[e.color].linea}`}>
+                <p
+                  className={`mb-0.5 inline-block rounded-[0_10px_0_10px] px-2 text-base leading-6 font-bold ${COLORES[e.color].hora}`}
+                >
+                  {e.hora}
+                </p>
                 <p className="text-[15px] leading-snug">{e.texto}</p>
               </li>
             ))}
@@ -108,7 +126,7 @@ export default async function PanelFeria() {
         <div
           role="img"
           aria-label="Código QR a beloq.es/contacto"
-          className="h-44 w-44 [&>svg]:h-full [&>svg]:w-full"
+          className="h-40 w-40 [&>svg]:h-full [&>svg]:w-full"
           dangerouslySetInnerHTML={{ __html: qr }}
         />
         <p className="text-base font-bold">beloq.es/contacto</p>
