@@ -2225,7 +2225,7 @@ window.beloq.comp = { VIG, LY, vcam, vctl, setUnlock, runExport, encCfg };
   let lastTouch = performance.now();
   addEventListener('pointerdown', () => (lastTouch = performance.now()), true);
   setInterval(() => {
-    return; if (performance.now() - lastTouch < 60000 || G('play').classList.contains('on')) return;
+    if (!window.beloqFeria) return; if (performance.now() - lastTouch < 60000 || G('play').classList.contains('on')) return;
     if (!document.querySelector('#panel [data-v].on') || document.querySelector('#panel [data-v].on').dataset.v === 'none') pv('bici').click();
     setCam(HOME); G('play').click();
   }, 2000);

@@ -16,7 +16,8 @@
 //     (exportar vídeo), que se ejecutaría en el dominio de beloq.es.
 //  2. Siempre en calidad alta, en todos los dispositivos, hasta 2× de nitidez
 //     (de serie, en pantallas táctiles arranca en «Fluida», a 1×).
-//  3. Sin la demo automática a los 60 s sin tocar (es para la tableta de feria).
+//  3. Sin la demo automática a los 60 s sin tocar, salvo en el modo feria
+//     (beloq.es/3d?feria): la página /3d pone window.beloqFeria en el visor.
 //  4. viewport-fit=cover, para ocupar la pantalla entera en el iPhone.
 //  5. Oculta su barra propia: los controles los pone la página /3d
 //     (src/app/components/Pantalla3D.tsx), que acciona estos mismos botones.
@@ -162,7 +163,7 @@ for (const { de, a } of ARCHIVOS) {
   html = cambiar(
     html,
     "if (performance.now() - lastTouch < 60000",
-    "return; if (performance.now() - lastTouch < 60000",
+    "if (!window.beloqFeria) return; if (performance.now() - lastTouch < 60000",
     `${de} · demo automática`,
   );
   html = cambiar(

@@ -2,13 +2,17 @@
 
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 // beloq.es/3d: el visor de Claude Design (public/3d/visor/, preparado con
 // scripts/parchear-visor-3d.mjs) a pantalla entera, con solo lo esencial.
 // Los botones de aquí accionan los del visor (su barra va oculta) y leen su
 // estado, así que se comportan igual que en la tableta. Cambiar de módulo a
 // estación cambia el iframe, no la página: no se sale de pantalla completa.
+//
+// Modo feria (beloq.es/3d?feria, para la tableta del stand en modo quiosco):
+// sin el botón Volver, para que nadie salga a la web, y con la demo del visor
+// (anclar y desanclar en bucle) cuando pasan 60 s sin que nadie toque.
 
 type Escena = "modulo" | "estacion";
 type Vehiculo = "bici" | "patinete";
@@ -54,6 +58,17 @@ function pedirPantallaCompleta() {
   }
 }
 
+/** ?feria en la dirección. Fuera del navegador (al generar la página), no. */
+function leerFeria() {
+  return new URLSearchParams(window.location.search).has("feria");
+}
+const sinCambios = () => () => {};
+
+/** Le dice al visor del iframe que está en el stand: activa su demo. */
+function marcarFeria(w: Window | null | undefined) {
+  if (w) (w as Window & { beloqFeria?: boolean }).beloqFeria = true;
+}
+
 const GRUPO =
   "pointer-events-auto flex gap-1 rounded-[0_20px_0_20px] bg-white p-1 shadow-[0_2px_8px_rgba(0,0,0,0.10)]";
 
@@ -73,6 +88,7 @@ export default function Pantalla3D() {
   const [escena, setEscena] = useState<Escena>("modulo");
   const [vehiculo, setVehiculo] = useState<Vehiculo>("bici");
   const [visor, setVisor] = useState<EstadoVisor>(SIN_VISOR);
+  const feria = useSyncExternalStore(sinCambios, leerFeria, () => false);
 
   const pulsar = (selector: string) =>
     marco.current?.contentDocument
@@ -125,6 +141,19 @@ export default function Pantalla3D() {
     pedido.current = null; // escena nueva: vuelve a poner el vehículo elegido
     setVisor(SIN_VISOR);
     marco.current?.contentWindow?.addEventListener("pointerdown", pedirPantallaCompleta, true);
+    if (feria) marcarFeria(marco.current?.contentWindow);
+  };
+
+  // En feria, la página avisa al visor si se carga después que el iframe.
+  useEffect(() => {
+    if (feria) marcarFeria(marco.current?.contentWindow);
+  }, [feria]);
+
+  // Los toques en los botones de esta página también cuentan como actividad:
+  // el visor solo ve los suyos, y sin esto la demo arrancaría a media visita.
+  const alTocar = () => {
+    pedirPantallaCompleta();
+    if (feria) marco.current?.contentWindow?.dispatchEvent(new Event("pointerdown"));
   };
 
   const cambiarEscena = (e: Escena) => {
@@ -147,8 +176,8 @@ export default function Pantalla3D() {
 
   return (
     <div
-      onPointerDownCapture={pedirPantallaCompleta}
-      className="fixed inset-0 h-[100dvh] w-full overflow-hidden overscroll-none bg-beloq-gray"
+      onPointerDownCapture={alTocar}
+      className="fixed inset-0 h-[100dvh] w-full overflow-hidden overscroll-none bg-beloq-gray select-none"
     >
       <iframe
         key={escena}
@@ -161,14 +190,18 @@ export default function Pantalla3D() {
       />
 
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-3 pt-[max(12px,env(safe-area-inset-top))] pr-[max(12px,env(safe-area-inset-right))] pl-[max(12px,env(safe-area-inset-left))]">
-        <button
-          type="button"
-          onClick={volver}
-          aria-label="Volver"
-          className="pointer-events-auto flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-beloq-dark bg-white text-beloq-dark shadow-[0_2px_8px_rgba(0,0,0,0.10)] transition-colors duration-200 hover:bg-beloq-yellow"
-        >
-          <ArrowLeft aria-hidden className="h-5 w-5" strokeWidth={2.25} />
-        </button>
+        {feria ? (
+          <span aria-hidden className="h-11 w-11 shrink-0" />
+        ) : (
+          <button
+            type="button"
+            onClick={volver}
+            aria-label="Volver"
+            className="pointer-events-auto flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-beloq-dark bg-white text-beloq-dark shadow-[0_2px_8px_rgba(0,0,0,0.10)] transition-colors duration-200 hover:bg-beloq-yellow"
+          >
+            <ArrowLeft aria-hidden className="h-5 w-5" strokeWidth={2.25} />
+          </button>
+        )}
         <div role="group" aria-label="Vista" className={GRUPO}>
           {ESCENAS.map((e) => (
             <button
