@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import QRCode from "qrcode";
 
 // Columna del modo feria (beloq.es/3d?feria) en el VDS 2026: dónde
@@ -6,6 +8,46 @@ import QRCode from "qrcode";
 // red una vez cargada la página. Textos de Jesús; respetar orden y horas.
 
 const CONTACTO = "https://beloq.es/contacto";
+
+/** Un fichero de public/ como data URI: va dentro de la página, sin otra descarga. */
+export function dataUri(ruta: string, tipo: string) {
+  return `data:${tipo};base64,${readFileSync(join(process.cwd(), "public", ruta)).toString("base64")}`;
+}
+
+// Quién nos acompaña y apoya (Medios graficos), en el orden que dio Jesús.
+// Solo recortados los márgenes vacíos: colores y proporciones originales.
+const APOYOS = [
+  { ruta: "images/apoyos/camara-ceuta.png", tipo: "image/png", alt: "Cámara Ceuta", alto: "h-8" },
+  {
+    ruta: "images/apoyos/sandbox-valencia.png",
+    tipo: "image/png",
+    alt: "Ajuntament de València, València Innovation Capital y sandbox València",
+    alto: "h-6",
+  },
+  {
+    ruta: "images/apoyos/startupv.webp",
+    tipo: "image/webp",
+    alt: "StartUPV, powered by IdeasUPV y Universitat Politècnica de València",
+    alto: "h-11",
+  },
+];
+
+/** Logos de apoyo del modo feria: van en la franja superior del 3D. */
+export function ApoyosFeria() {
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <p className="text-[11px] font-bold tracking-wider text-beloq-dark/50 uppercase">
+        Con el apoyo de
+      </p>
+      <div className="flex items-center gap-4">
+        {APOYOS.map((a) => (
+          // eslint-disable-next-line @next/next/no-img-element -- data URI incrustado, sin optimizar
+          <img key={a.ruta} src={dataUri(a.ruta, a.tipo)} alt={a.alt} className={`${a.alto} w-auto`} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 const DIAS = [
   {

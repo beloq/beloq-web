@@ -13,8 +13,10 @@ import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } fro
 // Modo feria (beloq.es/3d?feria, para la tableta del stand en modo quiosco):
 // sin el botón Volver, para que nadie salga a la web, y con la demo del visor
 // (anclar y desanclar en bucle) cuando pasan 60 s sin que nadie toque. Lleva el
-// logo arriba a la izquierda y, a la derecha, la columna del evento
-// (PanelFeria); el 3D ocupa el resto, así que nada lo tapa.
+// logo arriba a la izquierda, los logos de apoyo en la franja de arriba (entre
+// el logo y Módulo/Estación, el hueco que el encuadre ya deja a los controles)
+// y, a la derecha, la columna del evento (PanelFeria); el 3D ocupa el resto,
+// así que nada lo tapa.
 
 type Escena = "modulo" | "estacion";
 type Vehiculo = "bici" | "patinete";
@@ -89,11 +91,14 @@ const SIN_PANEL_FERIA = "right-[380px]";
 export default function Pantalla3D({
   logoFeria,
   panelFeria,
+  apoyosFeria,
 }: {
   /** Logo del modo feria como data URI. */
   logoFeria?: string;
   /** Columna del modo feria (eventos y QR). */
   panelFeria?: ReactNode;
+  /** Logos de apoyo del modo feria. */
+  apoyosFeria?: ReactNode;
 }) {
   const router = useRouter();
   const marco = useRef<HTMLIFrameElement>(null);
@@ -222,6 +227,10 @@ export default function Pantalla3D({
               <ArrowLeft aria-hidden className="h-5 w-5" strokeWidth={2.25} />
             </button>
           )}
+          {feria && apoyosFeria ? (
+            // Solo si cabe entre el logo y Módulo/Estación (la tableta: 1280 px).
+            <div className="hidden self-center min-[1200px]:block">{apoyosFeria}</div>
+          ) : null}
           <div role="group" aria-label="Vista" className={GRUPO}>
             {ESCENAS.map((e) => (
               <button
