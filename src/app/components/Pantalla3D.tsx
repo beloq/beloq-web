@@ -163,6 +163,13 @@ export default function Pantalla3D({
     if (feria) marcarFeria(marco.current?.contentWindow);
   };
 
+  // En feria, la tableta guarda la página y los visores para seguir sin red
+  // (public/sw-3d.js): si recarga o se cambia de escena, no se queda en blanco.
+  useEffect(() => {
+    if (!feria || !("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/sw-3d.js", { scope: "/3d" }).catch(() => {});
+  }, [feria]);
+
   // En feria, la página avisa al visor si se carga después que el iframe.
   useEffect(() => {
     if (feria) marcarFeria(marco.current?.contentWindow);
