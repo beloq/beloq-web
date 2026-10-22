@@ -2,15 +2,15 @@
 // Contrato: beloq-backend/docs/BELOQ_INFO.md. Las cifras salen SIEMPRE de la API.
 
 /**
- * Interruptor de las tiendas. Mientras beloq no esté publicada en Google Play
- * y App Store (hoy: prueba cerrada y TestFlight), /app enseña «Muy pronto» y
- * /info no pinta los botones de las tiendas. Ponerlo a true al publicar.
+ * Interruptor de las tiendas: con false, /app enseña «Muy pronto» y /info no
+ * pinta los botones de las tiendas. Encendido el 22-oct-2026, al publicarse
+ * beloq en Google Play y App Store.
  */
-export const APPS_PUBLICADAS: boolean = false;
+export const APPS_PUBLICADAS: boolean = true;
 
 export const GOOGLE_PLAY_URL =
   "https://play.google.com/store/apps/details?id=es.beloq.beloq_app";
-export const APP_STORE_URL = "https://apps.apple.com/app/id6764607603";
+export const APP_STORE_URL = "https://apps.apple.com/es/app/beloq/id6764607603";
 export const STATUS_PAGE_URL = "https://status.beloq.es";
 
 /** Cloud Run directo, nunca el CDN de Firebase (BELOQ_INFO §2). */
