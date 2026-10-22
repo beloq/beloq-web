@@ -1,13 +1,11 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import QRCode from "qrcode";
+import { PartyPopper } from "lucide-react";
 
-// Columna del modo feria (beloq.es/3d?feria) en el VDS 2026: dónde
-// encontrar a beloq y un QR a la página de contacto. Se genera al compilar:
-// el QR va como SVG en el HTML (sin servicios de QR externos) y no necesita
-// red una vez cargada la página. Textos de Jesús; respetar orden y horas.
-
-const CONTACTO = "https://beloq.es/contacto";
+// Columna del modo feria (beloq.es/3d?feria) en el VDS 2026: el anuncio de que
+// beloq ya está en Google Play y App Store, con el código VDS2026 y el QR de
+// beloq.es/vds (public/vds/qr-vds.svg, scripts/generar-qr-vds.mjs). Todo va
+// dentro de la página (data URI): la tableta lo enseña también sin red.
 
 /** Un fichero de public/ como data URI: va dentro de la página, sin otra descarga. */
 export function dataUri(ruta: string, tipo: string) {
@@ -49,87 +47,42 @@ export function ApoyosFeria() {
   );
 }
 
-// Un color por evento: la hora en una etiqueta y la línea de la izquierda.
-// Los oscuros llevan texto blanco con contraste AA; el amarillo, texto oscuro.
-const COLORES = {
-  amarillo: { linea: "border-beloq-yellow", hora: "bg-beloq-yellow text-beloq-dark" },
-  azul: { linea: "border-[#3358D4]", hora: "bg-[#3358D4] text-white" },
-  rojo: { linea: "border-[#D93036]", hora: "bg-[#D93036] text-white" },
-  verde: { linea: "border-[#218358]", hora: "bg-[#218358] text-white" },
-};
+const TIENDA =
+  "rounded-[0_14px_0_14px] bg-beloq-dark px-3.5 py-2 text-sm font-bold tracking-wide text-white uppercase";
 
-const DIAS: {
-  dia: string;
-  eventos: { hora: string; texto: string; color: keyof typeof COLORES }[];
-}[] = [
-  {
-    dia: "Miércoles 21 de octubre",
-    eventos: [
-      {
-        hora: "11:30 a 13:00",
-        texto: "Final Santander X Spain Awards · Box Santander · pitch de beloq",
-        color: "amarillo",
-      },
-      { hora: "15:08", texto: "Innovation Stage · pitch de beloq", color: "azul" },
-      {
-        hora: "15:40 a 16:00",
-        texto:
-          "Santander Stage · mesa redonda “From Pilot to Contract: The Truth About Testing with Cities”, con Paula Llobet (Ajuntament de València), Mark-Emil Talivere (Business Tallinn) y Margot Roose",
-        color: "rojo",
-      },
-    ],
-  },
-  {
-    dia: "Jueves 22 de octubre",
-    eventos: [{ hora: "11:00", texto: "Radio VDS (Plaza Radio) · entrevista a beloq", color: "verde" }],
-  },
-];
-
-export default async function PanelFeria() {
-  const qr = await QRCode.toString(CONTACTO, {
-    type: "svg",
-    errorCorrectionLevel: "M",
-    margin: 1,
-    color: { dark: "#3C3C3B", light: "#FFFFFF" },
-  });
-
+export default function PanelFeria() {
   return (
-    <div className="flex min-h-full flex-col gap-3 px-6 py-5 text-beloq-dark">
-      <h2 className="text-xl font-bold">Encuéntranos en el VDS</h2>
-
-      {DIAS.map((d) => (
-        <section key={d.dia} aria-label={d.dia}>
-          <h3 className="mb-2 text-xs font-bold tracking-wider text-beloq-dark/60 uppercase">
-            {d.dia}
-          </h3>
-          <ul className="space-y-2.5">
-            {d.eventos.map((e) => (
-              <li key={e.hora} className={`border-l-4 pl-3 ${COLORES[e.color].linea}`}>
-                <p
-                  className={`mb-0.5 inline-block rounded-[0_10px_0_10px] px-2 text-base leading-6 font-bold ${COLORES[e.color].hora}`}
-                >
-                  {e.hora}
-                </p>
-                <p className="text-[15px] leading-snug">{e.texto}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
-
-      <p className="rounded-[0_16px_0_16px] bg-beloq-gray px-3 py-2.5 text-sm leading-snug">
-        <strong>Los dos días:</strong> nos encuentras en los pods <strong>i26C</strong> e{" "}
-        <strong>i29B</strong> (València Innovation Capital y UPV Innovation).
+    <div className="flex min-h-full flex-col bg-beloq-yellow px-7 py-7 text-beloq-dark">
+      <PartyPopper aria-hidden className="h-11 w-11" strokeWidth={2} />
+      <p className="mt-4 text-xs font-bold tracking-[0.18em] uppercase">Ya disponible</p>
+      <h2 className="mt-1 text-[32px] leading-[1.1] font-bold">
+        ¡beloq ya está en Google Play y App Store!
+      </h2>
+      <p className="mt-3 text-[17px] leading-snug">
+        Descárgala, canjea tu código y hazte beloquer.
       </p>
 
-      <div className="mt-auto flex flex-col items-center gap-1.5 pt-1">
-        <div
-          role="img"
-          aria-label="Código QR a beloq.es/contacto"
-          className="h-40 w-40 [&>svg]:h-full [&>svg]:w-full"
-          dangerouslySetInnerHTML={{ __html: qr }}
+      <div className="mt-4 flex flex-wrap gap-2">
+        <span className={TIENDA}>Google Play</span>
+        <span className={TIENDA}>App Store</span>
+      </div>
+
+      <div className="mt-5 flex items-center justify-between gap-3 rounded-[0_20px_0_20px] border-2 border-dashed border-beloq-dark px-4 py-2.5">
+        <span className="text-xs font-bold tracking-wider uppercase">Tu código</span>
+        <span className="text-[28px] font-bold tracking-[0.1em]">VDS2026</span>
+      </div>
+
+      <div className="mt-auto flex flex-col items-center gap-2 rounded-[0_24px_0_24px] bg-white px-5 pt-5 pb-4">
+        {/* eslint-disable-next-line @next/next/no-img-element -- data URI incrustado, sin optimizar */}
+        <img
+          src={dataUri("vds/qr-vds.svg", "image/svg+xml")}
+          alt="QR de beloq.es/vds para descargar beloq"
+          className="h-52 w-52"
         />
-        <p className="text-base font-bold">beloq.es/contacto</p>
+        <p className="text-center text-sm">
+          Escanéalo y descárgala
+          <strong className="block text-base">beloq.es/vds</strong>
+        </p>
       </div>
     </div>
   );
