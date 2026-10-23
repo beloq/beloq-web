@@ -9,8 +9,8 @@ import {
   Timer,
   Users,
 } from "lucide-react";
-import Image from "next/image";
 import { APP_STORE_URL, GOOGLE_PLAY_URL } from "../lib/info";
+import MockupAppVideo from "./MockupAppVideo";
 
 export default function AppShowcase({
   horasGratis,
@@ -86,13 +86,7 @@ export default function AppShowcase({
             transition={{ duration: 0.7 }}
             className="flex justify-center"
           >
-            <Image
-              src="/images/app-mockup.png"
-              alt="App de beloq: interfaz de la aplicación móvil"
-              width={400}
-              height={400}
-              className="w-full max-w-xs drop-shadow-2xl"
-            />
+            <MockupAppVideo />
           </motion.div>
 
           {/* Right features */}
