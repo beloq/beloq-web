@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { BASE, SITE } from "./lib/informes";
 
 // Páginas públicas y canónicas (sin parámetros). Fuera: /m y /help (noindex),
-// /app (redirige a las tiendas), /beta, /console (demo estática) y /api.
+// /app (redirige a las tiendas), /console (demo estática) y /api.
 // Sin lastModified: no hay una fecha de modificación fiable por página.
 const RUTAS = [
   "/",

@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
       // /3d es una página propia (src/app/3d) y el visor está en /3d/visor/.
       { source: "/3d/index.html", destination: "/3d", permanent: false },
       { source: "/3d/estacion.html", destination: "/3d", permanent: false },
+      // La página de testers (/beta) se quitó al publicar las apps (22-oct-2026):
+      // sus enlaces llevan a /app, que manda a la tienda de cada móvil.
+      { source: "/beta", destination: "/app", permanent: false },
       // Alias de términos: el backend devuelve terms_url=/legal/terms, pero la
       // página real es /legal/terminos. Aplica en todos los hosts (incl. m.).
       {

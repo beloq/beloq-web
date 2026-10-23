@@ -28,7 +28,7 @@ const crearTabs = (horasGratis: number | null): Tab[] => [
       {
         number: "01",
         title: "Descarga la app",
-        desc: "Muy pronto en Google Play y App Store.",
+        desc: "Gratis en Google Play y App Store.",
       },
       {
         number: "02",
