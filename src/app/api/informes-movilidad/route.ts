@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import {
+  CONOCIDO,
   MODALIDADES,
   ORDEN_CAMPOS,
   ORIGENES,
@@ -55,6 +56,24 @@ function unaLinea(s: string): string {
   return s.replace(/[\r\n]+/g, " ").slice(0, 120);
 }
 
+/** Página anterior (Referer del navegador): sin query; con el dominio si es externa. */
+function paginaAnterior(v: unknown): string {
+  try {
+    const u = new URL(texto(v));
+    if (u.protocol !== "https:" && u.protocol !== "http:") return "";
+    const propia = /(^|\.)beloq\.es$/.test(u.hostname) || u.hostname === "localhost";
+    return (propia ? u.pathname : `${u.hostname}${u.pathname}`).slice(0, 200);
+  } catch {
+    return "";
+  }
+}
+
+/** URL del formulario tal como se abrió (solo si es la ruta del formulario). */
+function urlFormulario(v: unknown): string {
+  const u = unaLinea(texto(v)).slice(0, 300);
+  return u.startsWith("/informes-movilidad/solicitar") ? u : "";
+}
+
 function error(status: number, codigo: string, extra: object = {}) {
   return NextResponse.json({ ok: false, error: codigo, ...extra }, { status });
 }
@@ -101,6 +120,11 @@ export async function POST(request: Request) {
   if (Object.keys(campos).length) return error(400, "validacion", { campos });
 
   const origen = esOrigen(cuerpo.origen) ? cuerpo.origen : null;
+  const anterior = paginaAnterior(cuerpo.referer);
+  const urlCompleta = urlFormulario(cuerpo.url);
+  // pagina_origen: el ?origen= del botón que trajo al formulario; si no lo hay,
+  // la página anterior según el navegador.
+  const paginaOrigen = origen ?? (anterior ? `referer:${anterior}` : "");
   const clave = texto(cuerpo.clave).slice(0, 80);
 
   const ahora = Date.now();
@@ -141,10 +165,21 @@ export async function POST(request: Request) {
     ["Servicio de interés", etiqueta(SERVICIOS, datos.servicio)],
     ["Modalidad", etiqueta(MODALIDADES, datos.modalidad)],
     ["Fecha orientativa", datos.fecha],
+    ["¿Cómo nos ha conocido?", etiqueta(CONOCIDO, datos.conocido)],
     ["Número de centros", datos.centros],
     ["Horarios o turnos", datos.turnos],
     ["Página de origen", origen ? ORIGENES[origen] : ""],
   ].filter(([, v]) => v) as [string, string][];
+
+  // Bloque técnico, igual en HTML y en texto, para poder filtrar los correos.
+  const tecnico = [
+    `pagina_origen=${paginaOrigen || "-"}`,
+    `servicio=${datos.servicio || "-"}`,
+    `modalidad=${datos.modalidad || "-"}`,
+    `como_nos_conocio=${datos.conocido || "-"}`,
+    `url_completa=${urlCompleta || "-"}`,
+    `referer=${anterior || "-"}`,
+  ];
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 640px; color: #3C3C3B;">
@@ -167,12 +202,18 @@ export async function POST(request: Request) {
             </div>`
           : ""
       }
+      <pre style="margin-top: 16px; padding: 12px; background: #F5F5F5; font-size: 12px; white-space: pre-wrap;">${escapar(
+        ["Datos de origen", ...tecnico].join("\n")
+      )}</pre>
     </div>`;
   const text = [
     "Solicitud de informe de movilidad",
     "",
     ...filas.map(([k, v]) => `${k}: ${v}`),
     ...(datos.necesidad ? ["", "¿Qué necesita decidir, analizar o justificar?", datos.necesidad] : []),
+    "",
+    "Datos de origen",
+    ...tecnico,
   ].join("\n");
 
   try {
@@ -199,7 +240,7 @@ export async function POST(request: Request) {
 
   if (clave) enviadas.set(clave, Date.now());
   console.log(
-    `[INFORMES] Solicitud enviada | tipo=${datos.tipo} | servicio=${datos.servicio || "-"} | origen=${origen ?? "-"}`
+    `[INFORMES] Solicitud enviada | tipo=${datos.tipo} | servicio=${datos.servicio || "-"} | pagina_origen=${paginaOrigen || "-"} | conocido=${datos.conocido || "-"}`
   );
   return NextResponse.json({ ok: true });
 }

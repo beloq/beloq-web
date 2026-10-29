@@ -12,6 +12,7 @@ import {
   type ReactNode,
 } from "react";
 import {
+  CONOCIDO,
   MAX_LONGITUD,
   MODALIDADES,
   ORDEN_CAMPOS,
@@ -38,6 +39,7 @@ const ETIQUETAS: Record<CampoSolicitud, string> = {
   modalidad: "Modalidad",
   necesidad: "¿Qué necesitas decidir, analizar o justificar?",
   fecha: "Fecha orientativa en la que necesitas los resultados",
+  conocido: "¿Cómo nos has conocido?",
   centros: "Número de centros",
   turnos: "Horarios o turnos",
 };
@@ -201,6 +203,10 @@ export default function FormularioSolicitud({
           clave: clave.current,
           t: abiertoEn.current == null ? 0 : Math.round(performance.now() - abiertoEn.current),
           sitio_web: trampa,
+          // De dónde llega la solicitud: la página anterior (si no hay ?origen=)
+          // y la URL del formulario tal como se abrió. Sin datos personales.
+          referer: document.referrer,
+          url: `${location.pathname}${location.search}`,
         }),
       });
       const cuerpo: { ok?: boolean; error?: string; campos?: ErroresSolicitud } = await res
@@ -568,6 +574,27 @@ export default function FormularioSolicitud({
             />
             <MensajeError campo="fecha" mensaje={errores.fecha} />
           </div>
+
+          <div>
+            <Etiqueta campo="conocido" />
+            <select
+              id="sol-conocido"
+              name="conocido"
+              value={datos.conocido}
+              onChange={cambiar("conocido")}
+              aria-invalid={!!errores.conocido}
+              aria-describedby={describedBy("conocido")}
+              className={CLASE_CAMPO}
+            >
+              <option value="">Elige una opción</option>
+              {CONOCIDO.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+            <MensajeError campo="conocido" mensaje={errores.conocido} />
+          </div>
         </fieldset>
 
         {/* Campo trampa: invisible para personas; los robots suelen rellenarlo. */}
@@ -612,17 +639,22 @@ export default function FormularioSolicitud({
         </div>
 
         <p className="mt-8 border-t border-gray-200 pt-6 text-sm leading-relaxed text-gray-600">
-          Responsable: Beloq Movilidad SL. Usaremos estos datos para responder a tu
-          solicitud y, si procede, preparar una propuesta. Puedes acceder a ellos,
-          rectificarlos o pedir que los borremos escribiendo a{" "}
+          Responsable: Beloq Movilidad SL. Usaremos estos datos solo para responder
+          a tu solicitud y, si procede, preparar una propuesta; pedir información no
+          te suscribe a comunicaciones comerciales. Si la solicitud no se convierte
+          en encargo, la borramos a los 12 meses de la última comunicación. Puedes
+          acceder a tus datos, rectificarlos o pedir que los borremos escribiendo a{" "}
           <a href="mailto:dpo@beloq.es" className="font-bold text-beloq-dark underline underline-offset-4">
             dpo@beloq.es
           </a>
-          . Más información en la{" "}
-          <Link href="/legal/privacidad" className="font-bold text-beloq-dark underline underline-offset-4">
-            política de privacidad
-          </Link>
-          .
+          . Más información en el apartado{" "}
+          <Link
+            href="/legal/privacidad#solicitudes-informes"
+            className="font-bold text-beloq-dark underline underline-offset-4"
+          >
+            Solicitudes de informes de movilidad
+          </Link>{" "}
+          de la política de privacidad.
         </p>
       </fieldset>
     </form>

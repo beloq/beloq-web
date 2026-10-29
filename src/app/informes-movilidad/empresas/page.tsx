@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Bike,
   Bus,
@@ -15,6 +16,7 @@ import {
   EnlaceFlecha,
   ListaCheck,
   Nota,
+  Preguntas,
   Seccion,
   Tabla,
   Tarjeta,
@@ -302,6 +304,75 @@ export default function EmpresasPage() {
             <Handshake aria-hidden className="h-5 w-5" />
             Proponer una colaboración
           </Boton>
+        </div>
+      </Seccion>
+
+      <Seccion id="preguntas-frecuentes" titulo="Preguntas frecuentes">
+        <div className="max-w-3xl">
+          <Preguntas
+            items={[
+              {
+                pregunta: "¿Mi empresa está obligada a tener un plan de movilidad al trabajo?",
+                respuesta: (
+                  <p>
+                    Si alguno de tus centros de trabajo tiene más de 200 personas, o más
+                    de 100 por turno, sí: antes del 5 de diciembre de 2026 (Ley 9/2025,
+                    art. 26, modificado por el RDL 7/2026). Se cuenta por centro, no por
+                    empresa.{" "}
+                    <Link
+                      href={`${BASE}/ley-movilidad-sostenible`}
+                      className="font-bold text-beloq-dark underline underline-offset-4"
+                    >
+                      Guía de la ley
+                    </Link>
+                    .
+                  </p>
+                ),
+              },
+              {
+                pregunta: "¿beloq hace el plan completo?",
+                respuesta: (
+                  <p>
+                    No. Hacemos el diagnóstico de datos (accesibilidad por turnos,
+                    alternativas, indicadores) y el seguimiento. La redacción, la
+                    negociación con la representación de los trabajadores y la aprobación
+                    las lleva tu equipo o tu consultora.
+                  </p>
+                ),
+              },
+              {
+                pregunta: "¿Qué datos tengo que daros?",
+                respuesta: (
+                  <p>
+                    Accesos del centro, turnos y calendario. Para contar cuántas personas
+                    tienen alternativa, una distribución agregada de la plantilla por zona
+                    y turno. Nunca nombres ni direcciones.
+                  </p>
+                ),
+              },
+              {
+                pregunta: "¿Cuánto tarda?",
+                respuesta: (
+                  <p>
+                    Depende del número de centros y turnos y de si hay datos agregados. Te
+                    proponemos alcance y plazo tras una primera conversación; el plazo
+                    legal es para disponer del plan, no para empezar el diagnóstico.
+                  </p>
+                ),
+              },
+              {
+                pregunta: "¿Qué recibo al final?",
+                respuesta: (
+                  <p>
+                    Un informe o anexo por centro con la matriz de alternativas por turno,
+                    fuentes fechadas, supuestos, cálculo verificable e indicadores de
+                    seguimiento, integrable en el plan que redacte tu equipo o tu
+                    consultora.
+                  </p>
+                ),
+              },
+            ]}
+          />
         </div>
       </Seccion>
 

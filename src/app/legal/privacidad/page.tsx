@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function PoliticaPrivacidad() {
   return (
-    <LegalPage title="Política de Privacidad" version="1.3" date="11 de octubre de 2026">
+    <LegalPage title="Política de Privacidad" version="1.4" date="29 de octubre de 2026">
       <h2>1. Responsable del tratamiento</h2>
       <table>
         <tbody>
@@ -48,6 +48,10 @@ export default function PoliticaPrivacidad() {
       <p>Los pagos los procesa Stripe. Si guardas una tarjeta, <strong>la guarda Stripe, no beloq</strong>: beloq no tiene el número completo ni el CVV. Lo que beloq guarda es el identificador de cliente en Stripe; de cada tarjeta, la marca, los cuatro últimos números, la caducidad y si es la predeterminada; el historial de pagos, cargos, devoluciones y abonos (importe, fecha y concepto); y el estado de tu deuda.</p>
       <h3>2.4 Passkeys</h3>
       <p>Las passkeys <strong>no son datos biométricos</strong>. La huella o la cara se comprueban solo en tu móvil, en su chip de seguridad. beloq guarda únicamente la <strong>clave pública</strong> criptográfica, que no permite reconstruir ni acceder a tu huella ni a tu cara.</p>
+      <h3 id="solicitudes-informes" className="scroll-mt-24">2.5 Solicitudes de informes de movilidad</h3>
+      <p>Si nos pides información o una propuesta de informes de movilidad (en <Link href="/informes-movilidad/solicitar">beloq.es/informes-movilidad/solicitar</Link> o escribiendo a <a href="mailto:info@beloq.es">info@beloq.es</a>), tratamos los datos que nos das: siempre tu nombre, la organización, el correo electrónico y el tipo de organización; y, si los indicas, el municipio o la ubicación del centro, el teléfono, el servicio de interés, la modalidad, lo que necesitas decidir o analizar, la fecha orientativa, cómo nos has conocido y, si se trata de una empresa, el número de centros y los turnos. No pedimos datos de trabajadores concretos ni archivos de nómina.</p>
+      <p>Con la solicitud guardamos también de dónde llegas: la página de beloq.es desde la que abriste el formulario, la dirección del formulario y, si tu navegador la envía, la página anterior (sin sus parámetros). La solicitud nos llega por correo electrónico. Para evitar abusos, el servidor usa tu dirección IP durante unos minutos para limitar el número de envíos; no la guardamos con tu solicitud.</p>
+      <p>Usamos estos datos solo para responder a tu solicitud y, si procede, preparar una propuesta. Pedir información no te suscribe a comunicaciones comerciales.</p>
       <h2>3. Para qué usamos tus datos</h2>
       <table>
         <thead>
@@ -59,6 +63,7 @@ export default function PoliticaPrivacidad() {
           <tr><td>Atención al usuario, reclamaciones y reembolsos</td><td>Identidad, correo, uso, mensajes de soporte</td><td>Ejecución del contrato (art. 6.1.b RGPD)</td></tr>
           <tr><td>Seguridad del sistema y prevención del fraude (incluido el abuso de pruebas gratis e invitaciones)</td><td>IP, dispositivo, patrones de uso, hash del móvil</td><td>Interés legítimo (art. 6.1.f RGPD)</td></tr>
           <tr><td>Mejorar la app y corregir fallos</td><td>Analítica y registros de fallos</td><td>Interés legítimo (art. 6.1.f RGPD)</td></tr>
+          <tr><td>Atender solicitudes de informes de movilidad y preparar propuestas</td><td>Los del apartado 2.5</td><td>Medidas precontractuales a petición del interesado (art. 6.1.b RGPD); si actúas en nombre de una organización, interés legítimo en mantener la relación con ella (art. 6.1.f RGPD y art. 19 LOPDGDD)</td></tr>
           <tr><td>Novedades por correo</td><td>Correo</td><td>Consentimiento (art. 6.1.a RGPD)</td></tr>
           <tr><td>Obligaciones legales y fiscales</td><td>Datos de facturación e identidad fiscal</td><td>Obligación legal (art. 6.1.c RGPD)</td></tr>
           <tr><td>Datos agregados para operadores e instituciones</td><td>Datos de uso pseudonimizados (ver §5.1)</td><td>Interés legítimo (art. 6.1.f RGPD)</td></tr>
@@ -75,6 +80,8 @@ export default function PoliticaPrivacidad() {
           <tr><td>Historial de uso (custodias, reservas, avisos)</td><td>Mientras la cuenta exista. Al eliminarla deja de estar ligado a ti</td></tr>
           <tr><td>Pagos, cargos, devoluciones y abonos</td><td>10 años (Código de Comercio, art. 30, y Ley General Tributaria)</td></tr>
           <tr><td>Chat de soporte</td><td>90 días desde el último mensaje</td></tr>
+          <tr><td>Solicitudes de informes de movilidad y propuestas que no se convierten en encargo</td><td>12 meses desde la última comunicación; después se borran</td></tr>
+          <tr><td>Solicitudes de informes que se convierten en encargo</td><td>Pasan al expediente del encargo: mientras dure el contrato y, después, los plazos que exija la ley</td></tr>
           <tr><td>Códigos SMS de verificación</td><td>7 días</td></tr>
           <tr><td>Registros de consentimiento</td><td>5 años, para acreditar el cumplimiento del RGPD</td></tr>
           <tr><td>Passkeys (clave pública)</td><td>Mientras la cuenta exista; se desactivan al eliminarla</td></tr>
@@ -93,16 +100,18 @@ export default function PoliticaPrivacidad() {
           <tr><td><strong>Proveedor</strong></td><td><strong>Domicilio</strong></td><td><strong>Datos</strong></td><td><strong>Para qué</strong></td></tr>
         </thead>
         <tbody>
-          <tr><td><strong>Sendinblue SAS (Brevo)</strong></td><td>Francia (UE)</td><td>Correo y teléfono</td><td>Correos del servicio y SMS de verificación y avisos</td></tr>
+          <tr><td><strong>Sendinblue SAS (Brevo)</strong></td><td>Francia (UE)</td><td>Correo y teléfono; contenido de las solicitudes de informes</td><td>Correos del servicio, SMS de verificación y avisos, y envío de las solicitudes de informes a nuestro buzón</td></tr>
           <tr><td><strong>Stripe Payments Europe Ltd.</strong></td><td>Dublín, Irlanda (UE)</td><td>Datos de pago y tarjetas</td><td>Cobros, tarjetas guardadas y devoluciones</td></tr>
           <tr><td><strong>Google Ireland Ltd. (Google Cloud)</strong></td><td>Irlanda; datos en la región europe-southwest1 (Madrid) y BigQuery en la UE</td><td>Datos de la app y de los módulos</td><td>Servidores, base de datos y comunicación con los módulos</td></tr>
           <tr><td><strong>Google LLC (Firebase: Authentication, Cloud Messaging, Analytics y Crashlytics)</strong></td><td>EE. UU.</td><td>Identificador de usuario, tokens, uso de la app y fallos</td><td>Cuentas y entrada con Google, avisos al móvil, analítica y registro de fallos</td></tr>
           <tr><td><strong>Apple Inc.</strong></td><td>EE. UU.</td><td>Tokens de notificación y entrada con Apple</td><td>Avisos a iPhone y «Iniciar sesión con Apple»</td></tr>
           <tr><td><strong>Stadia Maps, Inc.</strong></td><td>Delaware, EE. UU.</td><td>IP y zona del mapa que se mira</td><td>Mapa de estaciones</td></tr>
+          <tr><td><strong>Google Ireland Ltd. (Google Workspace)</strong></td><td>Irlanda (UE)</td><td>Correos recibidos, incluidas las solicitudes de informes</td><td>Buzón de correo de beloq</td></tr>
+          <tr><td><strong>Vercel Inc.</strong></td><td>EE. UU.; las funciones de la web se ejecutan en Washington (EE. UU.)</td><td>Datos que envías a través de la web, como los formularios, y dirección IP</td><td>Alojamiento y funcionamiento de beloq.es</td></tr>
         </tbody>
       </table>
       <h3>5.3 Transferencias internacionales</h3>
-      <p>Stripe, Brevo y la infraestructura de Google Cloud tratan los datos dentro del Espacio Económico Europeo. Firebase (Google LLC) y Apple Inc. están en Estados Unidos: la transferencia se ampara en el <strong>Marco de Privacidad de Datos UE-EE. UU.</strong> (EU-US Data Privacy Framework) y en las <strong>Cláusulas Contractuales Tipo</strong> aprobadas por la Comisión Europea. Stadia Maps, Inc. (Estados Unidos) recibe solo la IP y la zona del mapa que se mira, con su acuerdo de tratamiento de datos conforme al RGPD; no guarda ubicaciones ligadas a personas.</p>
+      <p>Stripe, Brevo y la infraestructura de Google Cloud tratan los datos dentro del Espacio Económico Europeo. Firebase (Google LLC) y Apple Inc. están en Estados Unidos: la transferencia se ampara en el <strong>Marco de Privacidad de Datos UE-EE. UU.</strong> (EU-US Data Privacy Framework) y en las <strong>Cláusulas Contractuales Tipo</strong> aprobadas por la Comisión Europea. Stadia Maps, Inc. (Estados Unidos) recibe solo la IP y la zona del mapa que se mira, con su acuerdo de tratamiento de datos conforme al RGPD; no guarda ubicaciones ligadas a personas. Vercel Inc. (Estados Unidos) aloja beloq.es y ejecuta en Estados Unidos las funciones de la web, incluido el envío del formulario de solicitudes de informes: la transferencia se ampara en el <strong>Marco de Privacidad de Datos UE-EE. UU.</strong>, en el que Vercel está certificada. Google Workspace lo presta Google Ireland Ltd.; si algún tratamiento se hace fuera del Espacio Económico Europeo, se ampara en el mismo Marco y en las Cláusulas Contractuales Tipo.</p>
       <h3>5.4 Otros destinatarios</h3>
       <p>beloq no vende, alquila ni cede tus datos a terceros con fines comerciales. Solo los comparte con terceros identificables cuando la ley lo obliga (requerimiento judicial, Agencia Tributaria) o con tu consentimiento.</p>
       <h2>6. Tus derechos</h2>

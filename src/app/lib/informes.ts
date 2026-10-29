@@ -90,6 +90,19 @@ export const MODALIDADES = [
 
 export type ModalidadId = (typeof MODALIDADES)[number]["id"];
 
+/** «¿Cómo nos has conocido?» (opcional), en este orden. */
+export const CONOCIDO = [
+  { id: "buscador", label: "Buscando en Google o Bing" },
+  { id: "ia", label: "Me lo ha recomendado una IA (ChatGPT, Perplexity, Gemini, Claude, Copilot)" },
+  { id: "linkedin", label: "LinkedIn" },
+  { id: "beloq", label: "Me ha llamado o escrito beloq" },
+  { id: "jornada", label: "Una jornada o asociación (Cámara, polígono, colegio profesional)" },
+  { id: "consultora", label: "Me lo ha recomendado una consultora" },
+  { id: "otro", label: "Otro" },
+] as const;
+
+export type ConocidoId = (typeof CONOCIDO)[number]["id"];
+
 /** Páginas de la sección desde las que se puede llegar al formulario. */
 export const ORIGENES = {
   inicio: "Página principal del servicio",
@@ -100,6 +113,7 @@ export const ORIGENES = {
   metodologia: "Metodología",
   ejemplo: "Ejemplo de informe",
   ley: "Guía de la Ley de Movilidad Sostenible",
+  "accesibilidad-por-turnos": "Accesibilidad por turnos",
 } as const;
 
 export type OrigenId = keyof typeof ORIGENES;
@@ -114,6 +128,10 @@ export function esServicio(v: unknown): v is ServicioId {
 
 export function esModalidad(v: unknown): v is ModalidadId {
   return MODALIDADES.some((m) => m.id === v);
+}
+
+export function esConocido(v: unknown): v is ConocidoId {
+  return CONOCIDO.some((c) => c.id === v);
 }
 
 export function esOrigen(v: unknown): v is OrigenId {
@@ -152,6 +170,7 @@ export interface Solicitud {
   telefono: string;
   servicio: ServicioId | "";
   modalidad: ModalidadId | "";
+  conocido: ConocidoId | "";
   necesidad: string;
   fecha: string;
   /** Solo si tipo = empresa. */
@@ -171,6 +190,7 @@ export const SOLICITUD_VACIA: Solicitud = {
   telefono: "",
   servicio: "",
   modalidad: "",
+  conocido: "",
   necesidad: "",
   fecha: "",
   centros: "",
@@ -189,6 +209,7 @@ export const ORDEN_CAMPOS: CampoSolicitud[] = [
   "modalidad",
   "necesidad",
   "fecha",
+  "conocido",
   "centros",
   "turnos",
 ];
@@ -202,6 +223,7 @@ export const MAX_LONGITUD: Record<CampoSolicitud, number> = {
   telefono: 30,
   servicio: 40,
   modalidad: 20,
+  conocido: 20,
   necesidad: 4000,
   fecha: 80,
   centros: 5,
@@ -228,6 +250,7 @@ export function validarSolicitud(s: Solicitud): ErroresSolicitud {
     e.telefono = "Revisa el teléfono: usa solo números, espacios y, si quieres, el prefijo +.";
   if (s.servicio && !esServicio(s.servicio)) e.servicio = "Elige un servicio de la lista.";
   if (s.modalidad && !esModalidad(s.modalidad)) e.modalidad = "Elige una modalidad de la lista.";
+  if (s.conocido && !esConocido(s.conocido)) e.conocido = "Elige una opción de la lista.";
   if (s.tipo === "empresa" && s.centros.trim() && !/^[1-9]\d{0,4}$/.test(s.centros.trim()))
     e.centros = "Indica el número de centros con cifras, por ejemplo 2.";
   for (const campo of ORDEN_CAMPOS) {

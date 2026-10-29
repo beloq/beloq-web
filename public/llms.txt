@@ -1,0 +1,24 @@
+# beloq
+
+> beloq (València, España) fabrica aparcamiento seguro para bicicletas y patinetes y elabora informes de movilidad a partir de datos abiertos de transporte público, bici pública, aforos ciclistas, aparcamiento y tráfico. Datos almacenados en España; procesamiento de IA dentro de la UE.
+
+## Informes de movilidad
+
+- [Informes de movilidad](https://www.beloq.es/informes-movilidad): qué analizamos y para quién.
+- [Empresas](https://www.beloq.es/informes-movilidad/empresas): análisis de datos para el plan de movilidad sostenible al trabajo (PMST, Ley 9/2025, art. 26): accesibilidad del centro por turnos, alternativas al coche, indicadores de seguimiento. No redactamos el plan completo ni negociamos con la representación de los trabajadores.
+- [Ayuntamientos](https://www.beloq.es/informes-movilidad/ayuntamientos): seguimiento de medidas y episodios, movilidad ciclista y conexiones con transporte público.
+- [Campus](https://www.beloq.es/informes-movilidad/campus): acceso a universidades y hospitales por franjas.
+- [Metodología](https://www.beloq.es/informes-movilidad/metodologia): fuentes, ficha de cada indicador, verificación con cálculo independiente.
+- [Guía de la Ley 9/2025](https://www.beloq.es/informes-movilidad/ley-movilidad-sostenible): quién está obligado (centros con más de 200 personas o 100 por turno), plazo (2026-12-05), seguimiento bienal.
+- [Informe de ejemplo](https://www.beloq.es/informes-movilidad/ejemplo): estructura de un informe con un caso ficticio, sin cifras; no es un caso de cliente.
+- [Solicitar un informe](https://www.beloq.es/informes-movilidad/solicitar)
+
+## Aparcamiento seguro
+
+- [Portada](https://www.beloq.es): estaciones de aparcamiento seguro para bicis y patinetes.
+- [Información y ayuda](https://www.beloq.es/info)
+
+## Legal
+
+- [Privacidad](https://www.beloq.es/legal/privacidad)
+- [Aviso legal](https://www.beloq.es/legal/aviso-legal)

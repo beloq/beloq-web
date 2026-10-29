@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Bike,
   CalendarRange,
@@ -16,6 +17,7 @@ import {
   Cabecera,
   EnlaceFlecha,
   ListaCheck,
+  Preguntas,
   Seccion,
   Tabla,
   Tarjeta,
@@ -274,6 +276,73 @@ export default function AyuntamientosPage() {
         <EnlaceFlecha href={`${BASE}/ley-movilidad-sostenible`}>
           Guía de la Ley de Movilidad Sostenible
         </EnlaceFlecha>
+      </Seccion>
+
+      <Seccion id="preguntas-frecuentes" fondo="gris" titulo="Preguntas frecuentes">
+        <div className="max-w-3xl">
+          <Preguntas
+            items={[
+              {
+                pregunta: "¿Qué puede medir beloq de una medida de movilidad ya aplicada?",
+                respuesta: (
+                  <p>
+                    Su evolución con datos abiertos: oferta de transporte, disponibilidad
+                    de bici pública, aforos ciclistas, tráfico y aparcamiento, comparando
+                    periodos y, cuando es posible, una zona de referencia. Explicamos qué
+                    parte del cambio puede atribuirse a la medida con los datos
+                    disponibles.
+                  </p>
+                ),
+              },
+              {
+                pregunta: "¿Trabajáis con datos personales?",
+                respuesta: (
+                  <p>
+                    No. Solo datos abiertos y, si el ayuntamiento los aporta, datos
+                    agregados. Datos almacenados en España; procesamiento de IA dentro de
+                    la UE.
+                  </p>
+                ),
+              },
+              {
+                pregunta: "¿Sirve para el seguimiento del PMUS?",
+                respuesta: (
+                  <p>
+                    Sí, como fuente de indicadores con método y fecha. No sustituimos la
+                    redacción ni la aprobación del plan.
+                  </p>
+                ),
+              },
+              {
+                pregunta: "¿Cada cuánto se actualiza?",
+                respuesta: (
+                  <p>
+                    Lo acordamos según la medida: una serie mensual para seguimiento, o un
+                    antes y después para una actuación concreta.
+                  </p>
+                ),
+              },
+              {
+                // Mientras no haya un informe de ejemplo con datos, la respuesta
+                // describe el ejemplo que hay: la estructura con un caso ficticio.
+                pregunta: "¿Podemos ver un ejemplo?",
+                respuesta: (
+                  <p>
+                    Sí: el informe de ejemplo enseña la estructura completa de un informe
+                    con un caso ficticio, sin cifras.{" "}
+                    <Link
+                      href={`${BASE}/ejemplo`}
+                      className="font-bold text-beloq-dark underline underline-offset-4"
+                    >
+                      Verlo
+                    </Link>
+                    .
+                  </p>
+                ),
+              },
+            ]}
+          />
+        </div>
       </Seccion>
 
       <BandaCta

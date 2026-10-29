@@ -14,6 +14,7 @@ import {
   EnlaceFlecha,
   ListaCheck,
   Nota,
+  Preguntas,
   Seccion,
   Tabla,
   Tarjeta,
@@ -270,6 +271,68 @@ export default function CampusPage() {
             necesitamos datos de estudiantes, pacientes ni personal concretos.
           </p>
         </Nota>
+      </Seccion>
+
+      <Seccion id="preguntas-frecuentes" fondo="gris" titulo="Preguntas frecuentes">
+        <div className="max-w-3xl">
+          <Preguntas
+            items={[
+              {
+                pregunta: "¿Afecta la Ley 9/2025 a las universidades y hospitales?",
+                respuesta: (
+                  <p>
+                    Sí, como centros de trabajo con más de 200 personas o 100 por turno,
+                    sean públicos o privados. En la Comunitat Valenciana, además, los
+                    centros de formación secundaria o universitaria con más de 500
+                    estudiantes deben tener plan de movilidad para alumnado y personal
+                    (Ley 6/2011, art. 15).
+                  </p>
+                ),
+              },
+              {
+                pregunta: "¿Analizáis el acceso del alumnado o del personal?",
+                respuesta: (
+                  <p>
+                    Ambos, por franjas horarias, con horarios de transporte público,
+                    disponibilidad de bici pública y aparcamiento del entorno. Los
+                    estudiantes no cuentan como plantilla a efectos de la obligación
+                    laboral, pero sí para el plan del centro.
+                  </p>
+                ),
+              },
+              {
+                pregunta: "¿Qué pasa si el campus ya tiene plan?",
+                respuesta: (
+                  <p>
+                    Mejor: medimos las medidas que ya están en marcha y aportamos
+                    indicadores para su seguimiento, sin repetir el diagnóstico.
+                  </p>
+                ),
+              },
+              {
+                // Mientras no haya un informe de ejemplo con datos, la respuesta
+                // describe el ejemplo que hay: la estructura con un caso ficticio.
+                pregunta: "¿Hay algún campus que sea cliente?",
+                respuesta: (
+                  <p>
+                    No. No presentamos a ninguna universidad ni hospital como cliente, y
+                    el informe de ejemplo usa un caso ficticio.
+                  </p>
+                ),
+              },
+              {
+                pregunta: "¿Qué datos necesitáis del campus?",
+                respuesta: (
+                  <p>
+                    Accesos, horarios de las franjas principales y, si se quiere
+                    cuantificar, una distribución agregada de procedencias. Sin datos
+                    personales.
+                  </p>
+                ),
+              },
+            ]}
+          />
+        </div>
       </Seccion>
 
       <BandaCta

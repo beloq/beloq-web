@@ -209,14 +209,14 @@ export default function LeyMovilidadPage() {
               "Más de 50.000 habitantes: antes de 2023 (Ley 7/2021). Más de 20.000 y menos de 50.000: un año desde la entrada en vigor de la Ley 9/2025, con vencimiento general el 5 de diciembre de 2026 (art. 24.1).",
               <>
                 <strong className="text-beloq-dark">5 de diciembre de 2026</strong>: plazo
-                general de doce meses desde la entrada en vigor de la Ley 9/2025,
-                conforme al{" "}
+                general de doce meses desde la entrada en vigor de la Ley 9/2025 (5 de
+                diciembre de 2025), conforme al{" "}
                 <a href={ART.a26} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
                   artículo 26.1
                 </a>{" "}
                 modificado por el{" "}
                 <a href={ART.rdl63} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
-                  Real Decreto-ley 7/2026
+                  Real Decreto-ley 7/2026, artículo 63
                 </a>
                 . Debe comprobarse la normativa territorial aplicable.
               </>,
