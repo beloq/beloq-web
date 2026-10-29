@@ -12,6 +12,7 @@ const RUTAS = [
   BASE,
   `${BASE}/ayuntamientos`,
   `${BASE}/empresas`,
+  `${BASE}/accesibilidad-por-turnos`,
   `${BASE}/campus`,
   `${BASE}/ejemplo`,
   `${BASE}/metodologia`,

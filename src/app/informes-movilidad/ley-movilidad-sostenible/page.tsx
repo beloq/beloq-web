@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CalendarCheck, Info } from "lucide-react";
 import type { ReactNode } from "react";
 import {
@@ -417,6 +418,16 @@ export default function LeyMovilidadPage() {
               garantiza por sí solo el cumplimiento de la ley.
             </p>
           </Nota>
+          <p className="mt-6 leading-relaxed text-gray-600">
+            Para un centro de trabajo con turnos, ofrecemos un{" "}
+            <Link
+              href={`${BASE}/accesibilidad-por-turnos`}
+              className="font-bold text-beloq-dark underline decoration-beloq-yellow decoration-2 underline-offset-4"
+            >
+              diagnóstico de accesibilidad para el PMST
+            </Link>
+            .
+          </p>
         </div>
       </Seccion>
 

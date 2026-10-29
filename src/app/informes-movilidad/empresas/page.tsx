@@ -141,6 +141,16 @@ export default function EmpresasPage() {
               partida y el seguimiento de indicadores. El resto del plan corresponde a
               la organización.
             </p>
+            <p>
+              Para el acceso a cada entrada y salida, mira nuestro{" "}
+              <Link
+                href={`${BASE}/accesibilidad-por-turnos`}
+                className="font-bold text-beloq-dark underline decoration-beloq-yellow decoration-2 underline-offset-4"
+              >
+                análisis de accesibilidad por turnos
+              </Link>
+              .
+            </p>
           </>
         }
       >

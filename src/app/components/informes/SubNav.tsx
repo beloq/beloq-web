@@ -8,6 +8,7 @@ const ENLACES = [
   { href: BASE, label: "El servicio" },
   { href: `${BASE}/ayuntamientos`, label: "Ayuntamientos" },
   { href: `${BASE}/empresas`, label: "Empresas" },
+  { href: `${BASE}/accesibilidad-por-turnos`, label: "Por turnos" },
   { href: `${BASE}/campus`, label: "Campus y centros" },
   { href: `${BASE}/ejemplo`, label: "Ejemplo" },
   { href: `${BASE}/metodologia`, label: "Metodología" },
