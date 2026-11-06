@@ -5,12 +5,14 @@
 ## Informes de movilidad
 
 - [Informes de movilidad](https://www.beloq.es/informes-movilidad): qué analizamos y para quién.
+- [Accesibilidad por turnos](https://www.beloq.es/informes-movilidad/accesibilidad-por-turnos): análisis de transporte público y bici para la entrada y la salida de cada turno de un centro de trabajo en València; diagnóstico e indicadores para el plan de movilidad sostenible al trabajo (PMST, Ley 9/2025, art. 26; plazo 2026-12-05). Incluye un comprobador de turnos con horarios reales de un polígono.
 - [Empresas](https://www.beloq.es/informes-movilidad/empresas): análisis de datos para el plan de movilidad sostenible al trabajo (PMST, Ley 9/2025, art. 26): accesibilidad del centro por turnos, alternativas al coche, indicadores de seguimiento. No redactamos el plan completo ni negociamos con la representación de los trabajadores.
 - [Ayuntamientos](https://www.beloq.es/informes-movilidad/ayuntamientos): seguimiento de medidas y episodios, movilidad ciclista y conexiones con transporte público.
 - [Campus](https://www.beloq.es/informes-movilidad/campus): acceso a universidades y hospitales por franjas.
 - [Metodología](https://www.beloq.es/informes-movilidad/metodologia): fuentes, ficha de cada indicador, verificación con cálculo independiente.
-- [Guía de la Ley 9/2025](https://www.beloq.es/informes-movilidad/ley-movilidad-sostenible): quién está obligado (centros con más de 200 personas o 100 por turno), plazo (2026-12-05), seguimiento bienal.
-- [Informe de ejemplo](https://www.beloq.es/informes-movilidad/ejemplo): estructura de un informe con un caso ficticio, sin cifras; no es un caso de cliente.
+- [Con qué datos trabajamos](https://www.beloq.es/informes-movilidad/fuentes): fuentes abiertas, frecuencia, desde cuándo y licencia.
+- [Guía de la Ley 9/2025](https://www.beloq.es/informes-movilidad/ley-movilidad-sostenible): quién está obligado (centros con más de 200 personas o 100 por turno), plazo (2026-12-05), infracción leve de 101 a 2.000 euros solo con perjuicio, seguimiento bienal.
+- [Ejemplo de estructura de un informe](https://www.beloq.es/informes-movilidad/ejemplo): caso ficticio sin cifras, no un caso de cliente.
 - [Solicitar un informe](https://www.beloq.es/informes-movilidad/solicitar)
 
 ## Aparcamiento seguro

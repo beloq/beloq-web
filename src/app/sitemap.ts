@@ -16,6 +16,7 @@ const RUTAS = [
   `${BASE}/campus`,
   `${BASE}/ejemplo`,
   `${BASE}/metodologia`,
+  `${BASE}/fuentes`,
   `${BASE}/ley-movilidad-sostenible`,
   `${BASE}/solicitar`,
   "/legal/aviso-legal",

@@ -114,6 +114,7 @@ export const ORIGENES = {
   ejemplo: "Ejemplo de informe",
   ley: "Guía de la Ley de Movilidad Sostenible",
   "accesibilidad-por-turnos": "Accesibilidad por turnos",
+  fuentes: "Con qué datos trabajamos",
 } as const;
 
 export type OrigenId = keyof typeof ORIGENES;

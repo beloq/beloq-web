@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function PoliticaPrivacidad() {
   return (
-    <LegalPage title="Política de Privacidad" version="1.4" date="29 de octubre de 2026">
+    <LegalPage title="Política de Privacidad" version="1.4" date="6 de noviembre de 2026">
       <h2>1. Responsable del tratamiento</h2>
       <table>
         <tbody>

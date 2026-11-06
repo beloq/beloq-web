@@ -683,7 +683,22 @@ export default function InformesMovilidadPage() {
         titulo="Antes de pedir un informe"
         intro={<p>Todo lo esencial está en estas páginas, sin registro ni descargas.</p>}
       >
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <TarjetaIcono
+            icono={Clock}
+            titulo="Accesibilidad por turnos"
+            tono="borde"
+            pie={
+              <EnlaceFlecha href={`${BASE}/accesibilidad-por-turnos`}>
+                Ver el análisis por turnos
+              </EnlaceFlecha>
+            }
+          >
+            <p>
+              Transporte público y bici para llegar y volver de cada turno. Diagnóstico
+              para el plan de movilidad al trabajo.
+            </p>
+          </TarjetaIcono>
           <TarjetaIcono
             icono={FileSearch}
             titulo="Ejemplo de informe"
@@ -702,6 +717,14 @@ export default function InformesMovilidadPage() {
             pie={<EnlaceFlecha href={`${BASE}/metodologia`}>Leer la metodología</EnlaceFlecha>}
           >
             <p>Fuentes, comprobaciones y cómo leer cada tipo de dato.</p>
+          </TarjetaIcono>
+          <TarjetaIcono
+            icono={Database}
+            titulo="Con qué datos trabajamos"
+            tono="borde"
+            pie={<EnlaceFlecha href={`${BASE}/fuentes`}>Ver las fuentes</EnlaceFlecha>}
+          >
+            <p>Fuentes abiertas: qué observamos, cada cuánto, desde cuándo y con qué licencia.</p>
           </TarjetaIcono>
           <TarjetaIcono
             icono={Scale}

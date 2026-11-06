@@ -41,14 +41,17 @@ export function Boton({
   children,
   variante = "oscuro",
   icono = true,
+  id,
 }: {
   href: string;
   children: ReactNode;
   variante?: Variante;
   icono?: boolean;
+  id?: string;
 }) {
   return (
     <Link
+      id={id}
       href={href}
       className={`inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-center text-sm font-bold transition-colors sm:text-base ${VARIANTES[variante]} ${FOCO}`}
     >
@@ -128,6 +131,7 @@ export function Migas({ items }: { items: Miga[] }) {
 /** Cabecera amarilla de cada página de la sección. */
 export function Cabecera({
   migas,
+  antetitulo,
   titulo,
   entradilla,
   acciones,
@@ -135,6 +139,8 @@ export function Cabecera({
   children,
 }: {
   migas: Miga[];
+  /** Línea pequeña en mayúsculas sobre el título. */
+  antetitulo?: ReactNode;
   titulo: ReactNode;
   entradilla: ReactNode;
   acciones?: ReactNode;
@@ -146,7 +152,14 @@ export function Cabecera({
     <header className="bg-beloq-yellow pb-12 pt-8 sm:pb-16 sm:pt-10">
       <Contenedor>
         <Migas items={migas} />
-        <h1 className="mt-6 max-w-4xl text-3xl font-bold leading-tight text-beloq-dark sm:text-5xl">
+        {antetitulo && (
+          <p className="mt-6 text-xs font-bold uppercase tracking-wider text-beloq-dark">
+            {antetitulo}
+          </p>
+        )}
+        <h1
+          className={`${antetitulo ? "mt-2" : "mt-6"} max-w-4xl text-3xl font-bold leading-tight text-beloq-dark sm:text-5xl`}
+        >
           {titulo}
         </h1>
         <div className="mt-5 max-w-3xl text-lg leading-relaxed text-beloq-dark">
@@ -327,13 +340,16 @@ export function Pasos({
 /** Preguntas frecuentes con <details>: el texto está en el HTML aunque esté plegado. */
 export function Preguntas({
   items,
+  abiertaPrimera = false,
 }: {
   items: { pregunta: string; respuesta: ReactNode }[];
+  /** La primera pregunta aparece desplegada. */
+  abiertaPrimera?: boolean;
 }) {
   return (
     <div className="divide-y divide-gray-200 border-y border-gray-200">
-      {items.map((it) => (
-        <details key={it.pregunta} className="group py-1">
+      {items.map((it, i) => (
+        <details key={it.pregunta} className="group py-1" open={abiertaPrimera && i === 0}>
           <summary
             className={`flex cursor-pointer list-none items-start justify-between gap-4 py-4 text-left font-bold text-beloq-dark [&::-webkit-details-marker]:hidden ${FOCO}`}
           >

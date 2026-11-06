@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BASE } from "../../lib/informes";
+import { BASE, solicitarHref, type OrigenId } from "../../lib/informes";
 
 const ENLACES = [
   { href: BASE, label: "El servicio" },
@@ -15,6 +15,19 @@ const ENLACES = [
   { href: `${BASE}/ley-movilidad-sostenible`, label: "Ley de movilidad" },
 ];
 
+/** Qué origen lleva el botón «Solicitar» según la página en la que se pulsa. */
+const ORIGEN_POR_RUTA: Record<string, OrigenId> = {
+  [BASE]: "inicio",
+  [`${BASE}/ayuntamientos`]: "ayuntamientos",
+  [`${BASE}/empresas`]: "empresas",
+  [`${BASE}/accesibilidad-por-turnos`]: "accesibilidad-por-turnos",
+  [`${BASE}/campus`]: "campus",
+  [`${BASE}/ejemplo`]: "ejemplo",
+  [`${BASE}/metodologia`]: "metodologia",
+  [`${BASE}/fuentes`]: "fuentes",
+  [`${BASE}/ley-movilidad-sostenible`]: "ley",
+};
+
 /**
  * Navegación propia de /informes-movilidad, pegada bajo la cabecera del sitio.
  * En móvil se desplaza en horizontal; la página actual va marcada.
@@ -22,6 +35,7 @@ const ENLACES = [
 export default function SubNav() {
   const pathname = usePathname().replace(/\/$/, "") || "/";
   const enSolicitar = pathname === `${BASE}/solicitar`;
+  const hrefSolicitar = solicitarHref({ origen: ORIGEN_POR_RUTA[pathname] });
 
   return (
     <nav
@@ -50,7 +64,7 @@ export default function SubNav() {
           })}
           <li className="shrink-0 md:hidden">
             <Link
-              href={`${BASE}/solicitar`}
+              href={hrefSolicitar}
               aria-current={enSolicitar ? "page" : undefined}
               className={`block whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold ${
                 enSolicitar ? "bg-beloq-yellow text-beloq-dark" : "bg-beloq-dark text-white"
@@ -61,7 +75,7 @@ export default function SubNav() {
           </li>
         </ul>
         <Link
-          href={`${BASE}/solicitar`}
+          href={hrefSolicitar}
           aria-current={enSolicitar ? "page" : undefined}
           className={`hidden shrink-0 rounded-full px-5 py-2 text-sm font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-beloq-dark md:inline-block ${
             enSolicitar

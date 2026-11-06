@@ -176,7 +176,7 @@ export async function POST(request: Request) {
     `pagina_origen=${paginaOrigen || "-"}`,
     `servicio=${datos.servicio || "-"}`,
     `modalidad=${datos.modalidad || "-"}`,
-    `como_nos_conocio=${datos.conocido || "-"}`,
+    `como_nos_has_conocido=${etiqueta(CONOCIDO, datos.conocido) || "-"}`,
     `url_completa=${urlCompleta || "-"}`,
     `referer=${anterior || "-"}`,
   ];

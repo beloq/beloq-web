@@ -12,6 +12,7 @@ import {
 import {
   BandaCta,
   Cabecera,
+  EnlaceFlecha,
   ListaCheck,
   Seccion,
   Tabla,
@@ -376,6 +377,9 @@ export default function MetodologiaPage() {
               se reciben del cliente para un encargo concreto. El anexo de cada
               informe indica qué fuente se ha usado, con qué fecha y qué cobertura
               tiene.
+            </p>
+            <p>
+              <EnlaceFlecha href={`${BASE}/fuentes`}>Lista de fuentes</EnlaceFlecha>
             </p>
           </>
         }

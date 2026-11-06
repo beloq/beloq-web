@@ -281,11 +281,10 @@ export default function CampusPage() {
                 pregunta: "¿Afecta la Ley 9/2025 a las universidades y hospitales?",
                 respuesta: (
                   <p>
-                    Sí, como centros de trabajo con más de 200 personas o 100 por turno,
-                    sean públicos o privados. En la Comunitat Valenciana, además, los
-                    centros de formación secundaria o universitaria con más de 500
-                    estudiantes deben tener plan de movilidad para alumnado y personal
-                    (Ley 6/2011, art. 15).
+                    Sí, como centros de trabajo del sector público con más de 200
+                    personas o 100 por turno. En la Comunitat Valenciana, además, los
+                    centros con más de 500 estudiantes deben tener plan de movilidad para
+                    alumnado y personal (Ley 6/2011, art. 15).
                   </p>
                 ),
               },
@@ -310,13 +309,11 @@ export default function CampusPage() {
                 ),
               },
               {
-                // Mientras no haya un informe de ejemplo con datos, la respuesta
-                // describe el ejemplo que hay: la estructura con un caso ficticio.
                 pregunta: "¿Hay algún campus que sea cliente?",
                 respuesta: (
                   <p>
-                    No. No presentamos a ninguna universidad ni hospital como cliente, y
-                    el informe de ejemplo usa un caso ficticio.
+                    No. Los ejemplos que citamos son análisis propios con datos abiertos y
+                    no implican ninguna relación con la universidad.
                   </p>
                 ),
               },

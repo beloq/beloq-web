@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { FileSearch } from "lucide-react";
 import type { ReactNode } from "react";
+import BarraSolicitar from "../../components/informes/BarraSolicitar";
+import ComprobadorTurnos from "../../components/informes/ComprobadorTurnos";
 import {
   BandaCta,
   Boton,
@@ -8,21 +9,15 @@ import {
   Contenedor,
   EnlaceFlecha,
   ListaCheck,
-  Nota,
   Preguntas,
   Seccion,
   Tabla,
+  Tarjeta,
 } from "../../components/informes/ui";
 import { BASE, metadatos, solicitarHref } from "../../lib/informes";
 
-// Texto aprobado por Jesús el 2026-10-29 (agente-movilidad,
-// investigaciones/web_2026-11/prompt_para_claude_web_2026-10-29.md). Cifras y
+// Texto público del encargo del 2026-11-06 (agente-movilidad): cifras y
 // enlaces tal cual; solo se adapta la forma a los componentes de la sección.
-//
-// PENDIENTE ANTES DE PUBLICAR: el apartado «Un ejemplo de por qué importa la
-// hora» usa el estudio de Vera, que no se va a publicar como ejemplo. Hay que
-// sustituirlo por el nuevo informe de ejemplo cuando exista, y que /ejemplo
-// contenga de verdad lo que este apartado dice que contiene.
 
 export const metadata = metadatos({
   titulo:
@@ -35,9 +30,7 @@ export const metadata = metadatos({
 
 const CTA = solicitarHref({ servicio: "accesibilidad", origen: "accesibilidad-por-turnos" });
 const EJEMPLO = `${BASE}/ejemplo`;
-
 const BOE_LEY = "https://www.boe.es/buscar/act.php?id=BOE-A-2025-24545";
-const BOE_RDL = "https://www.boe.es/buscar/act.php?id=BOE-A-2026-6544";
 
 function Externo({ href, children }: { href: string; children: ReactNode }) {
   return (
@@ -68,36 +61,31 @@ export default function AccesibilidadPorTurnosPage() {
     <>
       <Cabecera
         migas={[{ label: "Accesibilidad por turnos" }]}
-        titulo={
-          <>
-            <span className="block text-lg font-bold sm:text-2xl">
-              Accesibilidad al trabajo
-            </span>{" "}
-            ¿Puede tu plantilla llegar a cada turno sin depender del coche?
-          </>
-        }
+        antetitulo="Análisis de accesibilidad al trabajo por turnos en València"
+        titulo="¿Puede tu plantilla llegar a cada turno sin depender del coche?"
         entradilla={
           <>
             <p>
-              <strong>Análisis por turnos en València.</strong> Analizamos las opciones
-              de transporte público y bici para la entrada y la salida de tu centro.
-              Con esa información puedes preparar el diagnóstico de tu plan de
-              movilidad sostenible al trabajo —PMST— o decidir qué medida conviene
-              aplicar si ya tienes uno.
+              Cruzamos los horarios reales de transporte público y las opciones en bici
+              con las horas de entrada y salida de tu centro. El resultado es el
+              diagnóstico de accesibilidad que necesita tu plan de movilidad sostenible
+              al trabajo (PMST), o la base para decidir una medida si ya lo tienes.
             </p>
             <p className="mt-3 text-base">
-              Recibes un informe por centro, con alternativas por turno, las zonas
-              desde las que se puede llegar y los datos que sustentan cada
-              recomendación. Trabajamos con responsables de personas y operaciones, y
-              con las consultoras que redactan el plan.
+              Recibes un informe por centro con las alternativas de ida y vuelta de cada
+              turno, las zonas desde las que se puede llegar y los datos que sustentan
+              cada recomendación. Trabajamos con responsables de personas y operaciones,
+              y con las consultoras que redactan el plan.
             </p>
           </>
         }
         acciones={
           <>
-            <Boton href={CTA}>Pedir un análisis de mi centro</Boton>
+            <Boton id="cta-principal" href={CTA}>
+              Solicitar presupuesto
+            </Boton>
             <span className="self-center">
-              <EnlaceFlecha href={EJEMPLO}>Ver un informe de ejemplo</EnlaceFlecha>
+              <EnlaceFlecha href={EJEMPLO}>Ver cómo se estructura un informe</EnlaceFlecha>
             </span>
           </>
         }
@@ -112,37 +100,59 @@ export default function AccesibilidadPorTurnosPage() {
               Una parada cercana dice poco si el primer servicio llega después de la
               entrada o el último sale antes de terminar el turno. Para una misma zona
               de residencia puede haber una alternativa razonable por la mañana y
-              ninguna por la noche. Los fines de semana y los festivos también cambian
-              el resultado.
+              ninguna por la noche. Los fines de semana y los festivos cambian el
+              resultado.
             </p>
             <p>
-              Comprobamos el recorrido completo para las fechas y los horarios de tu
-              centro: llegada a tiempo, regreso, transbordos y trayectos a pie hasta el
-              acceso que utiliza la plantilla. Para la bici, revisamos los recorridos y
-              el aparcamiento del entorno. Si se plantea usar Valenbisi, miramos la
-              disponibilidad observada en esa franja, tanto de bicicletas como de
-              anclajes para devolverlas.
-            </p>
-            <p>
-              El diagnóstico sirve para comparar medidas concretas: ajustar una
-              entrada, estudiar transporte de empresa o mejorar el acceso en bici. La
-              recomendación dependerá de las alternativas que existan y, cuando haya
-              datos agregados de plantilla, de cuántas personas puedan aprovecharlas.
+              Comprobamos el recorrido completo para las fechas y horarios de tu centro:
+              llegada a tiempo, regreso, transbordos y trayecto a pie hasta el acceso
+              que usa la plantilla. Para la bici, los recorridos, el aparcamiento del
+              entorno y, si se plantea Valenbisi, la disponibilidad observada de bicis y
+              de anclajes en esa franja.
             </p>
           </>
         }
       />
 
       <Seccion
-        id="que-incluye"
+        id="comprobador"
         fondo="gris"
-        titulo="Qué incluye el análisis de accesibilidad"
+        titulo="Pruébalo con un polígono real"
         intro={
           <p>
-            La entrega se organiza por centro, zona de origen y turno. La pieza
-            principal es una tabla de alternativas con tiempos, conexiones y márgenes
-            respecto a la entrada y la salida. La acompaña una explicación de los
-            problemas encontrados y de las medidas que merece la pena estudiar.
+            Horarios programados de los autobuses que entran en el Parc Tecnològic de
+            Paterna en días laborables. Pon las horas de un turno y mira si la ida y la
+            vuelta encajan.
+          </p>
+        }
+      >
+        <div className="max-w-3xl">
+          <ComprobadorTurnos />
+          <p className="mt-4 text-sm leading-relaxed text-gray-600">
+            Turnos de ejemplo{" "}
+            <span className="rounded-[0_6px_0_6px] bg-beloq-dark px-1.5 py-0.5 text-[0.7rem] font-bold uppercase tracking-wider text-beloq-yellow">
+              Ilustrativo
+            </span>
+            ; horarios reales de MetGo en paradas del parque: el primer autobús llega a
+            las 06:42 y el último a las 21:40; el primero sale a las 06:44 y el último a
+            las 21:35 (líneas 131, 135 y 144, hoja del 2025-09-08; lanzadera 130 desde
+            el metro de Empalme, actualización del 2026-06-01). Solo laborables. Es
+            horario programado: dice si el viaje encaja sobre el papel, no si el autobús
+            llega puntual, y no mide la frecuencia a cada hora. En tu centro se hace con
+            sus líneas, sus accesos y el tiempo a pie desde la parada.
+          </p>
+        </div>
+      </Seccion>
+
+      <Seccion
+        id="que-recibes"
+        titulo="Qué recibes"
+        intro={
+          <p>
+            Un informe por centro, en PDF y en web, con tablas y mapas, organizado por
+            turno y zona de origen. La pieza principal es la tabla de alternativas con
+            tiempos, conexiones y márgenes respecto a la entrada y la salida, como la de
+            arriba pero para cada línea y cada acceso.
           </p>
         }
       >
@@ -155,127 +165,76 @@ export default function AccesibilidadPorTurnosPage() {
             filas={[
               [
                 "Alternativas de ida y vuelta por turno",
-                "Identificar qué horarios tienen cobertura y dónde se interrumpe el recorrido",
+                "Saber qué horarios tienen cobertura y dónde se interrumpe el recorrido",
               ],
               [
                 "Cobertura por zona de origen",
-                "Localizar las zonas con alternativa; cuantificar personas si aportas plantilla agregada por zona y turno",
+                "Localizar las zonas con alternativa y, si aportas plantilla agregada por zona y turno, cuántas personas la tienen",
               ],
               [
                 "Comparación de medidas",
-                "Valorar ajustes de horario, transporte colectivo, bici o aparcamiento seguro con el mismo criterio de análisis",
+                "Valorar un cambio de horario, transporte colectivo, bici o aparcamiento seguro con el mismo criterio",
               ],
               [
                 "Indicadores de seguimiento",
-                "Acordar cómo comprobar la implantación, el uso y los resultados que puedan medirse",
+                "Acordar cómo comprobar la implantación y el uso en el informe bienal que exige la ley",
               ],
             ]}
           />
-          <div className="mt-8 space-y-3 text-base leading-relaxed text-gray-600 sm:text-lg">
-            <p>
-              Incluimos las fuentes, su fecha, los calendarios utilizados y los
-              supuestos del cálculo. Contrastamos las cifras con un cálculo
-              independiente antes de la entrega. Así, tu equipo o tu consultora pueden
-              incorporar el análisis al plan y revisar cómo se ha obtenido cada
-              resultado.{" "}
-              <Interno href={`${BASE}/metodologia`}>Consulta nuestra metodología</Interno>.
-            </p>
-            <p>
-              La cobertura se comprueba para cada encargo. Utilizamos horarios
-              programados de EMT, Metrovalencia, Cercanías y, cuando disponemos de una
-              fuente vigente y utilizable, autobuses interurbanos. Confirmamos qué
-              servicios podemos analizar antes de presupuestar. Un horario programado
-              permite comprobar si el viaje encaja sobre el papel; la puntualidad
-              necesita observaciones adicionales.
-            </p>
-          </div>
+          <p className="mt-8 text-base leading-relaxed text-gray-600 sm:text-lg">
+            Cada cifra lleva su fuente y su fecha, y la contrastamos con un cálculo
+            independiente antes de entregarla. Usamos horarios programados de EMT,
+            Metrovalencia, Cercanías y autobuses interurbanos cuando hay una fuente
+            vigente; confirmamos qué líneas podemos analizar antes de presupuestar.{" "}
+            <Interno href={`${BASE}/metodologia`}>Cómo lo hacemos</Interno>.
+          </p>
         </div>
       </Seccion>
 
-      {/* PENDIENTE: sustituir este apartado por el nuevo informe de ejemplo. */}
-      <Seccion id="ejemplo" titulo="Un ejemplo de por qué importa la hora">
+      <Seccion id="bici" fondo="gris" titulo="La hora también importa en bici">
         <div className="max-w-3xl">
-          <Nota icono={FileSearch} titulo="Extracto de un análisis propio">
-            <p>
-              En una muestra propia del entorno del campus de Vera, ocho de las diez
-              estaciones de Valenbisi de la ciudad con más tiempo sin anclajes libres
-              entre las 8 y las 11 h de los laborables analizados estaban alrededor del
-              campus. Tener una estación cerca no garantizaba encontrar dónde devolver
-              la bicicleta al llegar.
+          <Tarjeta tono="blanca">
+            <p className="leading-relaxed text-gray-600">
+              En una muestra propia del entorno del campus de Vera (datos del 2026-10-05
+              al 2026-10-15, tres laborables completos), ocho de las diez estaciones de
+              Valenbisi de la ciudad con más tiempo sin anclajes libres entre las 8 y las
+              11 h estaban alrededor del campus. Tener una estación cerca no garantizaba
+              poder devolver la bici al llegar. Es una primera lectura, no un encargo de
+              la universidad; periodo, fuentes y comprobaciones, en la{" "}
+              <Interno href={`${BASE}/metodologia`}>metodología</Interno>.
             </p>
-            <p>
-              El ejemplo utiliza datos del 2026-10-05 al 2026-10-15, con días parciales
-              y un corte de captura; solo incluye tres laborables completos. Es una
-              primera lectura, no un patrón consolidado ni un encargo de la
-              universidad. En el informe puedes consultar el periodo, las fuentes y las
-              comprobaciones del cálculo.
-            </p>
-          </Nota>
-          <p className="mt-6">
-            <EnlaceFlecha href={EJEMPLO}>
-              Ver el informe de ejemplo y sus datos de partida
-            </EnlaceFlecha>
-          </p>
+          </Tarjeta>
         </div>
       </Seccion>
 
       <Seccion
         id="que-necesitamos"
-        fondo="gris"
         titulo="Qué necesitamos para estudiar tu centro"
         intro={
-          <>
-            <p>
-              Para pedir un presupuesto basta con indicar dónde está el centro, sus
-              turnos y qué necesitas resolver. Puedes empezar por un único centro y una
-              pregunta concreta, como comprobar el acceso al turno de noche o comparar
-              un cambio de horario.
-            </p>
-            <p>Para realizar el análisis acordaremos estos datos:</p>
-          </>
+          <p>
+            Para pedir presupuesto basta con la ubicación, los turnos y qué quieres
+            resolver. Puedes empezar por un solo centro y una pregunta concreta, como el
+            acceso al turno de noche o un cambio de horario. Para el análisis
+            acordaremos:
+          </p>
         }
       >
         <div className="max-w-3xl">
           <ListaCheck
             items={[
               "La ubicación y los accesos que utiliza la plantilla.",
-              "Las horas de entrada y salida, incluidos los turnos que terminan al día siguiente.",
-              "Los días de trabajo, fines de semana y festivos que debamos considerar.",
-              "Si quieres cuantificar personas con alternativa, una distribución agregada de plantilla por zona de residencia y turno.",
+              "Las horas de entrada y salida, incluidos los turnos que terminan al día siguiente, y el calendario de trabajo.",
+              "Si quieres contar personas con alternativa, una distribución agregada de plantilla por zona de residencia y turno. Nunca nombres ni direcciones.",
             ]}
           />
           <p className="mt-6 text-base leading-relaxed text-gray-600 sm:text-lg">
-            No necesitamos nombres ni direcciones particulares. Si todavía no tienes la
-            distribución de orígenes, podemos estudiar las zonas con oferta compatible
-            con cada turno. Ese resultado describe la cobertura del transporte; para
-            contar personas necesitamos relacionarlo con la plantilla agregada.
+            Si trabajas con una consultora, nos encargamos del anexo de datos y acordamos
+            con ella preguntas, formato e indicadores. La redacción del plan y su
+            negociación con la representación de las personas trabajadoras corresponden
+            al equipo responsable del plan.
           </p>
         </div>
       </Seccion>
-
-      <Seccion
-        id="consultora"
-        titulo="Si ya estás preparando el plan con una consultora"
-        intro={
-          <>
-            <p>
-              Podemos encargarnos del anexo de datos y coordinar su alcance con quien
-              redacte el PMST. Acordamos las preguntas, el formato y los indicadores
-              para que el trabajo pueda incorporarse al diagnóstico. La redacción del
-              plan, su negociación con la representación de las personas trabajadoras
-              y la comprobación de cumplimiento corresponden al equipo responsable del
-              plan.
-            </p>
-            <p>
-              Si el plan ya está aprobado, podemos centrarnos en una medida pendiente o
-              revisar una que esté en marcha. Por ejemplo, comprobar si un nuevo
-              horario mejora las conexiones o si se utiliza el aparcamiento instalado.
-              Medir un cambio en la forma de viajar requiere, además, una situación de
-              partida y datos adecuados para compararla.
-            </p>
-          </>
-        }
-      />
 
       <Seccion
         id="plazo"
@@ -284,38 +243,20 @@ export default function AccesibilidadPorTurnosPage() {
         intro={
           <>
             <p>
-              El artículo 26 de la Ley 9/2025 establece la obligación para los centros
-              de trabajo «con más de 200 personas trabajadoras o 100 por turno», en los
-              términos que recoge la norma. El plazo vigente es de doce meses desde su
-              entrada en vigor: <strong className="text-beloq-dark">2026-12-05</strong>.
-              El umbral se refiere a cada centro de trabajo.
-            </p>
-            <p>
-              El análisis de accesibilidad aporta parte del diagnóstico; contratarlo no
-              equivale a disponer del plan completo. La ley también exige negociar el
-              plan y elaborar un informe de seguimiento a los dos años de su
-              aprobación, que se repite cada dos años de vigencia.
-            </p>
-            <p>
-              No disponer del plan en plazo es una infracción leve, con multa de 101 a
-              2.000 euros, y solo cuando con ello se produzca un perjuicio para el
-              sistema de movilidad. Las empresas obligadas que hayan recibido las
-              ayudas directas del Real Decreto-ley 7/2026 y no dispongan del plan deben
-              devolverlas. No hay una multa automática ni de decenas de miles de euros
-              por no tener el documento.
+              La Ley 9/2025 obliga a los centros de trabajo con más de 200 personas
+              trabajadoras o 100 por turno a disponer de un plan de movilidad sostenible
+              al trabajo antes del{" "}
+              <strong className="text-beloq-dark">5 de diciembre de 2026</strong>. Se
+              cuenta por centro, no por empresa. Este análisis cubre la parte de
+              diagnóstico de accesibilidad del plan; no equivale al plan completo. No
+              tenerlo en plazo es una infracción leve, de 101 a 2.000 euros y solo si
+              causa un perjuicio al sistema de movilidad: no hay una multa automática.
             </p>
             <p className="text-base">
               Fuentes:{" "}
-              <Externo href={`${BOE_LEY}#a2-8`}>
-                artículo 26 de la Ley 9/2025, texto consolidado del BOE
-              </Externo>
-              ;{" "}
-              <Externo href={`${BOE_LEY}#a1-18`}>
-                artículos 106 y 107, infracciones y cuantías
-              </Externo>
-              ;{" "}
-              <Externo href={BOE_RDL}>Real Decreto-ley 7/2026, artículos 63 y 64</Externo>
-              . Puedes ampliar la información sobre obligaciones y contenido en nuestra{" "}
+              <Externo href={`${BOE_LEY}#a2-8`}>artículo 26 de la Ley 9/2025</Externo> y{" "}
+              <Externo href={`${BOE_LEY}#a1-18`}>artículos 106 y 107</Externo>, texto
+              consolidado del BOE. Plazos, ayudas y seguimiento, en nuestra{" "}
               <Interno href={`${BASE}/ley-movilidad-sostenible`}>
                 guía de la Ley de Movilidad Sostenible
               </Interno>
@@ -328,6 +269,7 @@ export default function AccesibilidadPorTurnosPage() {
       <Seccion id="antes-de-pedir" titulo="Antes de pedir presupuesto">
         <div className="max-w-3xl">
           <Preguntas
+            abiertaPrimera
             items={[
               {
                 pregunta: "¿Podéis saber cómo viaja hoy la plantilla?",
@@ -342,12 +284,12 @@ export default function AccesibilidadPorTurnosPage() {
                 ),
               },
               {
-                pregunta: "¿Cuánto cuesta y cuánto tarda el análisis?",
+                pregunta: "¿Cuánto cuesta y cuánto tarda?",
                 respuesta: (
                   <p>
-                    Depende del número de centros y turnos, la cobertura de las fuentes y
-                    los datos de partida. Con la ubicación, los horarios y la pregunta
-                    que necesitas resolver podemos proponerte un alcance, un plazo y un
+                    Depende del número de centros y turnos, de la cobertura de las fuentes
+                    y de los datos de partida. Con la ubicación, los horarios y la
+                    pregunta que necesitas resolver te proponemos alcance, plazo y
                     presupuesto. No hace falta preparar una encuesta para solicitarlo.
                   </p>
                 ),
@@ -358,9 +300,7 @@ export default function AccesibilidadPorTurnosPage() {
                   <p>
                     Sí. La recomendación puede ser un ajuste de horarios, transporte
                     colectivo, bici u otra medida respaldada por el diagnóstico. El
-                    aparcamiento seguro es una de las opciones que evaluamos. La decisión
-                    se apoya en las necesidades del centro y en las alternativas
-                    analizadas.
+                    aparcamiento seguro es una de las opciones que evaluamos.
                   </p>
                 ),
               },
@@ -369,20 +309,22 @@ export default function AccesibilidadPorTurnosPage() {
         </div>
       </Seccion>
 
-      <BandaCta
-        titulo="Cuéntanos dónde está tu centro y qué turnos tiene"
-        texto={
-          <p>
-            Indícanos la ubicación, las horas de entrada y salida y qué decisión
-            quieres tomar. Si escribes desde una consultora, añade qué parte del
-            diagnóstico necesitas incorporar al plan. Comprobaremos la cobertura de
-            datos y te propondremos el trabajo que podemos realizar.
-          </p>
-        }
-        href={CTA}
-        boton="Pedir un análisis de mi centro"
-        secundario={{ href: EJEMPLO, label: "Consultar el informe de ejemplo" }}
-      />
+      <div id="cta-final">
+        <BandaCta
+          titulo="Cuéntanos dónde está tu centro y qué turnos tiene"
+          texto={
+            <p>
+              Indícanos la ubicación, las horas de entrada y salida y qué decisión
+              quieres tomar. Si escribes desde una consultora, añade qué parte del
+              diagnóstico necesitas incorporar al plan. Comprobamos la cobertura de
+              datos y te proponemos el trabajo.
+            </p>
+          }
+          href={CTA}
+          boton="Solicitar presupuesto"
+          secundario={{ href: EJEMPLO, label: "Ver cómo se estructura un informe" }}
+        />
+      </div>
 
       <section className="bg-white pt-10">
         <Contenedor>
@@ -390,10 +332,18 @@ export default function AccesibilidadPorTurnosPage() {
             beloq · València. Datos almacenados en España; procesamiento de IA dentro
             de la UE.
             <br />
-            Contenido revisado el <time dateTime="2026-10-29">2026-10-29</time>.
+            Contenido revisado el <time dateTime="2026-11-06">2026-11-06</time>.
           </p>
         </Contenedor>
       </section>
+
+      <BarraSolicitar
+        href={CTA}
+        texto="¿Tu centro tiene turnos?"
+        boton="Solicitar presupuesto"
+        primero="cta-principal"
+        ultimo="cta-final"
+      />
     </>
   );
 }

@@ -323,18 +323,16 @@ export default function AyuntamientosPage() {
                 ),
               },
               {
-                // Mientras no haya un informe de ejemplo con datos, la respuesta
-                // describe el ejemplo que hay: la estructura con un caso ficticio.
-                pregunta: "¿Podemos ver un ejemplo?",
+                pregunta: "¿Podemos ver cómo es un informe?",
                 respuesta: (
                   <p>
-                    Sí: el informe de ejemplo enseña la estructura completa de un informe
-                    con un caso ficticio, sin cifras.{" "}
+                    Sí: la estructura de un informe, apartado por apartado, con un caso
+                    ficticio y sin cifras.{" "}
                     <Link
                       href={`${BASE}/ejemplo`}
                       className="font-bold text-beloq-dark underline underline-offset-4"
                     >
-                      Verlo
+                      Verla
                     </Link>
                     .
                   </p>
