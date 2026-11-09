@@ -5,6 +5,7 @@ export const metadata = {
   title: "Contacto - Beloq",
   description:
     "Contacta con Beloq. Solicita un presupuesto gratuito para estaciones de aparcamiento inteligente.",
+  alternates: { canonical: "https://www.beloq.es/contacto" },
 };
 
 export default function ContactoPage() {

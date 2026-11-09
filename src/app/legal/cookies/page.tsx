@@ -3,6 +3,7 @@ import LegalPage from "../../components/LegalPage";
 export const metadata = {
   title: "Política de Cookies - Beloq",
   description: "Política de cookies de beloq.es — Beloq Movilidad SL.",
+  alternates: { canonical: "https://www.beloq.es/legal/cookies" },
 };
 
 export default function PoliticaCookies() {

@@ -7,6 +7,7 @@ import PricingTable from "../../components/PricingTable";
 export const metadata = {
   title: "Términos y Condiciones · beloq",
   description: "Términos y condiciones de uso de beloq — Beloq Movilidad SL.",
+  alternates: { canonical: "https://www.beloq.es/legal/terminos" },
 };
 
 export default function TerminosCondiciones() {

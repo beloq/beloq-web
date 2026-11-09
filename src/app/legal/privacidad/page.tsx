@@ -6,6 +6,7 @@ import LegalPage from "../../components/LegalPage";
 export const metadata = {
   title: "Política de Privacidad · beloq",
   description: "Política de privacidad de beloq — Beloq Movilidad SL.",
+  alternates: { canonical: "https://www.beloq.es/legal/privacidad" },
 };
 
 export default function PoliticaPrivacidad() {

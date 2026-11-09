@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Borrar tu cuenta · beloq",
   description:
     "Cómo borrar tu cuenta de la app beloq, con o sin la app, y qué datos se borran y cuáles se conservan.",
+  alternates: { canonical: "https://www.beloq.es/legal/borrar-cuenta" },
 };
 
 export default function BorrarCuenta() {

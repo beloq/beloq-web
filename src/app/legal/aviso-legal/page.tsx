@@ -4,6 +4,7 @@ import Link from "next/link";
 export const metadata = {
   title: "Aviso Legal - Beloq",
   description: "Aviso legal de beloq.es — Beloq Movilidad SL.",
+  alternates: { canonical: "https://www.beloq.es/legal/aviso-legal" },
 };
 
 export default function AvisoLegal() {

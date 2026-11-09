@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import HeroSection from "./components/HeroSection";
 import AboutSection from "./components/AboutSection";
 import HowItWorks from "./components/HowItWorks";
@@ -10,6 +11,11 @@ import { getPricing } from "./lib/info";
 // Las horas gratis salen de /pricing/public (nunca escritas a mano): la
 // portada se regenera como mucho cada 5 min, igual que la caché del servidor.
 export const revalidate = 300;
+
+// m.beloq.es sirve la misma web: la versión canónica es la de www.
+export const metadata: Metadata = {
+  alternates: { canonical: "https://www.beloq.es/" },
+};
 
 export default async function Home() {
   const pricing = await getPricing();
