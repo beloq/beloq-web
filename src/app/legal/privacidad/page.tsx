@@ -11,7 +11,7 @@ export const metadata = {
 
 export default function PoliticaPrivacidad() {
   return (
-    <LegalPage title="Política de Privacidad" version="1.4" date="6 de noviembre de 2026">
+    <LegalPage title="Política de Privacidad" version="1.5" date="17 de noviembre de 2026">
       <h2>1. Responsable del tratamiento</h2>
       <table>
         <tbody>
@@ -33,15 +33,17 @@ export default function PoliticaPrivacidad() {
         <li><strong>Correo electrónico:</strong> se verifica con un código de 6 dígitos (o lo verifica Google o Apple si te registras con ellos). Es una de las llaves para entrar si pierdes tu número.</li>
         <li><strong>Fecha de nacimiento:</strong> para comprobar que tienes al menos 14 años.</li>
         <li><strong>Llaves de acceso:</strong> código por SMS, código al correo verificado, Google, Apple o <strong>passkeys</strong> (huella o cara del móvil). No hay contraseñas. Los cambios de número se verifican con un SMS al número nuevo y quedan registrados (fecha, número anterior y nuevo).</li>
-        <li><strong>Vehículo con el que vas:</strong> bici, patinete o los dos. Es opcional y sirve para enseñarte el vídeo adecuado al aparcar y para estadística.</li>
+        <li><strong>Vehículo con el que vas:</strong> bici, patinete o los dos. Sirve para enseñarte el vídeo adecuado al aparcar y para estadística. Es opcional, salvo para apuntarte al programa de puntos (§2.6).</li>
         <li><strong>Documento de identidad:</strong> solo si pides una factura con datos fiscales.</li>
       </ul>
       <h3>2.2 Datos que se generan al usar el servicio</h3>
       <ul>
-        <li><strong>Ubicación (GPS):</strong> solo con la app abierta, para enseñarte las estaciones cercanas y comprobar que estás junto al beloq que abres (a menos de 500 metros). La de cada apertura se guarda con ella y se anonimiza o se borra a los 90 días.</li>
+        <li><strong>Ubicación (GPS):</strong> solo con la app abierta, para enseñarte en el mapa las estaciones cercanas y a qué distancia están. Para abrir un beloq no se usa: eso lo comprueba el Bluetooth. Solo se envía a beloq cuando pides que un beloq suene («Localizar»), para comprobar que estás cerca, y durante los viajes que grabas en el programa de puntos si te apuntas (§2.6). La que se guardó con aperturas anteriores se anonimiza o se borra a los 90 días.</li>
+        <li><strong>Bluetooth:</strong> con el panel de una estación o el de tu vehículo abierto, la app escucha los anuncios Bluetooth de los beloqs que tienes cerca para saber junto a cuál estás. Lo que oye se queda en tu móvil, solo en memoria, y se olvida al cerrar el panel: no se envía a beloq ni se guarda. Al abrir, la app lee del beloq un código de un solo uso y lo envía a beloq para comprobar que estás a su lado.</li>
+        <li><strong>Ubicación simulada:</strong> si la app detecta que tu móvil usa una ubicación simulada (GPS falso), se lo dice a beloq una vez por sesión. Guardamos solo que ha pasado, cuándo y desde qué sistema (Android o iOS), sin coordenadas, para prevenir el fraude.</li>
         <li><strong>Uso del servicio:</strong> aperturas, inicio y fin de cada custodia, beloq y estación usados, tiempo gratis consumido, anuncios vistos, reservas, abonos, avisos enviados y respuestas a las preguntas de la app (por ejemplo, si había un vehículo al cerrar un beloq).</li>
         <li><strong>Dispositivo:</strong> modelo, sistema y versión de la app, para soporte y compatibilidad; el token de notificaciones, para avisarte; y el identificador de instalación de la app.</li>
-        <li><strong>Analítica y fallos de la app:</strong> Firebase Analytics registra cómo se usa la app (pantallas y acciones) y Firebase Crashlytics registra los fallos (qué falló, en qué versión y en qué modelo). No se usan para publicidad ni para seguirte en otras apps, y la app no usa el identificador de publicidad del móvil.</li>
+        <li><strong>Analítica y fallos de la app:</strong> Firebase Analytics registra cómo se usa la app (pantallas y acciones) y Firebase Crashlytics registra los fallos (qué falló, en qué pantalla, en qué versión y en qué modelo, con el identificador interno de tu cuenta, nunca tu nombre, correo ni teléfono). Puedes apagar los informes de fallos en «Tu cuenta» → «Privacidad y legal» → «Enviar informes de fallos». No se usan para publicidad ni para seguirte en otras apps, y la app no usa el identificador de publicidad del móvil.</li>
         <li><strong>Soporte:</strong> lo que escribes al reportar un fallo de un beloq y en el chat de soporte de <Link href="/info">beloq.es/info</Link>, con el nombre y el correo que nos des.</li>
         <li><strong>Códigos e invitaciones:</strong> los códigos que canjeas, quién te invitó y a quién has invitado, y el hash de tu número de móvil (ver §4).</li>
       </ul>
@@ -53,21 +55,36 @@ export default function PoliticaPrivacidad() {
       <p>Si nos pides información o una propuesta de informes de movilidad (en <Link href="/informes-movilidad/solicitar">beloq.es/informes-movilidad/solicitar</Link> o escribiendo a <a href="mailto:info@beloq.es">info@beloq.es</a>), tratamos los datos que nos das: siempre tu nombre, la organización, el correo electrónico y el tipo de organización; y, si los indicas, el municipio o la ubicación del centro, el teléfono, el servicio de interés, la modalidad, lo que necesitas decidir o analizar, la fecha orientativa, cómo nos has conocido y, si se trata de una empresa, el número de centros y los turnos. No pedimos datos de trabajadores concretos ni archivos de nómina.</p>
       <p>Con la solicitud guardamos también de dónde llegas: la página de beloq.es desde la que abriste el formulario, la dirección del formulario y, si tu navegador la envía, la página anterior (sin sus parámetros). La solicitud nos llega por correo electrónico. Para evitar abusos, el servidor usa tu dirección IP durante unos minutos para limitar el número de envíos; no la guardamos con tu solicitud.</p>
       <p>Usamos estos datos solo para responder a tu solicitud y, si procede, preparar una propuesta. Pedir información no te suscribe a comunicaciones comerciales.</p>
+      <h3>2.6 Programa de puntos beloq</h3>
+      <p>Solo si te apuntas al programa de puntos beloq, y según sus Condiciones (<Link href="/legal/programa-puntos">beloq.es/legal/programa-puntos</Link>):</p>
+      <ul>
+        <li><strong>Tus viajes en bici o patinete.</strong> La app registra tu posición una vez por segundo <strong>solo entre que pulsas «Empezar viaje» y «Parar»</strong> (o hasta que el viaje se cierra solo), también con la pantalla apagada, con una notificación visible mientras dura. Fuera de esos viajes no registra nada. Durante el viaje calcula además un resumen del acelerómetro por tramos de unos cinco segundos (cuánto vibra el móvil, si hay ritmo de pedaleo), sin guardar la señal del sensor. De cada viaje beloq guarda un <strong>resumen</strong>: fecha, hora de inicio y fin, duración, distancia, velocidades, el vehículo de tu perfil, el estado (validado, en revisión o no válido) con su motivo, los puntos y un trazado reducido cuyos <strong>extremos se recortan 150 m</strong> antes de guardarlo. El <strong>recorrido completo</strong> se guarda solo durante el plazo de §4, para recalcular el viaje, revisarlo si lo reclamas y detectar el fraude.</li>
+        <li><strong>Detección automática, más adelante y solo si la aceptas.</strong> Hoy la app no detecta viajes por su cuenta. Cuando beloq la ofrezca, te explicará antes qué cambia (la app podría registrar tus viajes con la app cerrada, con la ubicación «Permitir siempre» y el reconocimiento de actividad del móvil) y será siempre voluntaria y reversible. Esta Política se actualizará antes de ofrecerla.</li>
+        <li><strong>Tus anclajes en beloq</strong>, que beloq ya conoce, se cruzan con los viajes para saber si acabaste aparcando en un beloq y para proponerte un «viaje sin detectar».</li>
+        <li><strong>Tu móvil:</strong> fabricante, modelo y versión de Android, versión de la app y qué permisos has concedido, para saber en qué teléfonos falla el registro de viajes. De los móviles solo se usan agregados.</li>
+        <li><strong>Diagnóstico del registro de viajes:</strong> permisos, batería, avisos del sistema, errores y tiempos, <strong>sin coordenadas</strong>.</li>
+        <li><strong>Acelerómetro en bruto:</strong> solo si te prestas como probador, solo en los recorridos de referencia que tú abres y con un consentimiento aparte que puedes retirar.</li>
+        <li><strong>Tu alta y tu programa:</strong> el programa en el que estás, la versión de sus Condiciones y de su anexo que aceptaste, tu modo (manual) y tus pausas.</li>
+        <li><strong>Puntos y canjes:</strong> cada suma, resta, canje y ajuste, con su motivo.</li>
+      </ul>
+      <p>La ubicación la proporciona el sistema de tu móvil (en Android, los servicios de Google Play), que la trata según los ajustes de tu dispositivo y su propia política, fuera del control de beloq. beloq no usa ningún proveedor externo para registrar viajes: solo el sistema del móvil y su propio programa.</p>
       <h2>3. Para qué usamos tus datos</h2>
       <table>
         <thead>
           <tr><td><strong>Finalidad</strong></td><td><strong>Datos</strong></td><td><strong>Base legal</strong></td></tr>
         </thead>
         <tbody>
-          <tr><td>Prestar el servicio (cuenta, aperturas, custodia, avisos)</td><td>Identidad, teléfono, correo, llaves, GPS, uso, dispositivo</td><td>Ejecución del contrato (art. 6.1.b RGPD)</td></tr>
+          <tr><td>Prestar el servicio (cuenta, aperturas, custodia, avisos)</td><td>Identidad, teléfono, correo, llaves, GPS, código Bluetooth de cada apertura, uso, dispositivo</td><td>Ejecución del contrato (art. 6.1.b RGPD)</td></tr>
           <tr><td>Cobros, abonos, tarjetas guardadas y cobro automático de la deuda</td><td>Correo, pagos, identificador de Stripe</td><td>Ejecución del contrato (art. 6.1.b RGPD)</td></tr>
           <tr><td>Atención al usuario, reclamaciones y reembolsos</td><td>Identidad, correo, uso, mensajes de soporte</td><td>Ejecución del contrato (art. 6.1.b RGPD)</td></tr>
-          <tr><td>Seguridad del sistema y prevención del fraude (incluido el abuso de pruebas gratis e invitaciones)</td><td>IP, dispositivo, patrones de uso, hash del móvil</td><td>Interés legítimo (art. 6.1.f RGPD)</td></tr>
+          <tr><td>Seguridad del sistema y prevención del fraude (incluido el abuso de pruebas gratis, invitaciones y puntos)</td><td>IP, dispositivo, patrones de uso, hash del móvil, avisos de ubicación simulada, posiciones y velocidades de los viajes del programa de puntos</td><td>Interés legítimo (art. 6.1.f RGPD)</td></tr>
           <tr><td>Mejorar la app y corregir fallos</td><td>Analítica y registros de fallos</td><td>Interés legítimo (art. 6.1.f RGPD)</td></tr>
+          <tr><td>Certificar tus viajes en bici o patinete y asignarte puntos (programa de puntos beloq)</td><td>Los de §2.6</td><td>Ejecución de las Condiciones del programa que aceptas al apuntarte (art. 6.1.b RGPD). El acceso a la ubicación y a los sensores de tu móvil, con el permiso que concedes y puedes retirar en los ajustes del móvil (art. 22.2 LSSI)</td></tr>
+          <tr><td>Evaluar el programa y mejorar el registro de viajes</td><td>Viajes en agregados; acelerómetro en bruto solo de los probadores que lo consienten</td><td>Interés legítimo (art. 6.1.f RGPD) para los agregados; consentimiento (art. 6.1.a RGPD) para el acelerómetro en bruto</td></tr>
           <tr><td>Atender solicitudes de informes de movilidad y preparar propuestas</td><td>Los del apartado 2.5</td><td>Medidas precontractuales a petición del interesado (art. 6.1.b RGPD); si actúas en nombre de una organización, interés legítimo en mantener la relación con ella (art. 6.1.f RGPD y art. 19 LOPDGDD)</td></tr>
           <tr><td>Novedades por correo</td><td>Correo</td><td>Consentimiento (art. 6.1.a RGPD)</td></tr>
           <tr><td>Obligaciones legales y fiscales</td><td>Datos de facturación e identidad fiscal</td><td>Obligación legal (art. 6.1.c RGPD)</td></tr>
-          <tr><td>Datos agregados para operadores e instituciones</td><td>Datos de uso pseudonimizados (ver §5.1)</td><td>Interés legítimo (art. 6.1.f RGPD)</td></tr>
+          <tr><td>Datos agregados para operadores, instituciones y organizadores de programas de puntos</td><td>Datos de uso pseudonimizados (ver §5.1) y agregados del programa de puntos</td><td>Interés legítimo (art. 6.1.f RGPD)</td></tr>
         </tbody>
       </table>
       <h2>4. Cuánto tiempo conservamos tus datos</h2>
@@ -77,12 +94,19 @@ export default function PoliticaPrivacidad() {
         </thead>
         <tbody>
           <tr><td>Datos de la cuenta (nombre, correo, teléfono)</td><td>Mientras la cuenta exista. Al eliminarla se anonimizan en el momento</td></tr>
-          <tr><td>Ubicación (GPS)</td><td>90 días; después se anonimiza o se borra</td></tr>
+          <tr><td>Ubicación (GPS) de aperturas anteriores</td><td>90 días; después se anonimiza o se borra</td></tr>
+          <tr><td>Avisos de ubicación simulada</td><td>90 días; al eliminar la cuenta, en el momento</td></tr>
+          <tr><td>Lo que la app oye por Bluetooth</td><td>No se guarda: vive en la memoria del móvil mientras el panel está abierto</td></tr>
           <tr><td>Historial de uso (custodias, reservas, avisos)</td><td>Mientras la cuenta exista. Al eliminarla deja de estar ligado a ti</td></tr>
           <tr><td>Pagos, cargos, devoluciones y abonos</td><td>10 años (Código de Comercio, art. 30, y Ley General Tributaria)</td></tr>
           <tr><td>Chat de soporte</td><td>90 días desde el último mensaje</td></tr>
           <tr><td>Solicitudes de informes de movilidad y propuestas que no se convierten en encargo</td><td>12 meses desde la última comunicación; después se borran</td></tr>
           <tr><td>Solicitudes de informes que se convierten en encargo</td><td>Pasan al expediente del encargo: mientras dure el contrato y, después, los plazos que exija la ley</td></tr>
+          <tr><td>Programa de puntos: resumen de cada viaje</td><td>Mientras la cuenta exista. Al eliminarla quedan solo la fecha, la distancia, el estado y los puntos, sin nada que te identifique</td></tr>
+          <tr><td>Programa de puntos: recorrido completo de cada viaje (posiciones y, si eres probador, acelerómetro en bruto)</td><td>90 días desde que el viaje llega a beloq; después se borra</td></tr>
+          <tr><td>Programa de puntos: diagnóstico del registro de viajes (sin coordenadas) y cruce con tus anclajes</td><td>90 días</td></tr>
+          <tr><td>Programa de puntos: datos de tu móvil</td><td>Mientras estés en el programa; se borran al salir de él o al eliminar la cuenta</td></tr>
+          <tr><td>Programa de puntos: libro de puntos y canjes</td><td>Mientras la cuenta exista. Al eliminarla deja de estar ligado a ti; se conserva para que cuadre con los abonos entregados</td></tr>
           <tr><td>Códigos SMS de verificación</td><td>7 días</td></tr>
           <tr><td>Registros de consentimiento</td><td>5 años, para acreditar el cumplimiento del RGPD</td></tr>
           <tr><td>Passkeys (clave pública)</td><td>Mientras la cuenta exista; se desactivan al eliminarla</td></tr>
@@ -92,9 +116,10 @@ export default function PoliticaPrivacidad() {
       </table>
       <p>Al eliminar la cuenta, tus datos se anonimizan de forma irreversible: tu nombre pasa a «[eliminado]», tu correo se sustituye por una dirección sin relación contigo, tu teléfono se borra, y se borran tu cliente de Stripe y tus tarjetas guardadas.</p>
       <h2>5. Con quién compartimos tus datos</h2>
-      <h3>5.1 Operadores e instituciones (clientes de beloq)</h3>
+      <h3>5.1 Operadores, instituciones y organizadores</h3>
       <p>Compartimos con los operadores e instituciones que gestionan las estaciones datos de uso <strong>agregados y pseudonimizados</strong>: aperturas y custodias por estación, ocupación, duración media, horas de más demanda e ingresos.</p>
       <p>También podemos compartir datos individuales <strong>pseudonimizados</strong> (un identificador cifrado que no te identifica, las horas de cada custodia, la estación, el tipo de vehículo y el tipo de plan), protegidos por contrato de confidencialidad (art. 28 RGPD), para gestionar el servicio, hacer estudios de movilidad y mejorar la red de estaciones.</p>
+      <p><strong>Organizadores de programas de puntos.</strong> Si te apuntas al programa de puntos de un organizador (una empresa, una universidad, una entidad), el organizador recibe cada mes un informe <strong>solo con agregados</strong>: personas activas, viajes, kilómetros, reparto por vehículo y por franja horaria, puntos y un mapa por celdas de 500 m. <strong>Nada que describa a menos de 5 personas</strong>: si el programa tiene menos de 5 personas activas ese mes, no hay informe. El organizador no recibe tu nombre, tu recorrido, tus horas ni tus datos de contacto, y se compromete por contrato a no intentar identificar a nadie. En el «Programa piloto beloq» el organizador es la propia beloq.</p>
       <h3>5.2 Proveedores (encargados del tratamiento)</h3>
       <table>
         <thead>
@@ -103,16 +128,16 @@ export default function PoliticaPrivacidad() {
         <tbody>
           <tr><td><strong>Sendinblue SAS (Brevo)</strong></td><td>Francia (UE)</td><td>Correo y teléfono; contenido de las solicitudes de informes</td><td>Correos del servicio, SMS de verificación y avisos, y envío de las solicitudes de informes a nuestro buzón</td></tr>
           <tr><td><strong>Stripe Payments Europe Ltd.</strong></td><td>Dublín, Irlanda (UE)</td><td>Datos de pago y tarjetas</td><td>Cobros, tarjetas guardadas y devoluciones</td></tr>
-          <tr><td><strong>Google Ireland Ltd. (Google Cloud)</strong></td><td>Irlanda; datos en la región europe-southwest1 (Madrid) y BigQuery en la UE</td><td>Datos de la app y de los módulos</td><td>Servidores, base de datos y comunicación con los módulos</td></tr>
-          <tr><td><strong>Google LLC (Firebase: Authentication, Cloud Messaging, Analytics y Crashlytics)</strong></td><td>EE. UU.</td><td>Identificador de usuario, tokens, uso de la app y fallos</td><td>Cuentas y entrada con Google, avisos al móvil, analítica y registro de fallos</td></tr>
+          <tr><td><strong>Google Ireland Ltd. (Google Cloud)</strong></td><td>Irlanda; datos en la región europe-southwest1 (Madrid) y BigQuery en la UE</td><td>Datos de la app, de los módulos y del programa de puntos</td><td>Servidores, base de datos y comunicación con los módulos</td></tr>
+          <tr><td><strong>Google LLC (Firebase: Authentication, Cloud Messaging, Analytics y Crashlytics)</strong></td><td>EE. UU.</td><td>Identificador de usuario, tokens (también el que usa la app para subir tus viajes), uso de la app y fallos</td><td>Cuentas y entrada con Google, avisos al móvil, analítica y registro de fallos</td></tr>
           <tr><td><strong>Apple Inc.</strong></td><td>EE. UU.</td><td>Tokens de notificación y entrada con Apple</td><td>Avisos a iPhone y «Iniciar sesión con Apple»</td></tr>
-          <tr><td><strong>Stadia Maps, Inc.</strong></td><td>Delaware, EE. UU.</td><td>IP y zona del mapa que se mira</td><td>Mapa de estaciones</td></tr>
+          <tr><td><strong>Stadia Maps, Inc.</strong></td><td>Delaware, EE. UU.</td><td>IP y zona del mapa que se mira</td><td>Mapa de estaciones. Los recorridos del programa de puntos no se le envían</td></tr>
           <tr><td><strong>Google Ireland Ltd. (Google Workspace)</strong></td><td>Irlanda (UE)</td><td>Correos recibidos, incluidas las solicitudes de informes</td><td>Buzón de correo de beloq</td></tr>
           <tr><td><strong>Vercel Inc.</strong></td><td>EE. UU.; las funciones de la web se ejecutan en Washington (EE. UU.)</td><td>Datos que envías a través de la web, como los formularios, y dirección IP</td><td>Alojamiento y funcionamiento de beloq.es</td></tr>
         </tbody>
       </table>
       <h3>5.3 Transferencias internacionales</h3>
-      <p>Stripe, Brevo y la infraestructura de Google Cloud tratan los datos dentro del Espacio Económico Europeo. Firebase (Google LLC) y Apple Inc. están en Estados Unidos: la transferencia se ampara en el <strong>Marco de Privacidad de Datos UE-EE. UU.</strong> (EU-US Data Privacy Framework) y en las <strong>Cláusulas Contractuales Tipo</strong> aprobadas por la Comisión Europea. Stadia Maps, Inc. (Estados Unidos) recibe solo la IP y la zona del mapa que se mira, con su acuerdo de tratamiento de datos conforme al RGPD; no guarda ubicaciones ligadas a personas. Vercel Inc. (Estados Unidos) aloja beloq.es y ejecuta en Estados Unidos las funciones de la web, incluido el envío del formulario de solicitudes de informes: la transferencia se ampara en el <strong>Marco de Privacidad de Datos UE-EE. UU.</strong>, en el que Vercel está certificada. Google Workspace lo presta Google Ireland Ltd.; si algún tratamiento se hace fuera del Espacio Económico Europeo, se ampara en el mismo Marco y en las Cláusulas Contractuales Tipo.</p>
+      <p>Stripe, Brevo y la infraestructura de Google Cloud tratan los datos dentro del Espacio Económico Europeo. Firebase (Google LLC) y Apple Inc. están en Estados Unidos: la transferencia se ampara en el <strong>Marco de Privacidad de Datos UE-EE. UU.</strong> (EU-US Data Privacy Framework) y en las <strong>Cláusulas Contractuales Tipo</strong> aprobadas por la Comisión Europea. Stadia Maps, Inc. (Estados Unidos) recibe solo la IP y la zona del mapa que se mira, con su acuerdo de tratamiento de datos conforme al RGPD; no guarda ubicaciones ligadas a personas. Vercel Inc. (Estados Unidos) aloja beloq.es y ejecuta en Estados Unidos las funciones de la web, incluido el envío del formulario de solicitudes de informes: la transferencia se ampara en el <strong>Marco de Privacidad de Datos UE-EE. UU.</strong>, en el que Vercel está certificada. Google Workspace lo presta Google Ireland Ltd.; si algún tratamiento se hace fuera del Espacio Económico Europeo, se ampara en el mismo Marco y en las Cláusulas Contractuales Tipo. Los viajes del programa de puntos se guardan en la región de Madrid.</p>
       <h3>5.4 Otros destinatarios</h3>
       <p>beloq no vende, alquila ni cede tus datos a terceros con fines comerciales. Solo los comparte con terceros identificables cuando la ley lo obliga (requerimiento judicial, Agencia Tributaria) o con tu consentimiento.</p>
       <h2>6. Tus derechos</h2>
@@ -123,6 +148,7 @@ export default function PoliticaPrivacidad() {
         <li><strong>Portabilidad:</strong> puedes pedir tus datos en un formato estructurado y legible por máquina.</li>
         <li><strong>Oposición:</strong> al tratamiento basado en interés legítimo. Si te opones a las novedades por correo, dejamos de enviarlas en el momento (también lo cambias en «Tu cuenta»).</li>
         <li><strong>Limitación:</strong> puedes pedir que limitemos el uso de tus datos mientras se resuelve una reclamación.</li>
+        <li><strong>Programa de puntos:</strong> puedes pausar el programa, retirar los permisos del móvil o <strong>salir del programa conservando lo que ya hayas canjeado</strong>, todo desde «Puntos beloq». Tu «Copia de tus datos» incluye tus viajes, puntos y canjes; el recorrido completo de un viaje, mientras exista, te lo enviamos si lo pides a <a href="mailto:dpo@beloq.es">dpo@beloq.es</a>.</li>
       </ul>
       <h3>Cómo ejercerlos</h3>
       <p>Escribe a <strong><a href="mailto:dpo@beloq.es">dpo@beloq.es</a></strong> desde el correo verificado de tu cuenta, o por el chat de <Link href="/info">beloq.es/info</Link>, indicando qué derecho quieres ejercer. Solo si no podemos vincular la solicitud con tu cuenta te pediremos un dato más para verificarla. Te respondemos en un máximo de <strong>1 mes</strong>, ampliable 2 meses más si la solicitud es especialmente compleja, en cuyo caso te avisaremos dentro del primer mes.</p>
@@ -134,7 +160,7 @@ export default function PoliticaPrivacidad() {
         <li><strong>Sin la app:</strong> como se explica en <Link href="/legal/borrar-cuenta">beloq.es/legal/borrar-cuenta</Link>, escribiendo a <a href="mailto:dpo@beloq.es">dpo@beloq.es</a> desde el correo de la cuenta o por el chat de <Link href="/info">beloq.es/info</Link> indicando el móvil de la cuenta.</li>
       </ul>
       <h3>Qué pasa al eliminarla</h3>
-      <p>En el momento, y sin vuelta atrás: se anonimizan tus datos personales, se borran tu cliente de Stripe y tus tarjetas guardadas, se borra tu ubicación guardada, se desactivan tus passkeys y se cancelan tus reservas. El abono que tengas en vigor se pierde, salvo que estés dentro del plazo de desistimiento.</p>
+      <p>En el momento, y sin vuelta atrás: se anonimizan tus datos personales, se borran tu cliente de Stripe y tus tarjetas guardadas, se borra tu ubicación guardada, se borran tus avisos de ubicación simulada, se desactivan tus passkeys y se cancelan tus reservas. Si estabas en el programa de puntos, sales de él, se borran los recorridos completos y el diagnóstico de tus viajes, y de cada viaje quedan solo la fecha, la distancia, el estado y los puntos, sin nada que te identifique. El abono que tengas en vigor se pierde, salvo que estés dentro del plazo de desistimiento.</p>
       <h3>Qué se conserva</h3>
       <ul>
         <li><strong>Pagos y facturación:</strong> 10 años, por obligación fiscal y mercantil (art. 30 del Código de Comercio y art. 7 de la Ley General Tributaria).</li>
@@ -147,6 +173,7 @@ export default function PoliticaPrivacidad() {
           <p>El hash por sí solo no permite identificarte.</p>
         </li>
         <li><strong>Registros de consentimiento:</strong> 5 años.</li>
+        <li><strong>Libro de puntos y canjes del programa de puntos,</strong> sin nada que te identifique, para que cuadre con los abonos entregados.</li>
         <li><strong>Registros técnicos y de seguridad, anonimizados:</strong> para defenderse de reclamaciones e investigar incidentes.</li>
       </ul>
       <h3>Con el vehículo dentro</h3>
@@ -159,18 +186,19 @@ export default function PoliticaPrivacidad() {
         <li>Los datos almacenados se cifran con <strong>AES-256</strong>.</li>
         <li>La entrada admite <strong>passkeys (FIDO2/WebAuthn)</strong>, resistentes al phishing, y no hay contraseñas que robar.</li>
         <li>La infraestructura se ejecuta en Google Cloud con acceso restringido.</li>
-        <li>Los accesos del equipo de beloq requieren la huella o la cara en su dispositivo y quedan registrados.</li>
+        <li>Los accesos del equipo de beloq requieren la huella o la cara en su dispositivo y quedan registrados. En el programa de puntos, el equipo solo ve el recorrido completo de un viaje para revisarlo (en revisión, no válido o reclamado), y cada acceso queda anotado.</li>
       </ul>
       <h2>8. Menores de edad</h2>
       <p>La edad mínima para registrarse es de <strong>14 años</strong>, conforme al artículo 7 de la LOPDGDD. La fecha de nacimiento se comprueba en el registro y los menores de 14 años no pueden crear una cuenta.</p>
-      <p>A quienes tienen entre 14 y 17 años les recomendamos informar a su tutor legal.</p>
+      <p>A quienes tienen entre 14 y 17 años les recomendamos informar a su tutor legal. Pueden apuntarse al programa de puntos en <strong>modo manual</strong> (solo se registran los viajes que ellos empiezan y paran); te recomendamos especialmente informar a tu tutor, porque la app registra por dónde te mueves durante esos viajes. La detección automática no se ofrecerá a menores de 18 años sin que beloq lo evalúe antes y lo diga en esta Política.</p>
       <h2>9. Decisiones automatizadas</h2>
-      <p>beloq no hace perfiles de comportamiento, scoring crediticio ni segmentación automatizada.</p>
+      <p>beloq no hace perfiles de comportamiento, scoring crediticio ni segmentación automatizada. En el programa de puntos, cada viaje se evalúa por separado con reglas publicadas; no se construye un perfil tuyo.</p>
       <p>Algunas decisiones del servicio son automáticas y se basan solo en datos objetivos:</p>
       <ul>
         <li>el cálculo de las tarifas, el tiempo extra y las penalizaciones (duración y estado del beloq);</li>
         <li>el bloqueo para abrir un beloq nuevo cuando la deuda supera el umbral;</li>
-        <li>el cobro automático de la deuda en tu tarjeta guardada.</li>
+        <li>el cobro automático de la deuda en tu tarjeta guardada;</li>
+        <li>la <strong>validación de tus viajes del programa de puntos</strong> y los puntos que suman, con las reglas publicadas en las Condiciones del programa. Los viajes dudosos los revisa una persona y, en cualquier viaje, puedes pulsar «No estoy de acuerdo» durante 48 horas para que lo revise una persona.</li>
       </ul>
       <p>Puedes pedir que las revise una persona, dar tu punto de vista y discutirlas escribiendo a <a href="mailto:info@beloq.es">info@beloq.es</a> o por el chat de <Link href="/info">beloq.es/info</Link>.</p>
       <h2>10. Cambios en esta Política</h2>

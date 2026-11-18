@@ -44,6 +44,7 @@ export default function LegalPage({ title, version, date, children }: LegalPageP
             <Link href="/legal/aviso-legal" className="hover:text-beloq-dark transition-colors">Aviso Legal</Link>
             <Link href="/legal/privacidad" className="hover:text-beloq-dark transition-colors">Privacidad</Link>
             <Link href="/legal/terminos" className="hover:text-beloq-dark transition-colors">Términos</Link>
+            <Link href="/legal/programa-puntos" className="hover:text-beloq-dark transition-colors">Programa de puntos</Link>
             <Link href="/legal/cookies" className="hover:text-beloq-dark transition-colors">Cookies</Link>
             <Link href="/legal/borrar-cuenta" className="hover:text-beloq-dark transition-colors">Borrar tu cuenta</Link>
           </div>

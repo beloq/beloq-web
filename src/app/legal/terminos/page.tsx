@@ -12,7 +12,7 @@ export const metadata = {
 
 export default function TerminosCondiciones() {
   return (
-    <LegalPage title="Términos y Condiciones de Uso" version="1.4" date="11 de octubre de 2026">
+    <LegalPage title="Términos y Condiciones de Uso" version="1.5" date="17 de noviembre de 2026">
       <h2>1. Aceptación de los Términos</h2>
       <p>Estos Términos y Condiciones (en adelante, &quot;Términos&quot;) regulan el uso de la aplicación móvil beloq (disponible en iOS y Android), de la web beloq.es y de los módulos de aparcamiento beloq (en adelante, conjuntamente, &quot;el Servicio&quot;).</p>
       <p>Al registrarte, acceder o utilizar el Servicio, aceptas estos Términos en su totalidad. Si no estás de acuerdo, no podrás utilizar beloq.</p>
@@ -40,6 +40,8 @@ export default function TerminosCondiciones() {
         <li><strong>Invitaciones.</strong> Cada usuario tiene un código para invitar. Si una persona lo introduce en sus primeros 7 días desde el alta, antes de usar beloq por primera vez, y termina su primera custodia, quien la invitó recibe días gratis de Beloquer Flow. Solo los recibe si en ese momento está en el plan gratuito, y con un máximo de regalos por año. Los días y el máximo son los publicados en la app. No hay ninguna contraprestación económica.</li>
         <li>beloq puede modificar o terminar estos programas, y anular los regalos obtenidos con cuentas falsas, móviles ajenos o cualquier otro abuso.</li>
       </ul>
+      <h3>3.4 Programa de puntos beloq</h3>
+      <p>beloq puede ofrecerte apuntarte al <strong>programa de puntos beloq</strong>, que recompensa con puntos canjeables por días de abono los desplazamientos en bici o patinete que registras con la app y que beloq valida. Apuntarse es voluntario y separado de estos Términos: usar beloq no exige participar, y salir del programa no afecta a tu cuenta. El programa se rige por sus <strong>Condiciones</strong> (<Link href="/legal/programa-puntos">beloq.es/legal/programa-puntos</Link>), que aceptas al apuntarte, y por el anexo del programa concreto en el que entras, con sus cifras. Los puntos no tienen valor económico fuera del canje y no se cambian por dinero.</p>
       <h2>4. Registro y cuenta de usuario</h2>
       <h3>4.1 Requisitos</h3>
       <p>Para usar la app necesitas crear una cuenta. El identificador de la cuenta es <strong>tu número de teléfono móvil</strong>, verificado con un código por SMS: es lo primero que se registra y el que carga con las deudas pendientes. Es obligatorio facilitar tu número de teléfono, nombre, apellidos, correo electrónico y fecha de nacimiento. El correo <strong>se verifica</strong> con un código (o lo verifica Google o Apple si te registras con ellos): toda cuenta tiene, además del número, al menos una segunda llave de acceso (correo verificado, Google o Apple). Para entrar se admiten el código por SMS, el código al correo verificado, Google, Apple y las passkeys (huella o cara del móvil). No hay contraseñas.</p>
@@ -59,13 +61,13 @@ export default function TerminosCondiciones() {
       <p>Puedes cambiar tu número desde la app («Tu cuenta» → «Métodos de acceso») verificando el nuevo por SMS. Sin tu número puedes entrar con las otras llaves: correo verificado, Google, Apple o passkeys. <strong>Si pierdes a la vez tu número y todas tus llaves, la cuenta no se puede recuperar</strong>: beloq no ofrece recuperación manual de cuentas.</p>
       <h2>5. Uso del Servicio</h2>
       <h3>5.1 Abrir un beloq</h3>
-      <p>Desde la app, junto a la estación, puedes abrir un beloq de tres formas: pulsando «DESBLOQUEAR», pasando el móvil por su etiqueta NFC o leyendo su código QR con la cámara del móvil. Para abrirlo hay que estar a menos de 500 metros de la estación, con la ubicación del móvil activada, y confirmar con tu huella o tu cara. Antes de abrirse, el beloq pita y parpadea para que sepas cuál es el tuyo.</p>
+      <p>Desde la app, junto a la estación, puedes abrir un beloq de tres formas: pulsando «DESBLOQUEAR», pasando el móvil por su etiqueta NFC o leyendo su código QR con la cámara del móvil. Para abrirlo hay que estar a su lado: la app lo detecta por <strong>Bluetooth</strong>, a unos pocos metros, así que necesitas el Bluetooth del móvil encendido. Si has activado la huella o la cara en tu cuenta, te la pedimos para confirmar que eres tú. La app te dice en todo momento el número del beloq que se va a abrir.</p>
       <h3>5.2 Aparcar</h3>
       <p>Sube la barra, mete la rueda de tu vehículo y baja la barra con firmeza hasta oír <strong>el clic y el doble pitido</strong>: el vehículo queda anclado. Después, la app te pide que confirmes cómo ha quedado aparcado. Desde que se abre el beloq tienes <strong>5 minutos</strong> para dejarlo anclado. Pasado el primer minuto, el beloq pita y la app te avisa cada minuto.</p>
       <h3>5.3 Custodia</h3>
       <p>La custodia empieza cuando la barra queda anclada (clic y doble pitido) y termina cuando desbloqueas el beloq para retirar tu vehículo. Si la barra no llega a anclarse, la custodia no empieza.</p>
       <h3>5.4 Retirar</h3>
-      <p>Desbloquea el beloq desde la app con tu huella o tu cara, saca tu vehículo y vuelve a bajar la barra hasta oír el clic. También tienes 5 minutos para dejarla anclada.</p>
+      <p>Desbloquea el beloq desde la app, junto a él y con el Bluetooth del móvil encendido (y con tu huella o tu cara, si las has activado). Saca tu vehículo y vuelve a bajar la barra hasta oír el clic. También tienes 5 minutos para dejarla anclada.</p>
       <h3>5.5 Mantenimiento y falta de señal</h3>
       <p>Si un beloq entra en mantenimiento o se queda sin señal con tu vehículo dentro, el vehículo sigue anclado y custodiado, pero no podrás desbloquearlo hasta que se resuelva. Mientras dure el mantenimiento no se descuenta tu tiempo gratis ni corre el tiempo extra. Te avisamos en cuanto puedas retirarlo; si te urge, escríbenos (§17).</p>
       <h3>5.6 Uso sin la app</h3>
@@ -111,6 +113,8 @@ export default function TerminosCondiciones() {
         <li>Hacer ingeniería inversa del software, la API o los protocolos de comunicación de beloq.</li>
         <li>Automatizar el uso del servicio con bots, scripts o herramientas de extracción de datos.</li>
         <li>Crear cuentas múltiples, compartir las llaves de acceso o usar móviles ajenos para conseguir pruebas gratis o regalos por invitación.</li>
+        <li>Usar una ubicación simulada (GPS falso). Mientras la app la detecte, deja de funcionar hasta que la quites.</li>
+        <li>Simular viajes para conseguir puntos del programa de puntos beloq: con ubicación simulada, recorridos grabados, varios móviles en un mismo recorrido o cuentas ajenas.</li>
       </ul>
       <p>Las consecuencias incluyen penalizaciones económicas, la anulación de regalos, la suspensión o cancelación de la cuenta y, en casos de vandalismo, sabotaje o ataque informático, la denuncia ante las autoridades y la reclamación de daños.</p>
       <h2>10. Suspensión y terminación de la cuenta</h2>
@@ -138,7 +142,7 @@ export default function TerminosCondiciones() {
       <p>El Servicio usa servicios de terceros necesarios para funcionar:</p>
       <ul>
         <li><strong>Stripe:</strong> pagos y tarjetas guardadas. Política de privacidad: <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">stripe.com/privacy</a>.</li>
-        <li><strong>Google (Firebase y Google Cloud):</strong> cuentas y entrada con Google, avisos al móvil, analítica de uso y registro de fallos de la app, y la infraestructura del servicio, alojada en la Unión Europea.</li>
+        <li><strong>Google (Firebase y Google Cloud):</strong> cuentas y entrada con Google, avisos al móvil, analítica de uso y registro de fallos de la app, y la infraestructura del servicio, alojada en la Unión Europea. En Android, los servicios de Google Play dan a la app la ubicación del programa de puntos.</li>
         <li><strong>Apple:</strong> entrada con Apple.</li>
         <li><strong>Brevo:</strong> envío de SMS y correos.</li>
         <li><strong>Stadia Maps:</strong> el mapa de estaciones.</li>

@@ -22,6 +22,7 @@ const RUTAS = [
   "/legal/aviso-legal",
   "/legal/privacidad",
   "/legal/terminos",
+  "/legal/programa-puntos",
   "/legal/cookies",
   "/legal/borrar-cuenta",
 ];
