@@ -11,7 +11,7 @@ export const metadata = {
 
 export default function CondicionesProgramaPuntos() {
   return (
-    <LegalPage title="Condiciones del programa de puntos beloq" version="1.0" date="17 de noviembre de 2026">
+    <LegalPage title="Condiciones del programa de puntos beloq" version="1.0" date="24 de noviembre de 2026">
       <h2>1. Qué es el programa de puntos beloq</h2>
       <p>El programa de puntos beloq (en adelante, «el programa») recompensa a los usuarios de beloq, los beloquers, por desplazarse en bicicleta o en patinete. Registras tus viajes con la app (al principio pulsando «Empezar viaje» y «Parar»; más adelante, si quieres, de forma automática), beloq los comprueba con reglas publicadas y, si el viaje es válido, te suma <strong>puntos beloq</strong> que puedes canjear por las recompensas de tu programa. La recompensa es por pedalear o patinar; los datos que hacen falta para comprobarlo son la consecuencia, no el precio.</p>
       <p>Lo organiza <strong>Beloq Movilidad SL</strong> (Sociedad Limitada con declaración de unipersonalidad inscrita; socio único: D. Jesús Gracia Casani; en adelante, «beloq»), con CIF B24990814, D-U-N-S 473117119, domicilio social en Calle Joan Verdeguer 116, 4, 46024 València (España), inscrita en el Registro Mercantil de Valencia, hoja registral V-231009, inscripción 1.ª, de fecha 26 de diciembre de 2025. Contacto: <a href="mailto:info@beloq.es">info@beloq.es</a>. Protección de datos: <a href="mailto:dpo@beloq.es">dpo@beloq.es</a>.</p>
@@ -144,7 +144,7 @@ export default function CondicionesProgramaPuntos() {
         </thead>
         <tbody>
           <tr><td><strong>Resumen de cada viaje</strong></td><td>Fecha, hora de inicio y fin, duración, distancia, velocidades, resumen de sensores, vehículo, estado, motivo, puntos, y un trazado reducido cuyos extremos se recortan 150 m en el servidor antes de guardarlo: tu portal exacto no aparece en el resumen</td><td>Mientras exista tu cuenta. Al eliminarla quedan solo fecha, distancia, estado y puntos, sin nada que te identifique</td></tr>
-          <tr><td><strong>Recorrido completo</strong> (posiciones una por segundo y resúmenes del acelerómetro)</td><td>Lo que hace falta para recalcular el viaje, revisarlo si lo reclamas y detectar el fraude</td><td><strong>90 días</strong> desde que el viaje llega a beloq. Después se borra</td></tr>
+          <tr><td><strong>Recorrido completo</strong> (posiciones una por segundo y resúmenes del acelerómetro)</td><td>Lo que hace falta para recalcular el viaje, revisarlo si lo reclamas, detectar el fraude y, una vez anonimizado (§10.3), afinar la certificación</td><td><strong>90 días</strong> desde que el viaje llega a beloq. Después se borra</td></tr>
           <tr><td><strong>Acelerómetro en bruto</strong> de los recorridos de referencia (solo probadores, §3.2)</td><td>La señal del sensor durante el recorrido</td><td><strong>90 días</strong> desde que llega a beloq</td></tr>
           <tr><td><strong>Diagnóstico del detector</strong></td><td>Permisos, batería, avisos del sistema, errores y tiempos, <strong>sin coordenadas</strong></td><td><strong>90 días</strong></td></tr>
           <tr><td><strong>Cruce con tus anclajes</strong></td><td>Qué anclajes tuvieron o no un viaje detectado</td><td><strong>90 días</strong></td></tr>
@@ -157,12 +157,20 @@ export default function CondicionesProgramaPuntos() {
       <h3>10.2 Quién lo ve</h3>
       <ul>
         <li><strong>Tú</strong>, en «Mis viajes» y en «Tu cuenta» → «Copia de tus datos», que incluye tus viajes, puntos y canjes.</li>
-        <li><strong>El personal de beloq</strong>: el resumen de los viajes y, <strong>solo para revisar</strong> un viaje en revisión, no válido o reclamado, su recorrido completo mientras exista. Cada acceso a un recorrido queda anotado. Los recorridos individuales no se exportan.</li>
+        <li><strong>El personal de beloq</strong>: el resumen de los viajes y, <strong>solo para revisar</strong> un viaje en revisión, no válido o reclamado, su recorrido completo mientras exista. Cada acceso a un recorrido queda anotado. Los recorridos individuales <strong>no salen de beloq con tu identidad ni con su ubicación real</strong>: para afinar la certificación solo se usan copias anonimizadas (§10.3).</li>
         <li><strong>El organizador de un programa</strong> (ayuntamiento, empresa, universidad, entidad) y, si se publican informes, el público: <strong>un informe mensual solo con agregados</strong>: personas activas, viajes, kilómetros, días con viaje, reparto por vehículo y por franja horaria, puntos emitidos y canjeados, y un mapa por celdas de 500 m. <strong>Nada se entrega si describe a menos de 5 personas distintas</strong>: si el programa tiene menos de 5 personas activas ese mes no hay informe, las celdas con menos de 5 personas no aparecen, y si una categoría de un reparto queda oculta se oculta también otra para que no se pueda deducir por resta. Nunca tu recorrido, tu nombre, tus horas ni tus direcciones.</li>
         <li><strong>Servicios de mapas:</strong> el mapa que ves en la app lo sirve Stadia Maps, que recibe tu IP y la zona del mapa que miras, como ya ocurre hoy; <strong>tus recorridos no se le envían</strong>.</li>
         <li>Los avisos que recibes en el móvil dicen el estado del viaje y los puntos; no llevan coordenadas.</li>
       </ul>
-      <h3>10.3 Remisión a la Política de Privacidad</h3>
+      <h3>10.3 Recorridos anonimizados para certificar mejor</h3>
+      <p>Certificar un viaje es comprobar que de verdad se hizo en bici o en patinete, y no a pie, en coche o en bus. Para que esa comprobación acierte cada vez más hay que estudiar recorridos reales. Eso se hace <strong>solo con copias anonimizadas</strong>, nunca con los recorridos originales:</p>
+      <ul>
+        <li><strong>Se cambian de sitio.</strong> Cada copia se traslada decenas de kilómetros y se gira. Conserva la forma, las distancias y las velocidades del trayecto, que es lo que hace falta para certificar, pero ya no está donde ocurrió: no enseña tu casa, tu trabajo ni las calles por las que pasaste.</li>
+        <li><strong>Se les quita la fecha.</strong> Solo queda el día de la semana y la hora.</li>
+        <li><strong>Se les quita todo lo que te señala.</strong> No llevan tu nombre, tu cuenta, tu móvil ni la estación de beloq en la que anclaste.</li>
+      </ul>
+      <p>Estas copias las estudia el equipo que ajusta la certificación: personal de beloq y colaboradores de análisis de datos con contrato de confidencialidad, que tienen prohibido intentar identificar a nadie. <strong>Sirven solo para certificar mejor los viajes.</strong> No se venden, no se usan para publicidad y no se entregan al organizador del programa, que sigue recibiendo únicamente el informe agregado.</p>
+      <h3>10.4 Remisión a la Política de Privacidad</h3>
       <p>Quién es el responsable, las bases jurídicas de cada uso, los proveedores que intervienen (Google Cloud en la región de Madrid, Firebase, Stadia Maps), las transferencias internacionales y cómo ejercer tus derechos de acceso, rectificación, supresión, portabilidad, oposición y limitación están en la <Link href="/legal/privacidad">Política de Privacidad</Link>, apartados «Programa de puntos beloq» (§2.6), «Para qué usamos tus datos», «Cuánto tiempo conservamos tus datos» y «Tus derechos». Protección de datos: <strong><a href="mailto:dpo@beloq.es">dpo@beloq.es</a></strong>.</p>
       <h2>11. Cambios en estas Condiciones y en los anexos</h2>
       <ul>
