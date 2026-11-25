@@ -14,7 +14,7 @@ export default function AvisoLegal() {
       <p>En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa al usuario de los siguientes datos:</p>
       <table>
         <tbody>
-          <tr><td><strong>Razón social</strong></td><td>Beloq Movilidad SL (Sociedad Limitada Unipersonal según Art. 12 LSC; socio único: D. Jesús Gracia Casani)</td></tr>
+          <tr><td><strong>Razón social</strong></td><td>Beloq Movilidad S.L.</td></tr>
           <tr><td><strong>CIF</strong></td><td>B24990814</td></tr>
           <tr><td><strong>D-U-N-S</strong></td><td>473117119</td></tr>
           <tr><td><strong>Domicilio social</strong></td><td>Calle Joan Verdeguer 116, 4 — 46024 València, España</td></tr>

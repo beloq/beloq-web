@@ -16,7 +16,7 @@ export default function TerminosCondiciones() {
       <h2>1. Aceptación de los Términos</h2>
       <p>Estos Términos y Condiciones (en adelante, &quot;Términos&quot;) regulan el uso de la aplicación móvil beloq (disponible en iOS y Android), de la web beloq.es y de los módulos de aparcamiento beloq (en adelante, conjuntamente, &quot;el Servicio&quot;).</p>
       <p>Al registrarte, acceder o utilizar el Servicio, aceptas estos Términos en su totalidad. Si no estás de acuerdo, no podrás utilizar beloq.</p>
-      <p>El Servicio es titularidad de <strong>Beloq Movilidad SL</strong> (Sociedad Limitada con declaración de unipersonalidad inscrita en el Registro Mercantil; socio único: D. Jesús Gracia Casani; en adelante, &quot;beloq&quot;), con CIF B24990814, D-U-N-S 473117119, domicilio social en Calle Joan Verdeguer 116, 4 — 46024 València (España), e inscrita en el Registro Mercantil de Valencia, hoja registral V-231009, inscripción 1.ª, de fecha 26 de diciembre de 2025. Folio electrónico (IRUS): 1000463742257. BORME: BORME-A-2026-2-46. Sociedad constituida mediante escritura otorgada el 4 de diciembre de 2025 ante el notario de Valencia D. Jorge Barberá Pichó, protocolo número 6145.</p>
+      <p>El Servicio es titularidad de <strong>Beloq Movilidad S.L.</strong> (en adelante, &quot;beloq&quot;), con CIF B24990814, D-U-N-S 473117119, domicilio social en Calle Joan Verdeguer 116, 4 — 46024 València (España), e inscrita en el Registro Mercantil de Valencia, hoja registral V-231009, inscripción 1.ª, de fecha 26 de diciembre de 2025. Folio electrónico (IRUS): 1000463742257. BORME: BORME-A-2026-2-46. Sociedad constituida mediante escritura otorgada el 4 de diciembre de 2025 ante el notario de Valencia D. Jorge Barberá Pichó, protocolo número 6145.</p>
       <h2>2. Descripción del Servicio</h2>
       <p>beloq es un sistema de aparcamiento seguro en la calle para bicicletas y vehículos de movilidad personal (VMP), como patinetes eléctricos. Cada estación tiene módulos electromecánicos conectados (&quot;beloqs&quot;): los abres con el móvil, anclas tu vehículo bajando la barra y beloq lo custodia hasta que vuelves a por él.</p>
       <p>beloq es una empresa <strong>B2B</strong>: diseña, fabrica y opera la infraestructura para operadores e instituciones (universidades, ayuntamientos, empresas), que ofrecen el servicio de aparcamiento a sus usuarios.</p>
@@ -159,7 +159,7 @@ export default function TerminosCondiciones() {
       <h3>Organismos externos</h3>
       <p>Si la discrepancia persiste, puedes acudir a la autoridad de consumo competente (OMIC de Valencia o la oficina autonómica correspondiente) y, para cuestiones de privacidad, a la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener noreferrer">https://www.aepd.es</a>).</p>
       <h2>18. Contacto</h2>
-      <p><strong>Beloq Movilidad SL</strong> (Sociedad Limitada Unipersonal según Art. 12 LSC; socio único: D. Jesús Gracia Casani)<br />
+      <p><strong>Beloq Movilidad S.L.</strong><br />
         CIF: B24990814<br />
         D-U-N-S: 473117119<br />
         Domicilio: Calle Joan Verdeguer 116, 4 — 46024 València, España<br />
