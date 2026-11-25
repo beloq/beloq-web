@@ -11,7 +11,7 @@ export const metadata = {
 
 export default function CondicionesProgramaPuntos() {
   return (
-    <LegalPage title="Condiciones del programa de puntos beloq" version="1.0" date="24 de noviembre de 2026">
+    <LegalPage title="Condiciones del programa de puntos beloq" version="1.0" date="25 de noviembre de 2026">
       <h2>1. Qué es el programa de puntos beloq</h2>
       <p>El programa de puntos beloq (en adelante, «el programa») recompensa a los usuarios de beloq, los beloquers, por desplazarse en bicicleta o en patinete. Registras tus viajes con la app (al principio pulsando «Empezar viaje» y «Parar»; más adelante, si quieres, de forma automática), beloq los comprueba con reglas publicadas y, si el viaje es válido, te suma <strong>puntos beloq</strong> que puedes canjear por las recompensas de tu programa. La recompensa es por pedalear o patinar; los datos que hacen falta para comprobarlo son la consecuencia, no el precio.</p>
       <p>Lo organiza <strong>Beloq Movilidad SL</strong> (Sociedad Limitada con declaración de unipersonalidad inscrita; socio único: D. Jesús Gracia Casani; en adelante, «beloq»), con CIF B24990814, D-U-N-S 473117119, domicilio social en Calle Joan Verdeguer 116, 4, 46024 València (España), inscrita en el Registro Mercantil de Valencia, hoja registral V-231009, inscripción 1.ª, de fecha 26 de diciembre de 2025. Contacto: <a href="mailto:info@beloq.es">info@beloq.es</a>. Protección de datos: <a href="mailto:dpo@beloq.es">dpo@beloq.es</a>.</p>
@@ -21,7 +21,7 @@ export default function CondicionesProgramaPuntos() {
       <h2>2. Quién puede participar</h2>
       <ul>
         <li><strong>Quien tenga el código del programa.</strong> Se entra en «Puntos beloq» con el <strong>código</strong> que reparte el organizador (en un correo, un cartel o un enlace). La app enseña la lista de programas abiertos, pero sin el código no se puede entrar en ninguno. Si un código no vale, la app no dice por qué; tras varios intentos fallidos seguidos bloquea los intentos durante una hora.</li>
-        <li><strong>Hace falta un móvil Android</strong> con los servicios de Google. En iPhone el programa llegará más adelante.</li>
+        <li><strong>Hace falta un móvil Android</strong> con los servicios de Google <strong>o un iPhone</strong>. En iPhone, por ahora, solo hay modo manual (§3.1).</li>
         <li><strong>Tienes que indicar tu vehículo</strong> (bici, patinete o los dos) en tu perfil. Lo usamos como etiqueta de tus viajes; no decide por sí solo si un viaje es válido.</li>
         <li><strong>Los menores de 14 años no pueden participar</strong> (tampoco pueden tener cuenta, §4.1 de los Términos). Si tienes entre 14 y 17 años, puedes participar <strong>solo en modo manual</strong> y te recomendamos informar a tu tutor legal, porque la app registra por dónde te mueves durante tus viajes. La detección automática no se ofrecerá a menores de 18 años sin que beloq lo evalúe antes y lo diga en estas Condiciones.</li>
         <li>Un programa puede tener <strong>cupo</strong>, un <strong>plazo de alta</strong> y, en algunos casos, un <strong>código de alta</strong> que te da quien lo organiza. Si el cupo está lleno o el plazo ha pasado, la app te lo dice.</li>
@@ -31,7 +31,7 @@ export default function CondicionesProgramaPuntos() {
       </ul>
       <h2>3. Qué mide la app y con qué sensores</h2>
       <h3>3.1 Lo que usa la app mientras estás en el programa</h3>
-      <p><strong>Al principio, solo en modo manual.</strong> Todos los participantes empiezan en <strong>modo manual</strong>: la app registra tu posición <strong>solo entre que pulsas «Empezar viaje» y pulsas «Parar»</strong> (o se cierra sola, §4.1). Para eso necesita dos permisos: <strong>ubicación precisa</strong> y <strong>avisos</strong>. Con la pantalla apagada sigue grabando ese viaje, y lo ves en una notificación mientras dura. Fuera de esos viajes no se registra nada.</p>
+      <p><strong>Al principio, solo en modo manual.</strong> Todos los participantes empiezan en <strong>modo manual</strong>: la app registra tu posición <strong>solo entre que pulsas «Empezar viaje» y pulsas «Parar»</strong> (o se cierra sola, §4.1). Para eso necesita dos permisos: <strong>ubicación precisa</strong> y <strong>avisos</strong> (en iPhone basta la ubicación precisa «Al usar la app»). Con la pantalla apagada sigue grabando ese viaje, y lo ves en una notificación mientras dura (en iPhone, en el indicador de ubicación del sistema). Fuera de esos viajes no se registra nada.</p>
       <p><strong>Más adelante, si quieres, en automático (§3.4).</strong> Solo entonces entran en juego estos dos permisos, que hoy la app ni siquiera pide:</p>
       <ul>
         <li><strong>Ubicación en segundo plano.</strong> Con la app cerrada o sin usarla, mientras estés en el programa y no lo tengas en pausa, la app registra tu posición para reconstruir el viaje. En Android hace falta el permiso «Permitir siempre». Fuera de un viaje no se registran posiciones: el GPS se enciende cuando el móvil detecta que empiezas a moverte y se apaga al terminar.</li>
@@ -40,8 +40,8 @@ export default function CondicionesProgramaPuntos() {
       <p>En los dos modos:</p>
       <ul>
         <li><strong>Acelerómetro, resumido.</strong> Durante el viaje la app calcula, por tramos de unos cinco segundos, unos pocos números (cuánto vibra el móvil, si hay un ritmo de pedaleo, con qué energía) que ayudan a distinguir una bici o un patinete de un coche, un autobús o un paseo a pie. A beloq suben esos números, no la señal del sensor.</li>
-        <li><strong>Avisos.</strong> El viaje en curso se ve en una notificación con el tiempo y los kilómetros; desde ella puedes decir «No voy en bici ni patinete». Al terminar, la app te avisa del resultado.</li>
-        <li><strong>Tus anclajes en beloq</strong>, que beloq ya conoce: sirven para saber si el viaje acabó aparcando en un beloq y para proponerte un «viaje sin detectar» (§4.4). Retirar tu vehículo de un beloq también despierta la detección.</li>
+        <li><strong>Avisos.</strong> En Android, el viaje en curso se ve en una notificación con el tiempo y los kilómetros; desde ella puedes decir «No voy en bici ni patinete», y al terminar la app te avisa del resultado. En iPhone, el viaje y su resultado se ven dentro de la app, y desde ella lo puedes descartar.</li>
+        <li><strong>Tus anclajes en beloq</strong>, que beloq ya conoce: sirven para saber si el viaje acabó aparcando en un beloq y para proponerte un «viaje sin detectar» (§4.4). En Android, retirar tu vehículo de un beloq también despierta la detección.</li>
       </ul>
       <h3>3.2 Acelerómetro en bruto: solo si te prestas como probador</h3>
       <p>Para ajustar el detector hacen falta recorridos de los que se sepa con certeza cómo y cuándo se hicieron. Si te prestas como <strong>probador</strong>, en la app podrás abrir un <strong>recorrido de referencia</strong>: dices en qué vas (bici, patinete, a pie, coche o bus), pulsas «Salgo» y, al llegar, «He llegado». <strong>Solo en esos recorridos</strong>, y solo mientras estén abiertos, la app guarda la señal del acelerómetro en bruto (cincuenta medidas por segundo) y la sube junto con el viaje.</p>
@@ -148,7 +148,7 @@ export default function CondicionesProgramaPuntos() {
           <tr><td><strong>Acelerómetro en bruto</strong> de los recorridos de referencia (solo probadores, §3.2)</td><td>La señal del sensor durante el recorrido</td><td><strong>90 días</strong> desde que llega a beloq</td></tr>
           <tr><td><strong>Diagnóstico del detector</strong></td><td>Permisos, batería, avisos del sistema, errores y tiempos, <strong>sin coordenadas</strong></td><td><strong>90 días</strong></td></tr>
           <tr><td><strong>Cruce con tus anclajes</strong></td><td>Qué anclajes tuvieron o no un viaje detectado</td><td><strong>90 días</strong></td></tr>
-          <tr><td><strong>Direcciones habituales</strong> (si las das) y <strong>datos de tu móvil</strong> (fabricante, modelo, versión de Android, permisos concedidos, versión de la app)</td><td>Para evaluar los viajes y para saber en qué teléfonos falla la detección; de los móviles solo se publican agregados</td><td>Mientras dure tu participación; se borran al salir del programa o al eliminar tu cuenta</td></tr>
+          <tr><td><strong>Direcciones habituales</strong> (si las das) y <strong>datos de tu móvil</strong> (fabricante, modelo, versión del sistema, permisos concedidos, versión de la app)</td><td>Para evaluar los viajes y para saber en qué teléfonos falla la detección; de los móviles solo se publican agregados</td><td>Mientras dure tu participación; se borran al salir del programa o al eliminar tu cuenta</td></tr>
           <tr><td><strong>Libro de puntos y canjes</strong></td><td>Cada suma, resta, canje y ajuste, con su motivo</td><td>Mientras exista tu cuenta. Al eliminarla deja de estar ligado a ti; se conserva para que el libro cuadre con los abonos emitidos</td></tr>
           <tr><td><strong>Tu alta, tu baja y tus consentimientos</strong></td><td>Fecha, versión de estas Condiciones y de la Política aceptadas</td><td>5 años, como el resto de consentimientos</td></tr>
           <tr><td><strong>En tu móvil</strong></td><td>Las posiciones de un viaje se borran a los 7 días de subirse; los viajes, a los 60; el registro de eventos, a los 30</td><td></td></tr>
@@ -196,7 +196,7 @@ export default function CondicionesProgramaPuntos() {
         <tbody>
           <tr><td><strong>Organiza</strong></td><td>Beloq Movilidad SL (programa propio, tipo piloto)</td></tr>
           <tr><td><strong>Responde de los datos</strong></td><td>Beloq Movilidad SL. Protección de datos: <a href="mailto:dpo@beloq.es">dpo@beloq.es</a></td></tr>
-          <tr><td><strong>Quién puede entrar</strong></td><td>Personas invitadas por beloq con el <strong>código del programa</strong>; móvil Android; vehículo indicado en el perfil</td></tr>
+          <tr><td><strong>Quién puede entrar</strong></td><td>Personas invitadas por beloq con el <strong>código del programa</strong>; móvil Android o iPhone; vehículo indicado en el perfil</td></tr>
           <tr><td><strong>Participantes</strong></td><td>Hasta el cupo que fije beloq</td></tr>
           <tr><td><strong>Alta</strong></td><td>Con código, mientras el programa esté activo y en plazo</td></tr>
           <tr><td><strong>Modo de registro</strong></td><td><strong>Manual</strong>: «Empezar viaje» y «Parar». La detección automática no está disponible en esta versión del anexo; cuando lo esté, se ofrecerá tras <strong>5 viajes manuales validados</strong> y <strong>7 días</strong> desde el alta, siempre como opción</td></tr>
