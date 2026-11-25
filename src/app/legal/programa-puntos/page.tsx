@@ -187,7 +187,7 @@ export default function CondicionesProgramaPuntos() {
       <p>Para cualquier duda o reclamación sobre el programa escríbenos por el chat de <Link href="/info">beloq.es/info</Link> o a <strong><a href="mailto:info@beloq.es">info@beloq.es</a></strong>, indicando el móvil o el correo de tu cuenta y la fecha del viaje. Los plazos de respuesta, la reclamación formal, los organismos de consumo, la ley aplicable y la jurisdicción son los de §16 y §17 de los Términos. En materia de protección de datos puedes acudir a la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener noreferrer">https://www.aepd.es</a>).</p>
       <p><strong>Beloq Movilidad SL</strong>, CIF B24990814, Calle Joan Verdeguer 116, 4, 46024 València (España). Correo general: <a href="mailto:info@beloq.es">info@beloq.es</a>. Protección de datos: <a href="mailto:dpo@beloq.es">dpo@beloq.es</a>.</p>
       <h2>Anexo I. Programa piloto beloq</h2>
-      <p><strong>Versión del anexo:</strong> 1.0 (es la que la app enseña y registra al apuntarte).</p>
+      <p><strong>Versión del anexo:</strong> 1.1 (es la que la app enseña y registra al apuntarte).</p>
       <p>Programa que organiza y opera directamente beloq, sin cliente, para probar el registro de viajes y el programa con personas reales antes de abrir programas de organizadores. <strong>Todas las cifras son iniciales y beloq puede ajustarlas</strong>; las vigentes son las que muestra la app en «Puntos beloq» → «Reglas». Si este programa pasa a tener un organizador distinto de beloq, se publicará una versión nueva de este anexo con su nombre, y la app te pedirá aceptarla.</p>
       <table>
         <thead>
@@ -196,7 +196,7 @@ export default function CondicionesProgramaPuntos() {
         <tbody>
           <tr><td><strong>Organiza</strong></td><td>Beloq Movilidad SL (programa propio, tipo piloto)</td></tr>
           <tr><td><strong>Responde de los datos</strong></td><td>Beloq Movilidad SL. Protección de datos: <a href="mailto:dpo@beloq.es">dpo@beloq.es</a></td></tr>
-          <tr><td><strong>Quién puede entrar</strong></td><td>Personas invitadas por beloq con el <strong>código del programa</strong>; móvil Android o iPhone; vehículo indicado en el perfil</td></tr>
+          <tr><td><strong>Quién puede entrar</strong></td><td>Personas invitadas por beloq con el <strong>código del programa</strong>; vehículo indicado en el perfil</td></tr>
           <tr><td><strong>Participantes</strong></td><td>Hasta el cupo que fije beloq</td></tr>
           <tr><td><strong>Alta</strong></td><td>Con código, mientras el programa esté activo y en plazo</td></tr>
           <tr><td><strong>Modo de registro</strong></td><td><strong>Manual</strong>: «Empezar viaje» y «Parar». La detección automática no está disponible en esta versión del anexo; cuando lo esté, se ofrecerá tras <strong>5 viajes manuales validados</strong> y <strong>7 días</strong> desde el alta, siempre como opción</td></tr>
